@@ -1,0 +1,3 @@
+*.code-workespace
+target
+__pycache__
