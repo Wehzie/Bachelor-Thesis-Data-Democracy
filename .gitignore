@@ -1,3 +1,4 @@
-*.code-workespace
+.vscode
+*.code-workspace
 target
 __pycache__
