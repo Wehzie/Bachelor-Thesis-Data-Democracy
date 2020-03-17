@@ -1,24 +1,24 @@
 
 
 
-# NOTE: household is abbreviated hh in comments
+# NOTE: hh is short for household or households
 
 class household(object):
     
-    money = None            # current balance of hh
-    daily_cost = None       # money spent daily by hh
-    saving_param = None     # controls portion of monthly earings saved; 0 < saving_param < 1
-    
-    employer = None         # hh has one employer firm
-    firm_list = []          # hh buys at multiple firms
-    firms_restricted = []   # hh remembers firms with not enough goods
-    
-    res_wage = None             # reservation wage, minimum wage hh works for
-    rw_diff_employed = None     # reservation wage change during month of employment
-    rw_diff_unemployed = None   # reservation wage change during month of unemployment
-    rw_diff_fired = None        # reservation wage change at moment of being fired
+    money = None                    # current balance of hh
+    daily_cost = None               # money spent daily by hh
+    saving_param = None             # controls portion of monthly earings saved; 0 < saving_param < 1
 
-    ask_num_firms = None   # number of firms a hh asks for a job during a month of unemployment
+    employer = None                 # hh has one employer firm (type B connection)
+    firm_list = []                  # hh buys at up to 7 firms (type A connectinon)
+    firms_restricted = []           # hh remembers firms with not enough goods
+    
+    res_wage = None                 # reservation wage, minimum wage hh works for
+    rw_change_employed = None       # reservation wage change during month of employment
+    rw_change_unemployed = None     # reservation wage change during month of unemployment
+    rw_change_fired = None          # reservation wage change at moment of being fired
+
+    ask_num_firms = None            # number of firms a hh asks for a job during a month of unemployment
 
     def __init__(self):
         pass
