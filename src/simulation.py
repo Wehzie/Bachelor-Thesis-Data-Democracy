@@ -1,15 +1,14 @@
 
 
-from household import household
-from firm import firm
 
 # NOTE: hh is short for household or households
 
-class simulation(object):
+class Simulation(object):
     
     ######## ######## ######## INSTANCE VARIABLES ######## ######## ########
 
     num_months = None                   # number of months simulated
+    days_in_month = 21                  # number of working days in a month
 
     f_param = {
         'num_firms': 100,               # total number of firms
@@ -39,28 +38,27 @@ class simulation(object):
     ######## ######## ######## CONSTRUCTOR ######## ######## ########
 
     def __init__(self, num_months: int):
-        
+        self.num_months = num_months
 
     ######## ######## ######## METHODS ######## ######## ########
 
-    def init_households(self: simulation):
+    def init_households(self):
         hh_list = []
         for hh in range(hh_param.get("num_households")):
             hh_list.append(household())
         
         return hh_list
 
-    def init_firms(self: simulation):
-        self.firm_list = 
+    def init_firms(self):
+        pass
 
-    def start_sim(num_months):
-        
-        hh_list = init_households()
-        print("test")
+    def start_sim(self):
+        print("######## ######## ######## START SIMULATION ######## ######## ########")
 
-        for month in range(num_months):
-            # plan month
-            # perform day
-            # end of month
+        testfirm = Firm(self)
+        testfirm.testmethod()
 
-            pass
+        print("######## ######## ######## STOP SIMULATION ######## ######## ########")
+
+from household import Household
+from firm import Firm

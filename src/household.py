@@ -1,9 +1,8 @@
 
 
-
 # NOTE: hh is short for household or households
 
-class household(object):
+class Household(object):
     
     money = None                    # current balance of hh
     daily_cost = None               # money spent daily by hh

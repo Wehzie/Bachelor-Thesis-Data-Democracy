@@ -1,14 +1,12 @@
 
 
-import random
-from simulation import simulation
+# NOTE: Imports are at end of file
+# hh is short for household or households
 
-# NOTE: hh is short for household or households
-
-class firm(object):
+class Firm(object):
     
     sim: object = None              # simulation a 
-    money: int = None               # current balance of firm
+    money: int = 0                  # current balance of firm
     reserve: int = None             # savings beyond money balance
     num_items: int = None           # number of items in stock for selling
     item_price: int = None          # price a single item is sold for
@@ -20,24 +18,26 @@ class firm(object):
     month_open_pos: int = None      # month the firm started looking to employ
     
 
-    def __init__(self):
-        pass
+    def __init__(self, sim: object):
+        self.sim = sim
+
+    def testmethod(self):
+        print("Simparam: " + str(self.sim.f_param.get("price_adj_rate")))
 
     ######## ######## ######## MONTH ######## ######## ########
 
     # Adjust wage by number of employees and employment target
-    # employment target met -> decrease wage
-    # insufficient employees -> increase wage
-
-    # NOTE: Doesn't implement filledPosition
-    def update_wage(self: firm, month: int):
-        if self.month_open_pos == month - 1:             
+    # Can't find employees? -> increase wage
+    def update_wage(self, month: int):
+        if self.month_open_pos < month:
             self.wage *= (1 + random.uniform(0, self.sim.f_param.get("price_adj_rate")))
-        elif (month - self.month_open_pos) > self.sim.f_param.get("price_adj_prob"):
-            self.wage *= (1 - random.uniform(0, self.sim.f_param.get("price_adj_rate")))
 
-    def update_employees():
-        pass
+
+    def update_employees(self, month: int):
+        up_num_items = self.sim.f_param.get("inv_up") * self.demand
+        lo_num_items = self.sim.f_param.get("inv_lo") * self.demand
+
+        #marg_cost = (self.wage / self.sim.
 
     def plan_month():
         pass
@@ -55,3 +55,7 @@ class firm(object):
     def pay_profit():
         pass
     
+######## ######## ######## IMPORTS ######## ######## ########
+
+import random
+from simulation import Simulation
