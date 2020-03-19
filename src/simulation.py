@@ -20,6 +20,7 @@ class Simulation(object):
         'inv_up': 1,                    # rate at which number of items in stock are considered too many
         'price_lo': 1.025,              # rate at which prices are considered too low
         'price_up': 1.15,               # rate at which prices are considered too high
+        'tech_lvl': 3,                  # technology parameter applied to an employee's natural work force in item production
     }
 
     hh_param = {
