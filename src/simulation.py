@@ -31,6 +31,9 @@ class Simulation(object):
         'res_wage_employed': 1,             # reservation wage during month of employment
         'res_wage_fired': 1,                # reservation wage in month of being fired
         'res_wage_unemployed': 0.9,         # reservation wage during month of unemployment
+        'repl_vend_price_prob': 0.25,       # probability of replacing a firm a hh buys from due to high prices 
+        'repl_vend_inv_prob': 0.25,         # probability or replacing a firm a hh buys from due to little inventory
+        'lower_vendor_price': 0.01,         # percent by which a new vendor's prices must be cheaper, normalized to 1
     }
 
     firm_list = []          # list of all firms in the model
