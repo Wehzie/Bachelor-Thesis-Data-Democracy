@@ -1,5 +1,6 @@
 
 
+# Lengnick, M. (2013). Agent-based macroeconomics: A baseline model. Journal of Economic Behavior and Organization, 86, 102-120. doi:10.1016/j.jebo.2012.12.021
 
 # NOTE: hh is short for household or households
 
@@ -12,28 +13,32 @@ class Simulation(object):
 
     f_param = {
         'num_firms': 100,               # total number of firms
-        'price_adj_prob': 0.78,         # probability that a firm adjusts item prices
-        'price_adj_rate': 0.019,        # rate at which prices are adjusted
-        'wage_adj_prob': 0.07,          # probability that a firm adjusts wages
-        'wage_adj_rate': 0.02,          # rate at which wages are updated
-        'inv_lo': 0.25,                 # rate at which number of items in stock are considerd too few    
-        'inv_up': 1,                    # rate at which number of items in stock are considered too many
-        'price_lo': 1.025,              # rate at which prices are considered too low
-        'price_up': 1.15,               # rate at which prices are considered too high
-        'tech_lvl': 3,                  # technology parameter applied to an employee's natural work force in item production
+        'months_lo_wage': 24,           # gamma: in number of months. duration after which wage is increased when all job positions filled
+        'wage_adj_rate': 0.019,         # delta: rate at which wages are adjusted
+        'inv_up': 1,                    # phi_up: rate at which number of items in stock are considered too many
+        'inv_lo': 0.25,                 # phi_lo: rate at which number of items in stock are considerd too few    
+        'price_up': 1.15,               # varphi_up: rate at which prices are considered too high
+        'price_lo': 1.025,              # varphi_lo: rate at which prices are considered too low
+        'price_adj_rate': 0.02,         # vartheta: rate at which prices are updated
+        'price_adj_prob': 0.75,         # theta: probability at which prices are updated
+        'tech_lvl': 3,                  # lambda: technology parameter applied to an employee's natural work force in item production
+        'buffer_rate': 0.1,             # chi: rate at which a firm builds a money buffer
     }
 
     hh_param = {
         'num_hh': 1000,                     # total number of households
-        'cr_decay': 0.885,                  # rate at which monthly expenses decay relative to wealth
-
+        'phi': 0.25,                        # TODO
+        'lower_vendor_price': 0.01,         # xi: percent by which a new vendor's prices must be cheaper, normalized to 1
+        'beta': 5,                          # TODO
+        'pi': 0.1,                          # TODO
+        'cost_decay': 0.9,                  # alpha: rate at which monthly expenses decay relative to wealth
+        'repl_vend_price_prob': 0.25,       # psi_price: probability of replacing a firm a hh buys from due to high prices 
+        'repl_vend_inv_prob': 0.25,         # psi_quant: probability or replacing a firm a hh buys from due to little inventory
+        
         # reservation wage: minimum a hh is willing to work for
         'res_wage_employed': 1,             # reservation wage during month of employment
         'res_wage_fired': 1,                # reservation wage in month of being fired
         'res_wage_unemployed': 0.9,         # reservation wage during month of unemployment
-        'repl_vend_price_prob': 0.25,       # probability of replacing a firm a hh buys from due to high prices 
-        'repl_vend_inv_prob': 0.25,         # probability or replacing a firm a hh buys from due to little inventory
-        'lower_vendor_price': 0.01,         # percent by which a new vendor's prices must be cheaper, normalized to 1
     }
 
     firm_list = []          # list of all firms in the model
