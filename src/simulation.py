@@ -27,22 +27,18 @@ class Simulation(object):
 
     hh_param = {
         'num_hh': 1000,                     # total number of households
-        'phi': 0.25,                        # TODO
         'lower_vendor_price': 0.01,         # xi: percent by which a new vendor's prices must be cheaper, normalized to 1
-        'beta': 5,                          # TODO
-        'pi': 0.1,                          # TODO
+        'unemployed_ask_num': 5,            # beta: number of firms an unemployed household asks for a job each month
+        'pi': 0.1,                          # pi: probability that a hh satisfied with its wage asks another firm for a job
         'cost_decay': 0.9,                  # alpha: rate at which monthly expenses decay relative to wealth
         'repl_vend_price_prob': 0.25,       # psi_price: probability of replacing a firm a hh buys from due to high prices 
         'repl_vend_inv_prob': 0.25,         # psi_quant: probability or replacing a firm a hh buys from due to little inventory
-        
-        # reservation wage: minimum a hh is willing to work for
-        'res_wage_employed': 1,             # reservation wage during month of employment
-        'res_wage_fired': 1,                # reservation wage in month of being fired
-        'res_wage_unemployed': 0.9,         # reservation wage during month of unemployment
+                                            # reservation wage: minimum a hh is willing to work for
+        'lo_res_wage_unemployed': 0.1,      # hh's reservation wage decrease rate during month of unemployment
     }
 
-    firm_list = []          # list of all firms in the model
-    hh_list = []            # list of all hh in the model
+    firm_list = []                      # list of all firms in the model
+    hh_list = []                        # list of all hh in the model
 
     ######## ######## ######## CONSTRUCTOR ######## ######## ########
 
