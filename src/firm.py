@@ -19,6 +19,7 @@ class Firm(object):
     lo_item_price: float = None     # don't let item cost fall lower than this
     up_item_price: float = None     # don't let item cost rise higher than this
     demand: int = None              # number of items sold last month
+                                    # TODO: Verify this is how demand works. Consider renaming to demand_month
 
     list_employees: list = []       # list of currently employed hh by index as found in simulation
     wage: float = None              # money paid to each employed hh per month
@@ -92,23 +93,59 @@ class Firm(object):
         self.list_employees.remove(employee)
         employee.fired()
 
-    def produce_items():
-        pass
+    # produce new items for firm's inventory
+    def produce_items(self):
+        self.num_items += self.sim.f_param.get("tech_lvl") * len(self.list_employees)
 
-    def sell_items():
-        pass
 
-    def pay_wages():
-        pass
+    # return number of items sold, reduce inventory, increase money and demand
+    def sell_items(self, demand_deal: int) -> int:
+        num_items_sold = min(self.num_items, demand)
+        self.num_items -= num_items_sold
+        self.money += num_items_sold * self.item_price
+        self.demand += demand_deal
+        return num_items_sold
 
-    def decide_reserve():
-        pass
+    # return total money to pay employees each month
+    def sum_wages(self) -> int:
+        return self.wage * len(self.list_employees)
 
-    def distribute_profits():
-        pass
+    # pay employees the full wage
+    # if insufficient money available then reduce wage
+    def pay_wages(self):
+        if self.money < self.sum_wages():
+            self.wage = self.money / len(self.list_employees)
 
-    def rest_month_demand():
-        pass
+        for employee in self.list_employees:
+            employee.receive_wage(self.wage)
+
+        self.money -= self.sum_wages()
+
+    # determine how much money is set back as buffer
+    def set_reserve(self):
+        frac_monthly_wages = self.sim.get("buffer_rate") * self.sum_wages()
+        self.reserve = max(0, min(frac_monthly_wages, self.money))
+        # TODO: is max(0, ) necessary? Can wages or money be < 0 ?
+
+    # return the sum of money owned by all employed households
+    def sum_hh_money(self) -> int:
+        sum = 0
+        for employee in self.list_employees:
+            # TODO: Is this necessary? Can hh.money be negative?
+            sum += employee.money if employee.money != 0 else 0
+        return sum
+
+    # if profits have been made and employees have any money then pay profits
+    # richer employees receive higher profits
+    def pay_profits(self):
+        profit = self.money - self.reserve - self.sum_wages()
+        if profit > 0 and self.sim.sum_hh_money() > 0:
+            for employee in self.list_employees:
+                employee.receive_profit()
+
+    # reset monthly item demand to zero
+    def reset_demand(self):
+        self.demand = 0
 
     def plan_month():
         pass

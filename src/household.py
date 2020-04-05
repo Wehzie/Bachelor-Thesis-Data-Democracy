@@ -25,7 +25,15 @@ class Household(object):
     def __init__(self):
         pass
 
+    ######## ######## ######## METHODS ######## ######## ########
+
     def fired():
+        pass
+
+    def receive_wage():
+        pass
+
+    def receive_profit():
         pass
 
     ######## ######## ######## MONTH ######## ######## ########
