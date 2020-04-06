@@ -84,7 +84,7 @@ class Firm(object):
         self.list_employees.append(employee)
 
     # remove employee from list of employees
-    def quit(self, employee: object):
+    def grant_leave(self, employee: object):
         self.list_employees.remove(employee)
 
     # remove employee from list of employees
@@ -138,6 +138,7 @@ class Firm(object):
     # if profits have been made and employees have any money then pay profits
     # richer employees receive higher profits
     def pay_profits(self):
+        # TODO: Can profit and hh_money be < 0?
         profit = self.money - self.reserve - self.sum_wages()
         if profit > 0 and self.sim.sum_hh_money() > 0:
             for employee in self.list_employees:
