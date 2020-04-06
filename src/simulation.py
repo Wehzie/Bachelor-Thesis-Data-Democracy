@@ -35,6 +35,7 @@ class Simulation(object):
         'repl_vend_inv_prob': 0.25,         # psi_quant: probability or replacing a firm a hh buys from due to little inventory
                                             # reservation wage: minimum a hh is willing to work for
         'lo_res_wage_unemployed': 0.1,      # hh's reservation wage decrease rate during month of unemployment
+        'demand_sat': 0.95,                 # hh is satisfied with getting 95% of items it planned to buy
     }
 
     firm_list = []                      # list of all firms in the model

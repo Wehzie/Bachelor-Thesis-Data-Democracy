@@ -30,16 +30,19 @@ class Household(object):
 
     ######## ######## ######## METHODS ######## ######## ########
 
-    def fired():
-        pass
+    # set hh to have no employer
+    def fired(self):
+        self.employer = None
+        # TODO: reservation wage adjustments
 
-    def receive_wage():
-        pass
+    # increase hh balance by received wage
+    def receive_wage(self, employer_money):
+        self.money += employer_money
+        # TODO: reservation wage adjustments
 
-    def receive_profit():
-        pass
-
-    ######## ######## ######## MONTH ######## ######## ########
+    # increase hh balance by received profits
+    def receive_profit(self, profit_money):
+        self.money += profit_money
 
     # return list of vendors the hh doesn't buy from
     def get_non_vendor_firms(self) -> [object]:
@@ -99,10 +102,10 @@ class Household(object):
 
     # unemployed hh searches for an employer paying at least the hh's reservation wage
     def search_employer(self):
-        if self.employer is not None return # TODO: should only unemployed hhs search?
+        if self.employer is not None: return # TODO: should only unemployed hhs search?
 
         # hh randomly approaches a number of firms
-        for attempt in range(0, self.sim.hh_param.get("unemployed_ask_num"))
+        for attempt in range(0, self.sim.hh_param.get("unemployed_ask_num")):
             pot_firm = random.choice(self.sim.firm_list)
             if pot_firm.hiring is True and pot_firm.wage >= self.res_wage:
                 self.employer = pot_firm
@@ -133,30 +136,40 @@ class Household(object):
             # TODO: Move this to somewhere else or remove
             self.res_wage *= self.rw_change_employed
         
-    def plan_consumption(self):
+    # determine quantity of items a hh consumes each day of the beginning month
+    def plan_demand(self):
         def get_mean_item_price() -> float:
             sum = 0
-            for firm in self.firm_list
+            for firm in self.firm_list:
                 sum += firm.item_price
             return sum / len(self.firm_list)
         
         mean_price = get_mean_item_price()
 
-        # TODO: Finish this method
+        # no_decay_demand example: 100€ money / 1€ banana_price = buy 100 bananas this month
+        no_decay_demand = self.money / mean_price
+        # if no_decay_demand is > 1 then, since 0 < cost_decay < 1, the power function returns a value smaller than no_decay_demand
+        # if no_decay_demand is < 1 then the power function returns a value larger than no_decay_demand
+        #   in this case, money < monthly_demand * mean_price, this scenario is solved by taking monthly_demand = no_decay_demand
+        #   so that money == no_decay_demand * mean_price
+        monthly_demand = min(pow(no_decay_demand, self.sim.hh_param.get("cost_decay")), no_decay_demand)
+        self.daily_demand = monthly_demand / self.sim.days_in_month
 
+    def buy_items(self):
+        remaining_demand = self.daily_demand
 
+        # TODO: should be while-loop? is it possible that hh has no money to begin with?
+        for vendor in self.firm_list:
+            vendor = random.choice(self.firm_list)
+            item_ask = min(remaining_demand, self.money / vendor.item_price)
+            items_sold = vendor.sell_items(item_ask)
+            remaining_demand -= items_sold
+            self.money -= items_sold * vendor.item_price
+            # TODO: implement restricting vendors if they can't satisfy the item_ask
 
-    def buy_items():
-        pass
-
-
-    def plan_month():
-        pass
-
-    ######## ######## ######## DAY ######## ######## ########
-
-    def daily_buying():
-        pass
+            # stop method if hh has no money, demand is satisfied or all vendors have benn visited
+            demand_satisfied: bool = remaining_demand <= 1 - self.sim.hh_param.get("demand_sat") * self.daily_demand
+            if self.money <= 0 or demand_satisfied: return
 
 ######## ######## ######## IMPORTS ######## ######## ########
 
