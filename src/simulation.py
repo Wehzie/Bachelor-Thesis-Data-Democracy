@@ -33,9 +33,15 @@ class Simulation(object):
         'cost_decay': 0.9,                  # alpha: rate at which monthly expenses decay relative to wealth
         'repl_vend_price_prob': 0.25,       # psi_price: probability of replacing a firm a hh buys from due to high prices 
         'repl_vend_inv_prob': 0.25,         # psi_quant: probability or replacing a firm a hh buys from due to little inventory
-                                            # reservation wage: minimum a hh is willing to work for
         'lo_res_wage_unemployed': 0.1,      # hh's reservation wage decrease rate during month of unemployment
-        'demand_sat': 0.95,                 # hh is satisfied with getting 95% of items it planned to buy
+                                            # reservation wage is the minimum wage a hh is willing to work for
+        'demand_sat': 0.95,                 # hh is satisfied with buying a little less percent of items it planned to buy
+
+        'init_money': 100,                  # hh's starting balance
+        'num_vendors': 7,                   # number of firms a hh buys from
+        'rw_change_employed': 1,            # reservation wage change during month of employment
+        'rw_change_unemployed': 0.9,        # reservation wage change during month of unemployment
+        'rw_change_fired': 1,               # reservation wage change at moment of being fired
     }
 
     firm_list = []                      # list of all firms in the model
@@ -48,23 +54,31 @@ class Simulation(object):
 
     ######## ######## ######## METHODS ######## ######## ########
 
+    def print_sim_step(self, step: str):
+        print("######## ######## ######## {step} IN SIMULATION ######## ######## ########")
+
     def init_households(self):
-        hh_list = []
-        for hh in range(hh_param.get("num_households")):
-            hh_list.append(household())
-        
-        return hh_list
+        employer_idx = 0
+        for hh in range(self.hh_param.get("num_households")):
+            # first, hhs are distributed such that each firm has one employee
+            # afterwards, hhs are randomly assigned to an employer
+            employer = self.firm_list[employer_idx] if employer_idx < len(self.firm_list) else random.choice(self.firm_list)
+            self.hh_list.append(Household(self, employer))
+            employer_idx += 1
 
     def init_firms(self):
         pass
 
     def start_sim(self):
-        print("######## ######## ######## START SIMULATION ######## ######## ########")
+        self.print_sim_step("START")
 
-        testfirm = Firm(self)
-        testfirm.testmethod()
+        self.print_sim_step("INITIALIZE AGENTS")
+        self.init_households()
+        self.init_firms()
 
-        print("######## ######## ######## STOP SIMULATION ######## ######## ########")
+
+        print_sim_step("stop")
 
 from household import Household
 from firm import Firm
+import random
