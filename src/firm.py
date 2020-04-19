@@ -23,37 +23,45 @@ class Firm(object):
 
     list_employees: list = []       # list of currently employed hh by index as found in simulation
     wage: float = None              # money paid to each employed hh per month
-    hiring: bool = None             # whether a position for employment is open
+    hiring_status: int = None       # ternary, where 1: hire, 0: no changes, -1: fire
+    # TODO: Maybe I actually need two variables here for hiring and firing
     month_hiring: int = None        # month the firm started looking to employ
     
-
     def __init__(self, sim: object):
         self.sim = sim
+        self.money = sim.f_param.get("init_money")
+        self.reserve = sim.f_param.get("init_reserve")
+        self.num_items = sim.f_param.get("init_items")
+        self.item_price = sim.f_param.get("init_avg_price") + random.uniform(-0.5, 0.5) / 50
+        self.demand = 0
+        self.list_employees = []
+        self.wage = sim.f_param.get("init_avg_wage") + random.uniform(-0.5, 0.5) / 50
+        self.hiring_status = 0
+        self.month_hiring = 0
+        # TODO: What's up with month to start planning in JS impl?
 
-    def testmethod(self):
-        print("Simparam: " + str(self.sim.f_param.get("price_adj_rate")))
-
-    ######## ######## ######## MONTH ######## ######## ########
+    ######## ######## ######## METHODS ######## ######## ########
 
     # increase wage when no employees are found
     def update_wage(self, month: int):
         if self.month_hiring < month:
             self.wage *= (1 + random.uniform(0, self.sim.f_param.get("price_adj_rate")))
+        # TODO: impl decreasing wages when all positions filled?
 
     # demand determines how many items should be kept in stock
     def update_item_bounds(self):
-        self.sim.f_param.get("inv_up") * self.demand
-        self.sim.f_param.get("inv_lo") * self.demand
+        lo_num_items = self.sim.f_param.get("inv_up") * self.demand
+        up_num_items = self.sim.f_param.get("inv_lo") * self.demand
 
     # employ more people when not enough items are produced
     def update_hiring_status(self, month: int):
         update_item_bounds(self)
 
         if self.num_items < self.lo_num_items:
-            self.hiring = True
+            self.hiring_status = 1
             self.month_hiring = month
         elif self.num_items > self.up_num_items:
-            self.hiring = False
+            self.hiring_status = -1
 
     # wage determines item price
     def update_price_bounds(self):
@@ -82,16 +90,23 @@ class Firm(object):
     # add household to list of employees
     def hire(self, employee: object):
         self.list_employees.append(employee)
+        self.hiring_status = 0
 
     # remove employee from list of employees
     def grant_leave(self, employee: object):
         self.list_employees.remove(employee)
 
-    # remove employee from list of employees
+    # remove random employee from list of employees
     # inform employee of unemployment
-    def fire(self, employee: object):
+    def fire_random_employee(self):
+        employee = random.choice(self.list_employees)
         self.list_employees.remove(employee)
         employee.fired()
+        self.hiring_status = 0
+    
+    # choose whether to fire an employee based on hiring status
+    def make_layoff_decision(self):
+        if self.hiring_status == -1: self.fire_random_employee()
 
     # produce new items for firm's inventory
     def produce_items(self):
@@ -147,22 +162,6 @@ class Firm(object):
     # reset monthly item demand to zero
     def reset_demand(self):
         self.demand = 0
-
-    def plan_month():
-        pass
-
-    ######## ######## ######## DAY ######## ######## ########
-
-    def daily_production():
-        pass
-
-    ######## ######## ######## PAYDAY ######## ######## ########
-
-    def pay_wage():
-        pass
-
-    def pay_profit():
-        pass
     
 ######## ######## ######## IMPORTS ######## ######## ########
 

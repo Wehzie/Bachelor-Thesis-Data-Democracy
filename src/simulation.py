@@ -23,6 +23,12 @@ class Simulation(object):
         'price_adj_prob': 0.75,         # theta: probability at which prices are updated
         'tech_lvl': 3,                  # lambda: technology parameter applied to an employee's natural work force in item production
         'buffer_rate': 0.1,             # chi: rate at which a firm builds a money buffer
+
+        'init_money': 0                 # firm's starting balance
+        'init_reserve': 0               # firm's starting savings
+        'init_items': 50                # firm's starting inventory
+        'init_avg_price': 1             # firm's average starting price
+        'init_avg_wage': 52             # firm's average starting wage
     }
 
     hh_param = {
@@ -51,12 +57,19 @@ class Simulation(object):
 
     def __init__(self, num_months: int):
         self.num_months = num_months
+        self.current_month = 0
 
     ######## ######## ######## METHODS ######## ######## ########
 
     def print_sim_step(self, step: str):
         print("######## ######## ######## {step} IN SIMULATION ######## ######## ########")
 
+    # initialize a number of firms
+    def init_firms(self):
+        for firm in range(self.f_param.get("num_firms")):
+            self.firm_list.append(Firm(self))
+
+    # initialize a number of hhs
     def init_households(self):
         employer_idx = 0
         for hh in range(self.hh_param.get("num_households")):
@@ -66,18 +79,74 @@ class Simulation(object):
             self.hh_list.append(Household(self, employer))
             employer_idx += 1
 
-    def init_firms(self):
-        pass
+    # actions each day of the month
+    # TODO: comment on hhs buying before firms produce
+    def act_day(self):
+        def act_day_hh():
+            random.shuffle(self.hh_list)
+            for hh in self.hh_list:
+                hh.buy_items()
+
+        def act_day_f():
+            for f in self.firm_list:
+                f.produce_items()
+        
+        act_day_hh()
+        act_day_f()
+
+    # actions at the beginning of a month
+    def act_bom(self):
+        def act_bom_f():
+            for f in self.firm_list:
+                # TODO: should I impl start planning month?
+                f.update_wage()
+                f.update_hiring_status()
+                f.update_price()
+                f.reset_demand()
+
+        def act_bom_hh():
+            random.shuffle(self.hh_list)
+            for hh in self.hh_list:
+                hh.find_cheaper_vendor()
+                hh.find_stocked_vendor()
+                hh.do_jobsearch()
+                hh.plan_demand()
+
+        act_bom_f()
+        act_bom_hh()
+
+    # actions at the end of a month
+    def act_eom(self):
+        for f in self.firm_list:
+            f.set_reserve()
+            f.pay_profits()
+        
+        for f in self.firm_list:
+            f.pay_wages()
+
+        for hh in self.hh_list:
+            hh.update_res_wage()
+
+        for f in self.firm_list:
+            f.make_layoff_decision()
 
     def start_sim(self):
-        self.print_sim_step("START")
-
         self.print_sim_step("INITIALIZE AGENTS")
-        self.init_households()
         self.init_firms()
+        self.init_households()
+        self.print_sim_step("INVOKING EVENT LOOP")
+        self.event_loop()
 
+    def event_loop(self):
+        while(self.current_month < self.num_months):
+            self.print_sim_step("MONTH {self.current_month}")
 
-        print_sim_step("stop")
+            self.act_bom()
+            for day in range(self.days_in_month):
+                self.act_day()
+            self.act_eom()
+
+            self.current_month += 1
 
 from household import Household
 from firm import Firm

@@ -93,8 +93,15 @@ class Household(object):
         self.vendor_list.remove(lo_stock_firm)
         self.vendor_list.append(new_firm)
 
+    # TODO: give some explanation here
+    def do_jobsearch(self):
+        if self.employer == None:
+            self.search_any_employer()
+        else:
+            self.search_better_employer()
+
     # unemployed hh searches for an employer paying at least the hh's reservation wage
-    def search_employer(self):
+    def search_any_employer(self):
         if self.employer is not None: return # TODO: should only unemployed hhs search?
 
         # hh randomly approaches a number of firms
@@ -147,6 +154,7 @@ class Household(object):
         monthly_demand = min(pow(no_decay_demand, self.sim.hh_param.get("cost_decay")), no_decay_demand)
         self.daily_demand = monthly_demand / self.sim.days_in_month
 
+    # TODO: comment
     def buy_items(self):
         remaining_demand = self.daily_demand
 
@@ -162,6 +170,11 @@ class Household(object):
             # stop method if hh has no money, demand is satisfied or all vendors have been visited
             demand_satisfied: bool = remaining_demand <= 1 - self.sim.hh_param.get("demand_sat") * self.daily_demand
             if self.money <= 0 or demand_satisfied: return
+
+    # TODO: comment
+    def update_res_wage(self):
+        if self.employer is not None and self.employer.wage > self.res_wage:
+            self.res_wage = self.employer.wage
 
 ######## ######## ######## IMPORTS ######## ######## ########
 
