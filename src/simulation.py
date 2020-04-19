@@ -12,6 +12,7 @@ class Simulation(object):
     days_in_month = 21                  # number of working days in a month
 
     f_param = {
+        # TODO: consider num_f in line with num_hh
         'num_firms': 100,               # total number of firms
         'months_lo_wage': 24,           # gamma: in number of months. duration after which wage is increased when all job positions filled
         'wage_adj_rate': 0.019,         # delta: rate at which wages are adjusted
@@ -24,11 +25,11 @@ class Simulation(object):
         'tech_lvl': 3,                  # lambda: technology parameter applied to an employee's natural work force in item production
         'buffer_rate': 0.1,             # chi: rate at which a firm builds a money buffer
 
-        'init_money': 0                 # firm's starting balance
-        'init_reserve': 0               # firm's starting savings
-        'init_items': 50                # firm's starting inventory
-        'init_avg_price': 1             # firm's average starting price
-        'init_avg_wage': 52             # firm's average starting wage
+        'init_money': 0,                # firm's starting balance
+        'init_reserve': 0,              # firm's starting savings
+        'init_items': 50,               # firm's starting inventory
+        'init_avg_price': 1,            # firm's average starting price
+        'init_avg_wage': 52,            # firm's average starting wage
     }
 
     hh_param = {
@@ -62,7 +63,7 @@ class Simulation(object):
     ######## ######## ######## METHODS ######## ######## ########
 
     def print_sim_step(self, step: str):
-        print("######## ######## ######## {step} IN SIMULATION ######## ######## ########")
+        print(f"######## ######## ######## {step} IN SIMULATION ######## ######## ########")
 
     # initialize a number of firms
     def init_firms(self):
@@ -72,7 +73,8 @@ class Simulation(object):
     # initialize a number of hhs
     def init_households(self):
         employer_idx = 0
-        for hh in range(self.hh_param.get("num_households")):
+        for hh in range(self.hh_param.get("num_hh")):
+            print(hh)
             # first, hhs are distributed such that each firm has one employee
             # afterwards, hhs are randomly assigned to an employer
             employer = self.firm_list[employer_idx] if employer_idx < len(self.firm_list) else random.choice(self.firm_list)

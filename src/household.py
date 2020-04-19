@@ -17,7 +17,7 @@ class Household(object):
         self.sim = sim
         self.money = sim.hh_param.get("init_money")
         self.employer = employer
-        for vendor in sim.hh_param.get("num_vendors"):
+        for vendor in range(sim.hh_param.get("num_vendors")):
             self.vendor_list.append(random.choice(self.get_non_vendor_firms()))
         self.res_wage = 0           # initially any wage is accepted
 
