@@ -6,20 +6,15 @@
 
 class Household(object):
 
-    sim: object = None              # hh belongs to a simulation
-    money: float = None             # current balance of hh
-    employer: object = None         # hh has one employer firm (type B connection)
-    vendor_list: list = []          # hh buys at up to 7 firms (type A connection)
-    vendors_lo_stock: list = []     # hh remembers firms with not enough goods in the last month
-    res_wage: float = None          # reservation wage, minimum wage hh works for
-
     def __init__(self, sim: object, employer: object):
-        self.sim = sim
-        self.money = sim.hh_param.get("init_money")
-        self.employer = employer
+        self.sim: object = sim                                  # hh belongs to a simulation
+        self.money: float = sim.hh_param.get("init_money")      # current balance of hh
+        self.employer: object = employer                        # hh has one employer firm (type B connection)
+        self.vendor_list: list = []                             # hh buys at up to 7 firms (type A connection)
         for vendor in range(sim.hh_param.get("num_vendors")):
             self.vendor_list.append(random.choice(self.get_non_vendor_firms()))
-        self.res_wage = 0           # initially any wage is accepted
+        self.vendors_lo_stock: list = []                        # hh remembers firms with not enough goods in the last month
+        self.res_wage: float = 0                                # reservation wage, minimum wage hh works for
 
     ######## ######## ######## METHODS ######## ######## ########
 
@@ -69,7 +64,7 @@ class Household(object):
         #   weight of a firm is: firm's number of employees / total number of households 
         weight_list = []
         for vendor in pot_vendor_list:
-            weight_list.append(vendor.num_employees / self.sim.hh_param.get("num_hh"))
+            weight_list.append(len(vendor.list_employees) / self.sim.hh_param.get("num_hh"))
 
         # replace old firm if the new one's price is lower
         new_firm = random.choices(pot_vendor_list, weight_list)[0]
@@ -127,13 +122,13 @@ class Household(object):
 
             pays_enough = pot_firm.wage > self.res_wage
             pays_better = pot_firm.wage > self.employer.wage
-            if pot_firm.hiring and pays_enough and pays_better:
+            if pot_firm.hiring_status == 1 and pays_enough and pays_better:
                 self.employer.grant_leave(self)
                 pot_firm.hire(self)
                 self.employer = pot_firm
             
             # TODO: Move this to somewhere else or remove
-            self.res_wage *= self.sim.hh_param.get("employed")
+            self.res_wage *= self.sim.hh_param.get("rw_change_employed")
         
     # determine quantity of items a hh consumes each day of the beginning month
     def plan_demand(self):
@@ -146,7 +141,8 @@ class Household(object):
         mean_price = get_mean_item_price()
 
         # no_decay_demand example: 100€ money / 1€ banana_price = buy 100 bananas this month
-        no_decay_demand = self.money / mean_price
+        if self.money < 0: self.money = 0               # BUG
+        no_decay_demand = self.money / mean_price       # BUG: money can go negative
         # if no_decay_demand is > 1 then, since 0 < cost_decay < 1, the power function returns a value smaller than no_decay_demand
         # if no_decay_demand is < 1 then the power function returns a value larger than no_decay_demand
         #   in this case, money < monthly_demand * mean_price, this scenario is solved by taking monthly_demand = no_decay_demand

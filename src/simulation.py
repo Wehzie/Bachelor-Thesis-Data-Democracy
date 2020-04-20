@@ -74,7 +74,6 @@ class Simulation(object):
     def init_households(self):
         employer_idx = 0
         for hh in range(self.hh_param.get("num_hh")):
-            print(hh)
             # first, hhs are distributed such that each firm has one employee
             # afterwards, hhs are randomly assigned to an employer
             employer = self.firm_list[employer_idx] if employer_idx < len(self.firm_list) else random.choice(self.firm_list)
@@ -101,9 +100,9 @@ class Simulation(object):
         def act_bom_f():
             for f in self.firm_list:
                 # TODO: should I impl start planning month?
-                f.update_wage()
-                f.update_hiring_status()
-                f.update_price()
+                f.update_wage(self.current_month)
+                f.update_hiring_status(self.current_month)
+                f.update_price(self.current_month)
                 f.reset_demand()
 
         def act_bom_hh():
@@ -141,11 +140,14 @@ class Simulation(object):
 
     def event_loop(self):
         while(self.current_month < self.num_months):
-            self.print_sim_step("MONTH {self.current_month}")
+            self.print_sim_step(f"MONTH {self.current_month}")
 
+            self.print_sim_step("DOING BOM")
             self.act_bom()
+            self.print_sim_step(f"DOING {self.days_in_month} DAYS")
             for day in range(self.days_in_month):
                 self.act_day()
+            self.print_sim_step("DOING EOM")
             self.act_eom()
 
             self.current_month += 1
