@@ -54,6 +54,8 @@ class Simulation(object):
     firm_list = []                      # list of all firms in the model
     hh_list = []                        # list of all hh in the model
 
+    stat = None                        # tracking, plotting and analyzing data
+
     ######## ######## ######## CONSTRUCTOR ######## ######## ########
 
     def __init__(self, num_months: int):
@@ -79,6 +81,10 @@ class Simulation(object):
             employer = self.firm_list[employer_idx] if employer_idx < len(self.firm_list) else random.choice(self.firm_list)
             self.hh_list.append(Household(self, employer))
             employer_idx += 1
+
+    # initialize the statistician
+    def init_statistician(self):
+        self.stat = Statistician(self)
 
     # actions each day of the month
     # TODO: comment on hhs buying before firms produce
@@ -135,6 +141,7 @@ class Simulation(object):
         self.print_sim_step("INITIALIZE AGENTS")
         self.init_firms()
         self.init_households()
+        self.init_statistician()
         self.print_sim_step("INVOKING EVENT LOOP")
         self.event_loop()
 
@@ -142,16 +149,23 @@ class Simulation(object):
         while(self.current_month < self.num_months):
             self.print_sim_step(f"MONTH {self.current_month}")
 
-            self.print_sim_step("DOING BOM")
+            #self.print_sim_step("DOING BOM")
             self.act_bom()
-            self.print_sim_step(f"DOING {self.days_in_month} DAYS")
+            #self.print_sim_step(f"DOING {self.days_in_month} DAYS")
             for day in range(self.days_in_month):
                 self.act_day()
-            self.print_sim_step("DOING EOM")
+            #self.print_sim_step("DOING EOM")
             self.act_eom()
+            #self.print_sim_step("UPDATE STATISTICIAN")
+            self.stat.up_stat()
 
             self.current_month += 1
 
+        self.stat.plot_money_monthly()
+
+######## ######## ######## IMPORTS ######## ######## ########
+
 from household import Household
 from firm import Firm
+from statistician import Statistician
 import random

@@ -102,7 +102,7 @@ class Household(object):
         # hh randomly approaches a number of firms
         for attempt in range(0, self.sim.hh_param.get("unemployed_ask_num")):
             pot_firm = random.choice(self.sim.firm_list)
-            if pot_firm.hiring is True and pot_firm.wage >= self.res_wage:
+            if pot_firm.hiring_status == 1 and pot_firm.wage >= self.res_wage:
                 self.employer = pot_firm
                 pot_firm.hire(self)
                 return
