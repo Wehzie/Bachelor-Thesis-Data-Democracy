@@ -4,53 +4,69 @@ class Statistician(object):
 
     def __init__(self, sim: object):
         self.sim = sim
-        self.money = {"f": [], "hh": [], "f_reserve": []}
+        self.money = {'f': [], 'hh': [], 'f_reserve': []}
         self.price = []
         self.wage = []
         self.employment = []
 
-        # TODO: divide into dict with f and hh subgroups
+        # TODO: For now averages are stored, consider splitting up for further statistics, e.G. median, spreads etc.
+        self.f_stat = {
+            'avg': {
+                'money': [],
+                'reserve': [],
+                'num_items': [],
+                'item_price': [],
+                'marginal_cost': [],
+                'demand': [],
+                'num_employees': [],
+                'wage': [],
+                'months_hiring': [],    # number of months looking for employees
+            },
+        }
+
+        self.hh_stat = {
+            'avg': {
+                'money': [],
+                'employment': [],   # number employed households, normalized
+                'num_vendors': [],
+                'res_wage': [],
+            },
+        }
 
     ######## ######## ######## METHODS ######## ######## ########
 
-    # TODO: Move these kind of methods to simulation
-    def sum_f_money(self) -> float:
-        f_sum = 0
-        for f in self.sim.firm_list:
-            f_sum += f.money
-        return f_sum
-    
-    def sum_f_reserve(self) -> float:
-        f_sum = 0
-        for f in self.sim.firm_list:
-            f_sum += f.reserve
-        return f_sum
+    def calc_avg(self):
+        f_list = self.sim.firm_list
+        num_f = self.sim.f_param['num_firms']
 
-    def sum_hh_money(self) -> float:
-        hh_sum = 0
-        for hh in self.sim.hh_list:
-            hh_sum += hh.money
-        return hh_sum
-    
-    def get_employment(self) -> float:
-        num_employed = 0
-        for hh in self.sim.hh_list:
-            if hh.employer != None: num_employed += 1
-        return num_employed / len(self.sim.hh_list)
+        self.f_stat['avg']['money'].append(sum([f.money for f in f_list]) / num_f)
+        self.f_stat['avg']['reserve'].append(sum([f.reserve for f in f_list]) / num_f)
+        self.f_stat['avg']['num_items'].append(sum([f.num_items for f in f_list]) / num_f)
+        self.f_stat['avg']['item_price'].append(sum([f.item_price for f in f_list]) / num_f)
+        self.f_stat['avg']['marginal_cost'].append(sum([f.marginal_cost for f in f_list]) / num_f)
+        self.f_stat['avg']['demand'].append(sum([f.demand for f in f_list]) / num_f)
+        self.f_stat['avg']['num_employees'].append(sum([len(f.list_employees) for f in f_list]) / num_f)
+        self.f_stat['avg']['wage'].append(sum([f.wage for f in f_list]) / num_f)
+        self.f_stat['avg']['months_hiring'].append(sum([self.sim.current_month - f.month_hiring for f in f_list]) / num_f)
+
+        hh_list = self.sim.hh_list
+        num_hh = self.sim.hh_param['num_hh']
+
+        self.hh_stat['avg']['money'].append(sum([hh.money for hh in hh_list]) / num_hh)
+        self.hh_stat['avg']['employment'].append(sum([1 if hh.employer else 0 for hh in hh_list]) / num_hh)
+        self.hh_stat['avg']['num_vendors'].append(sum([len(hh.vendor_list) for hh in hh_list]) / num_hh)
+        self.hh_stat['avg']['res_wage'].append(sum([hh.res_wage for hh in hh_list]) / num_hh)
     
     def up_stat(self):
-        self.money["f"].append(self.sum_f_money())
-        self.money["hh"].append(self.sum_hh_money())
-        self.money["f_reserve"].append(self.sum_f_reserve())
-        self.employment.append(self.get_employment())
+        self.calc_avg()
 
     # TODO: think about days within a month
     # plot hh and firm money against time
     def plot_money_monthly(self):
         x_months = [m for m in range(self.sim.num_months)]
-        y1_f_money = self.money["f"]
-        y2_hh_money = self.money["hh"]
-        y3_f_reserve = self.money["f_reserve"]
+        y1_f_money = self.f_stat['avg']['money']
+        y2_hh_money = self.hh_stat['avg']['money']
+        y3_f_reserve = self.f_stat['avg']['reserve']
 
         fig, ax = plt.subplots()
         ax.plot(x_months, y1_f_money, 'r', label='Firms')
@@ -62,24 +78,26 @@ class Statistician(object):
         ax.grid()
         ax.legend()
 
-        fig.savefig("money2.png")
+        fig.savefig('money.png')
         plt.show()
     
     # TODO: price and wage
     # in reference to https://sim4edu.com/sims/20/index.html?lang=de
     def plot_price_wage_employment(self):
         x_months = [m for m in range(self.sim.num_months)]
-        y1_employment = self.employment
+        y1_num_employees = self.f_stat['avg']['num_employees']
+        y2_employment = self.hh_stat['avg']['employment']
 
         fig, ax = plt.subplots()
-        ax.plot(x_months, y1_employment, 'r', label='Employment')
+        ax.plot(x_months, y1_num_employees, 'r', label='Average number of firm employees')
+        ax.plot(x_months, y2_employment, 'r', label='Household employment rate')
 
         ax.set(xlabel='Months', ylabel='Employment',
             title='Household Employment')
         ax.grid()
         ax.legend()
 
-        fig.savefig("employment.png")
+        fig.savefig('employment.png')
         plt.show()
 
     def invoke_plots(self):
