@@ -19,8 +19,7 @@ class Firm(object):
         self.marginal_cost: float = None                        # the price of producing one item
         self.lo_item_price: float = None                        # don't let item cost fall lower than this
         self.up_item_price: float = None                        # don't let item cost rise higher than this
-        # TODO: Verify this is how demand works. Consider renaming to demand_month
-        self.demand: int = 0                                    # number of items sold last month
+        self.demand: int = 0                                    # number of items sold this month so far
         self.list_employees: list = []                          # list of currently employed hh by index as found in simulation
         rnd = random.uniform(-0.5, 0.5) / 50                    # generate small float around +-0
         self.wage: float = sim.f_param.get("init_avg_wage") + rnd   # money paid to each employed hh per month
@@ -29,18 +28,21 @@ class Firm(object):
         self.month_hiring: int = 0                              # month the firm started looking to employ
         # TODO: What's up with month to start planning in JS impl?
 
+        # TODO: make negative balance impossible, in a non-hacky way
     ######## ######## ######## METHODS ######## ######## ########
 
     # increase wage when no employees are found
+    # decrease wage after n months of full employment
     def update_wage(self, month: int):
-        if self.month_hiring < month:
-            self.wage *= (1 + random.uniform(0, self.sim.f_param.get("price_adj_rate")))
-        # TODO: impl decreasing wages when all positions filled?
+        if self.hiring_status == 1 and self.month_hiring < month:
+            self.wage *= (1 + random.uniform(0, self.sim.f_param["wage_adj_rate"]))
+        if self.hiring_status <= 0 and month - self.month_hiring > self.sim.f_param["lo_wage_months"]:
+            self.wage *= (1 - random.uniform(0, self.sim.f_param["wage_adj_rate"]))
 
     # demand determines how many items should be kept in stock
     def update_item_bounds(self):
-        self.lo_num_items = self.sim.f_param.get("inv_up") * self.demand
-        self.up_num_items = self.sim.f_param.get("inv_lo") * self.demand
+        self.lo_num_items = self.sim.f_param["inv_up"] * self.demand        # upper item limit
+        self.up_num_items = self.sim.f_param["inv_lo"] * self.demand    # lower item limit
 
     # employ more people when not enough items are produced
     def update_hiring_status(self, month: int):
@@ -51,12 +53,16 @@ class Firm(object):
             self.month_hiring = month
         elif self.num_items > self.up_num_items:
             self.hiring_status = -1
+        else: self.hiring_status = 0
 
     # wage determines item price
     def update_price_bounds(self):
-        self.marginal_cost = (self.wage / self.sim.days_in_month) / self.sim.f_param.get("tech_lvl")
-        self.lo_item_price = self.sim.f_param.get("price_lo") * self.marginal_cost
-        self.up_item_price = self.sim.f_param.get("price_up") * self.marginal_cost
+        # marginal cost is the cost of producing one more item
+        # one worker produce one item each day
+        # so marginal cost ist the cost of paying another worker for a day
+        self.marginal_cost = (self.wage / self.sim.days_in_month) / self.sim.f_param["tech_lvl"]
+        self.lo_item_price = self.sim.f_param["price_lo"] * self.marginal_cost
+        self.up_item_price = self.sim.f_param["price_up"] * self.marginal_cost
     
     # increase price when few items in stock and sold cheaply
     # lower price when many items in stock and sold expensively
@@ -64,16 +70,16 @@ class Firm(object):
         self.update_item_bounds()
         self.update_price_bounds()
 
-        chance = random.uniform(0, 1) < self.sim.f_param.get("price_adj_prob")
+        chance = random.uniform(0, 1) < self.sim.f_param["price_adj_prob"]
         few_items = self.num_items < self.lo_num_items
         many_items = self.num_items > self.up_num_items
         lo_price = self.item_price < self.up_item_price
         hi_price = self.item_price > self.up_item_price
         
         if few_items and lo_price and chance:
-            self.item_price *= (1 + self.sim.f_param.get("price_adj_rate") * random.uniform(0, 1))
+            self.item_price *= (1 + self.sim.f_param["price_adj_rate"] * random.uniform(0, 1))
         elif many_items and hi_price and chance:
-            self.item_price *= (1 - self.sim.f_param.get("price_adj_rate") * random.uniform(0, 1))
+            self.item_price *= (1 - self.sim.f_param["price_adj_rate"] * random.uniform(0, 1))
 
     # TODO: evaluate open_position, filled_position, close_position?
     # add household to list of employees
@@ -85,6 +91,7 @@ class Firm(object):
     def grant_leave(self, employee: object):
         if employee in self.list_employees: 
             self.list_employees.remove(employee) # BUG: list.remove(x): x not in list
+            self.hiring_status = 0
 
     # remove random employee from list of employees
     # inform employee of unemployment
@@ -93,16 +100,16 @@ class Firm(object):
         employee = random.choice(self.list_employees)
         self.list_employees.remove(employee)
         employee.fired()
-        self.hiring_status = 0
     
     # choose whether to fire an employee based on hiring status
+    # after considering firing, reset hiring status
     def make_layoff_decision(self):
         if self.hiring_status == -1: self.fire_random_employee()
+        self.hiring_status = 0
 
     # produce new items for firm's inventory
     def produce_items(self):
-        self.num_items += self.sim.f_param.get("tech_lvl") * len(self.list_employees)
-
+        self.num_items += self.sim.f_param["tech_lvl"] * len(self.list_employees)
 
     # return number of items sold, reduce inventory, increase money and demand
     def sell_items(self, demand_deal: int) -> int:
@@ -129,26 +136,25 @@ class Firm(object):
 
     # determine how much money is set back as buffer
     def set_reserve(self):
-        frac_monthly_wages = self.sim.f_param.get("buffer_rate") * self.sum_wages()
+        frac_monthly_wages = self.sim.f_param["buffer_rate"] * self.sum_wages()
         self.reserve = max(0, min(frac_monthly_wages, self.money))
-        # TODO: is max(0, ) necessary? Can wages or money be < 0 ?
 
     # return the sum of money owned by all employed households
     def sum_hh_money(self) -> int:
         sum = 0
         for employee in self.list_employees:
-            # TODO: Is this necessary? Can hh.money be negative?
-            sum += employee.money if employee.money != 0 else 0
+            sum += employee.money if employee.money > 0 else 0
         return sum
 
     # if profits have been made and employees have any money then pay profits
     # richer employees receive higher profits
     def pay_profits(self):
-        # TODO: Can profit and hh_money be < 0?
         profit = self.money - self.reserve - self.sum_wages()
         if profit > 0 and self.sum_hh_money() > 0:
             for employee in self.list_employees:
-                employee.receive_profit(profit)
+                employee.receive_profit(profit * (employee.money / self.sum_hh_money()))
+
+        self.money -= profit
 
     # reset monthly item demand to zero
     def reset_demand(self):

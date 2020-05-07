@@ -17,13 +17,15 @@ class Simulation(object):
         'months_lo_wage': 24,           # gamma: in number of months. duration after which wage is increased when all job positions filled
         'wage_adj_rate': 0.019,         # delta: rate at which wages are adjusted
         'inv_up': 1,                    # phi_up: rate at which number of items in stock are considered too many
-        'inv_lo': 0.25,                 # phi_lo: rate at which number of items in stock are considerd too few    
+        'inv_lo': 0.25,                 # phi_lo: rate at which number of items in stock are considered too few    
         'price_up': 1.15,               # varphi_up: rate at which prices are considered too high
         'price_lo': 1.025,              # varphi_lo: rate at which prices are considered too low
         'price_adj_rate': 0.02,         # vartheta: rate at which prices are updated
         'price_adj_prob': 0.75,         # theta: probability at which prices are updated
         'tech_lvl': 3,                  # lambda: technology parameter applied to an employee's natural work force in item production
         'buffer_rate': 0.1,             # chi: rate at which a firm builds a money buffer
+
+        'lo_wage_months': 1,            # duration of full employment after which wages are decreased
 
         'init_money': 0,                # firm's starting balance
         'init_reserve': 0,              # firm's starting savings
@@ -145,9 +147,16 @@ class Simulation(object):
         self.print_sim_step("INVOKING EVENT LOOP")
         self.event_loop()
 
+    def sum_hh_money(self) -> float:
+        hh_sum = 0
+        for hh in self.hh_list:
+            hh_sum += hh.money
+        return hh_sum
+
     def event_loop(self):
         while(self.current_month < self.num_months):
             self.print_sim_step(f"MONTH {self.current_month}")
+            print("HH MONEY " + str(self.sum_hh_money()))
 
             #self.print_sim_step("DOING BOM")
             self.act_bom()
@@ -158,10 +167,11 @@ class Simulation(object):
             self.act_eom()
             #self.print_sim_step("UPDATE STATISTICIAN")
             self.stat.up_stat()
+            print("HH MONEY " + str(self.sum_hh_money()))
 
             self.current_month += 1
 
-        self.stat.plot_money_monthly()
+        self.stat.invoke_plots()
 
 ######## ######## ######## IMPORTS ######## ######## ########
 
