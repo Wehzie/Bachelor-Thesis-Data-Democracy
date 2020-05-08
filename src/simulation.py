@@ -156,18 +156,12 @@ class Simulation(object):
     def event_loop(self):
         while(self.current_month < self.num_months):
             self.print_sim_step(f"MONTH {self.current_month}")
-            print("HH MONEY " + str(self.sum_hh_money()))
 
-            #self.print_sim_step("DOING BOM")
             self.act_bom()
-            #self.print_sim_step(f"DOING {self.days_in_month} DAYS")
             for day in range(self.days_in_month):
                 self.act_day()
-            #self.print_sim_step("DOING EOM")
             self.act_eom()
-            #self.print_sim_step("UPDATE STATISTICIAN")
             self.stat.up_stat()
-            print("HH MONEY " + str(self.sum_hh_money()))
 
             self.current_month += 1
 
