@@ -3,24 +3,28 @@
 # sample randomly from households
 # firms are not in government since firms are composed of households, this more closely reflects political reality
 
-# divide households into quintiles
+# divide households into quintiles by money
 # analyze movement between quintiles over time
 
-# tax policy
+# tax policy (monthly)
 #   1. transaction tax for each purchase
 #   2. possession tax at the end or beginning of month or each n months
 #   3. profit tax (rich households get more dividends)
+#   4. wage based tax?
+#   5. regardless of source, keep field which keeps track of incoming money. tax based only on this value
 
 # government does not keep state or make profit, money that is collected is immediately spent
+# single tax value for all instead of tiered tax
+# possession vs income taxes, see literature
 
 # representative government
 # on inception a 4 year plan is made that is not deviated from
 # this plan is an agreement on how to tax in the 4 coming years
 # members of parliament MOP belong to 1 of 5 parties (set by wealth quintiles)
-# depending on the wealth of each group, a target tax policy is calculated
-# a voting and negotiation process is replaced by a calculation factoring each groups target tax
+# depending on the wealth of each group, a target UBI is calculated
+# a voting and negotiation process is replaced by a calculation factoring each groups target UBI
 # the weight of a group's vote is determined by the number of its members
-# hence a final tax policy is arrived at
+# Via the negotiated UBI a target tax value is calculated
 
 # goals of tax policy
 #   https://www.equalitytrust.org.uk/how-economic-inequality-defined
@@ -33,6 +37,16 @@
 #   4. minimize poverty, defined as having a household income less than 60% of median income.
 
 # explain why equality is good and with what other desireable parameters it correlates
+
+# money redistribution by basic universal income (also taxed) each month
+# parties have different ideas on how high ubi should be
+# based on this they have target taxes
+
+
+
+# third type of government where people aren't asked and taxes are take to eliminate poverty
+# no one is asked
+# it is simply calculated how much taxes are needed to eliminate poverty according to the definition
 
 class Gov_rep(object):
     
