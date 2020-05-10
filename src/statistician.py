@@ -71,13 +71,13 @@ class Statistician(object):
     def plot_money (self):
         x_months = [m for m in range(self.sim.num_months)]
         y1_f_money = self.f_stat['avg']['money']
-        y2_hh_money = self.hh_stat['avg']['money']
+        #y2_hh_money = self.hh_stat['avg']['money']
         y3_f_reserve = self.f_stat['avg']['reserve']
 
         fig, ax = plt.subplots()
         # BUG: Firm money and firm reserve curves are identical
         ax.plot(x_months, y1_f_money, 'r', label='Money firm average')
-        ax.plot(x_months, y2_hh_money, 'b', label='Money household average')
+        #ax.plot(x_months, y2_hh_money, 'b', label='Money household average')
         ax.plot(x_months, y3_f_reserve, 'g', label='Reserve firm average')
 
         ax.set(xlabel='Months', ylabel='Money',
@@ -85,7 +85,7 @@ class Statistician(object):
         ax.grid()
         ax.legend()
 
-        fig.savefig('money.png')
+        fig.savefig('fig_money.png')
         plt.show()
 
     # plot averages for firm wage, firm marginal cost and household reservation wage against time
@@ -105,7 +105,7 @@ class Statistician(object):
         ax.grid()
         ax.legend()
 
-        fig.savefig('wage.png')
+        fig.savefig('fig_wage.png')
         plt.show()
 
     # plot averages for number of items a firm has in stock, item price and demand 
@@ -113,19 +113,19 @@ class Statistician(object):
         x_months = [m for m in range(self.sim.num_months)]
         y1_f_num_items = self.f_stat['avg']['num_items']
         y2_f_item_price = self.f_stat['avg']['item_price']
-        y3_f_demand = self.f_stat['avg']['demand']
+        #y3_f_demand = self.f_stat['avg']['demand']
 
         fig, ax = plt.subplots()
         ax.plot(x_months, y1_f_num_items, 'r', label='Number of stocked items firm average')
         ax.plot(x_months, y2_f_item_price, 'b', label='Item price firm average')
-        ax.plot(x_months, y3_f_demand, 'g', label='Demand firm average')
+        #ax.plot(x_months, y3_f_demand, 'g', label='Demand firm average')
 
         ax.set(xlabel='Months', ylabel='',
             title='Item demand and price')
         ax.grid()
         ax.legend()
 
-        fig.savefig('items.png')
+        fig.savefig('fig_items.png')
         plt.show()
 
     # plot averages for
@@ -152,7 +152,25 @@ class Statistician(object):
         ax.grid()
         ax.legend()
 
-        fig.savefig('connections.png')
+        fig.savefig('fig_connections.png')
+        plt.show()
+
+    def plot_demand_hhmoney (self):
+        x_months = [m for m in range(self.sim.num_months)]
+        y1_f_demand = self.f_stat['avg']['demand']
+        y2_hh_money = self.hh_stat['avg']['money']
+
+        fig, ax = plt.subplots()
+        # BUG: Firm money and firm reserve curves are identical
+        ax.plot(x_months, y1_f_demand, 'r', label='Firm demand average')
+        ax.plot(x_months, y2_hh_money, 'b', label='Household money average')
+
+        ax.set(xlabel='Months', ylabel='Money',
+            title='Firm demand and household money')
+        ax.grid()
+        ax.legend()
+
+        fig.savefig('fig_demand.png')
         plt.show()
 
     def invoke_plots(self):
@@ -160,6 +178,7 @@ class Statistician(object):
         self.plot_wage()
         self.plot_items()
         self.plot_connections()
+        self.plot_demand_hhmoney()
 
 ######## ######## ######## IMPORTS ######## ######## ########
 
