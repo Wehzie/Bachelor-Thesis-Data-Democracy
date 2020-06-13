@@ -44,7 +44,7 @@ class Simulation(object):
         'repl_vend_inv_prob': 0.25,         # psi_quant: probability or replacing a firm a hh buys from due to little inventory
         'lo_res_wage_unemployed': 0.1,      # hh's reservation wage decrease rate during month of unemployment
                                             # reservation wage is the minimum wage a hh is willing to work for
-        'demand_sat': 0.95,                 # hh is satisfied with buying a little less percent of items it planned to buy
+        'demand_sat': 0.05,                 # hh is satisfied with buying a little less percent of items it planned to buy
 
         'init_money': 100,                  # hh's starting balance
         'num_vendors': 7,                   # number of firms a hh buys from

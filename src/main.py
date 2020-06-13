@@ -5,7 +5,7 @@
 from simulation import Simulation
 
 def main():
-    num_months = 100
+    num_months = 500
 
     #print("(1) Default parameters.")
     #print("(2) Set number of months.")

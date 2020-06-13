@@ -10,7 +10,7 @@ class Firm(object):
     def __init__(self, sim: object):
         self.sim: object = sim                                  # firm belongs to a simulation
         self.money: float = sim.f_param.get("init_money")       # current balance of firm
-        self.reserve: float = sim.f_param.get("init_reserve")   # savings beyond money balance
+        self.reserve: float = sim.f_param.get("init_reserve")   # how much money to not pay out as profits
         self.num_items: int = sim.f_param.get("init_items")     # number of items in stock for selling
         self.lo_num_items: int = None                           # at least have this many items in stock
         self.up_num_items: int = None                           # don't have more than this items in stock
@@ -42,7 +42,7 @@ class Firm(object):
     # demand determines how many items should be kept in stock
     def update_item_bounds(self):
         self.lo_num_items = self.sim.f_param["inv_up"] * self.demand        # upper item limit
-        self.up_num_items = self.sim.f_param["inv_lo"] * self.demand    # lower item limit
+        self.up_num_items = self.sim.f_param["inv_lo"] * self.demand        # lower item limit
 
     # employ more people when not enough items are produced
     def update_hiring_status(self, month: int):
@@ -97,6 +97,7 @@ class Firm(object):
     # inform employee of unemployment
     def fire_random_employee(self):
         if len(self.list_employees) < 1: return # TODO: The need of doing this shows a bug probably
+        
         employee = random.choice(self.list_employees)
         self.list_employees.remove(employee)
         employee.fired()
@@ -112,11 +113,11 @@ class Firm(object):
         self.num_items += self.sim.f_param["tech_lvl"] * len(self.list_employees)
 
     # return number of items sold, reduce inventory, increase money and demand
-    def sell_items(self, demand_deal: int) -> int:
-        num_items_sold = min(self.num_items, self.demand)
+    def sell_items(self, item_ask: int) -> int:
+        num_items_sold: int = min(item_ask, self.num_items)
         self.num_items -= num_items_sold
         self.money += num_items_sold * self.item_price
-        self.demand += demand_deal
+        self.demand += item_ask
         return num_items_sold
 
     # return total money to pay employees each month
@@ -126,7 +127,7 @@ class Firm(object):
     # pay employees the full wage
     # if insufficient money available then reduce wage
     def pay_wages(self):
-        if self.money < self.sum_wages():
+        if self.money < self.sum_wages() and len(self.list_employees) > 0:
             self.wage = self.money / len(self.list_employees)
 
         for employee in self.list_employees:
@@ -134,25 +135,26 @@ class Firm(object):
 
         self.money -= self.sum_wages()
 
-    # determine how much money is set back as buffer
+    # determine how much money is not paid out as profits
     def set_reserve(self):
         frac_monthly_wages = self.sim.f_param["buffer_rate"] * self.sum_wages()
         self.reserve = max(0, min(frac_monthly_wages, self.money))
 
-    # return the sum of money owned by all employed households
+    # return the sum of money owned by all households in the simulation
     def sum_hh_money(self) -> int:
         sum = 0
-        for employee in self.list_employees:
-            sum += employee.money if employee.money > 0 else 0
+        for hh in self.sim.hh_list:
+            sum += hh.money if hh.money > 0 else 0
         return sum
 
-    # if profits have been made and employees have any money then pay profits
-    # richer employees receive higher profits
+    # if profits have been made then pay profits to all households in the simulation
+    # richer households receive higher profits
     def pay_profits(self):
-        profit = self.money - self.reserve - self.sum_wages()
-        if profit > 0 and self.sum_hh_money() > 0:
-            for employee in self.list_employees:
-                employee.receive_profit(profit * (employee.money / self.sum_hh_money()))
+        profit = max(0, self.money - self.sum_wages() - self.reserve)
+        sum_hh_money = self.sum_hh_money()
+        if profit > 0:
+            for hh in self.sim.hh_list:
+                hh.receive_profit(profit * (hh.money / sum_hh_money))
 
         self.money -= profit
 

@@ -15,6 +15,7 @@ class Household(object):
             self.vendor_list.append(random.choice(self.get_non_vendor_firms()))
         self.vendors_lo_stock: list = []                        # hh remembers firms with not enough goods in the last month
         self.res_wage: float = 0                                # reservation wage, minimum wage hh works for
+        self.daily_demand: int = 0                              # number of items a hh aims to buy each day
 
     ######## ######## ######## METHODS ######## ######## ########
 
@@ -150,21 +151,20 @@ class Household(object):
         monthly_demand = min(pow(no_decay_demand, self.sim.hh_param.get("cost_decay")), no_decay_demand)
         self.daily_demand = monthly_demand / self.sim.days_in_month
 
-    # TODO: comment
+    # hhs buy items from their preferred vendors to satisfy their daily demand
+    # TODO: implement restricting vendors if they can't satisfy the item_ask
     def buy_items(self):
-        remaining_demand = self.daily_demand
-
-        # TODO: should be while-loop? is it possible that hh has no money to begin with?
-        for vendor in self.vendor_list:
+        remaining_demand: int = self.daily_demand
+        
+        for vendor_count in self.vendor_list:
             vendor = random.choice(self.vendor_list)
-            item_ask = min(remaining_demand, self.money / vendor.item_price)
-            items_sold = vendor.sell_items(item_ask)
+            item_ask: int = min(remaining_demand, self.money // vendor.item_price)    # when hh has more demand than money, don't overspend
+            items_sold: int = vendor.sell_items(item_ask)
             remaining_demand -= items_sold
             self.money -= items_sold * vendor.item_price
-            # TODO: implement restricting vendors if they can't satisfy the item_ask
 
             # stop method if hh has no money, demand is satisfied or all vendors have been visited
-            demand_satisfied: bool = remaining_demand <= 1 - self.sim.hh_param.get("demand_sat") * self.daily_demand
+            demand_satisfied: bool = remaining_demand <= self.sim.hh_param.get("demand_sat") * self.daily_demand
             if self.money <= 0 or demand_satisfied: return
 
     # TODO: comment

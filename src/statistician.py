@@ -5,16 +5,11 @@ class Statistician(object):
 
     def __init__(self, sim: object):
         self.sim = sim
-        self.money = {'f': [], 'hh': [], 'f_reserve': []}
-        self.price = []
-        self.wage = []
-        self.employment = []
 
         # TODO: For now averages are stored, consider splitting up for further statistics, e.G. median, spreads etc.
         self.f_stat = {
             'avg': {
                 'money': [],
-                'reserve': [],
                 'num_items': [],
                 'item_price': [],
                 'marginal_cost': [],
@@ -46,7 +41,6 @@ class Statistician(object):
         num_f = self.sim.f_param['num_firms']
 
         self.f_stat['avg']['money'].append(sum([f.money for f in f_list]) / num_f)
-        self.f_stat['avg']['reserve'].append(sum([f.reserve for f in f_list]) / num_f)
         self.f_stat['avg']['num_items'].append(sum([f.num_items for f in f_list]) / num_f)
         self.f_stat['avg']['item_price'].append(sum([f.item_price for f in f_list]) / num_f)
         self.f_stat['avg']['marginal_cost'].append(sum([f.marginal_cost for f in f_list]) / num_f)
@@ -67,21 +61,17 @@ class Statistician(object):
     def up_stat(self):
         self.calc_avg()
     
-    # plot averages for firm money, firm reserve and household money against time
+    # plot averages for firm money and household money against time
     def plot_money (self):
         x_months = [m for m in range(self.sim.num_months)]
         y1_f_money = self.f_stat['avg']['money']
-        #y2_hh_money = self.hh_stat['avg']['money']
-        y3_f_reserve = self.f_stat['avg']['reserve']
+        y2_hh_money = self.hh_stat['avg']['money']
 
         fig, ax = plt.subplots()
-        # BUG: Firm money and firm reserve curves are identical
         ax.plot(x_months, y1_f_money, 'r', label='Money firm average')
-        #ax.plot(x_months, y2_hh_money, 'b', label='Money household average')
-        ax.plot(x_months, y3_f_reserve, 'g', label='Reserve firm average')
+        ax.plot(x_months, y2_hh_money, 'b', label='Money household average')
 
-        ax.set(xlabel='Months', ylabel='Money',
-            title='Money distribution between firms and households')
+        ax.set(xlabel='Months', ylabel='Money', title='Money distribution between firms and households')
         ax.grid()
         ax.legend()
 
@@ -100,8 +90,7 @@ class Statistician(object):
         ax.plot(x_months, y2_f_marginal_cost, 'b', label='Marginal cost firm average')
         ax.plot(x_months, y3_hh_res_wage, 'g', label='Reservation wage household average')
 
-        ax.set(xlabel='Months', ylabel='Money',
-            title='Wages and marginal cost')
+        ax.set(xlabel='Months', ylabel='Money', title='Wages and marginal cost')
         ax.grid()
         ax.legend()
 
@@ -120,8 +109,7 @@ class Statistician(object):
         ax.plot(x_months, y2_f_item_price, 'b', label='Item price firm average')
         #ax.plot(x_months, y3_f_demand, 'g', label='Demand firm average')
 
-        ax.set(xlabel='Months', ylabel='',
-            title='Item demand and price')
+        ax.set(xlabel='Months', ylabel='', title='Item demand and price')
         ax.grid()
         ax.legend()
 
@@ -146,8 +134,7 @@ class Statistician(object):
         ax.plot(x_months, y3_hh_employment, 'b', label='Employment rate of households')                # BUG: constant at 100% (1.00)
         ax.plot(x_months, y4_hh_num_vendors, 'k', label='Vendor number household average')
 
-        ax.set(xlabel='Months', ylabel='',
-            title='Employment and customer-vendor connections')
+        ax.set(xlabel='Months', ylabel='', title='Employment and customer-vendor connections')
 
         ax.grid()
         ax.legend()
@@ -161,16 +148,31 @@ class Statistician(object):
         y2_hh_money = self.hh_stat['avg']['money']
 
         fig, ax = plt.subplots()
-        # BUG: Firm money and firm reserve curves are identical
         ax.plot(x_months, y1_f_demand, 'r', label='Firm demand average')
         ax.plot(x_months, y2_hh_money, 'b', label='Household money average')
 
-        ax.set(xlabel='Months', ylabel='Money',
-            title='Firm demand and household money')
+        ax.set(xlabel='Months', ylabel='Money', title='Firm demand and household money')
         ax.grid()
         ax.legend()
 
         fig.savefig('fig_demand.png')
+        plt.show()
+
+    def hist_fmoney(self):
+        # money distribution at the end of the simulation
+        f_money_list = []
+        for f in self.sim.firm_list:
+            f_money_list.append(f.money)
+
+        fig, ax = plt.subplots()
+
+        # We can set the number of bins with the `bins` kwarg
+        ax.hist(f_money_list, bins=10)
+
+        ax.set(xlabel='Money', ylabel='Number of firms', title='Firm money')
+        ax.grid()
+
+        fig.savefig('fig_hist_fmoney.png')
         plt.show()
 
     def invoke_plots(self):
@@ -179,6 +181,7 @@ class Statistician(object):
         self.plot_items()
         self.plot_connections()
         self.plot_demand_hhmoney()
+        self.hist_fmoney()
 
 ######## ######## ######## IMPORTS ######## ######## ########
 
