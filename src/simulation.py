@@ -111,7 +111,7 @@ class Simulation(object):
                 f.update_wage(self.current_month)
                 f.update_hiring_status(self.current_month)
                 f.update_price(self.current_month)
-                f.reset_demand()
+                f.reset()
 
         def act_bom_hh():
             random.shuffle(self.hh_list)

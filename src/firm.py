@@ -24,19 +24,20 @@ class Firm(object):
         rnd = random.uniform(-0.5, 0.5) / 50                    # generate small float around +-0
         self.wage: float = sim.f_param.get("init_avg_wage") + rnd   # money paid to each employed hh per month
         self.hiring_status: int = 0                             # ternary, where 1: hire, 0: no changes, -1: fire
-        # TODO: Maybe I actually need two variables here for hiring and firing
-        self.month_hiring: int = 0                              # month the firm started looking to employ
+        self.hired: bool                                        # hired or not a hh this month
+        self.month_hiring: int = 0                              # month the firm last started looking for an employee
         # TODO: What's up with month to start planning in JS impl?
 
         # TODO: make negative balance impossible, in a non-hacky way
     ######## ######## ######## METHODS ######## ######## ########
 
-    # increase wage when no employees are found
+    # increase wage when no employee was found for hire last month
     # decrease wage after n months of full employment
+    # TODO: Do i need self.hired? and: self.month_hiring -1 or < month?
     def update_wage(self, month: int):
-        if self.hiring_status == 1 and self.month_hiring < month:
+        if self.month_hiring < month and self.hired == False:
             self.wage *= (1 + random.uniform(0, self.sim.f_param["wage_adj_rate"]))
-        if self.hiring_status <= 0 and month - self.month_hiring > self.sim.f_param["lo_wage_months"]:
+        elif month - self.month_hiring > self.sim.f_param["lo_wage_months"]:
             self.wage *= (1 - random.uniform(0, self.sim.f_param["wage_adj_rate"]))
 
     # demand determines how many items should be kept in stock
@@ -53,7 +54,6 @@ class Firm(object):
             self.month_hiring = month
         elif self.num_items > self.up_num_items:
             self.hiring_status = -1
-        else: self.hiring_status = 0
 
     # wage determines item price
     def update_price_bounds(self):
@@ -81,23 +81,22 @@ class Firm(object):
         elif many_items and hi_price and chance:
             self.item_price *= (1 - self.sim.f_param["price_adj_rate"] * random.uniform(0, 1))
 
-    # TODO: evaluate open_position, filled_position, close_position?
     # add household to list of employees
     def hire(self, employee: object):
         self.list_employees.append(employee)
+        self.hired = True
         self.hiring_status = 0
 
     # remove employee from list of employees
     def grant_leave(self, employee: object):
         if employee in self.list_employees: 
-            self.list_employees.remove(employee) # BUG: list.remove(x): x not in list
+            self.list_employees.remove(employee)
             self.hiring_status = 0
 
     # remove random employee from list of employees
     # inform employee of unemployment
     def fire_random_employee(self):
-        if len(self.list_employees) < 1: return # TODO: The need of doing this shows a bug probably
-        
+        if len(self.list_employees) < 1: return
         employee = random.choice(self.list_employees)
         self.list_employees.remove(employee)
         employee.fired()
@@ -158,9 +157,11 @@ class Firm(object):
 
         self.money -= profit
 
-    # reset monthly item demand to zero
-    def reset_demand(self):
+    # reset monthly item demand to zero at the beginning of the month
+    # reset whether a hh was employed at the beginning of the month
+    def reset(self):
         self.demand = 0
+        self.hired = False
     
 ######## ######## ######## IMPORTS ######## ######## ########
 
