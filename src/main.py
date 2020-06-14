@@ -8,7 +8,7 @@ def main():
     num_months = 500
 
     #print("(1) Default parameters.")
-    #print("(2) Set number of months.")
+    #print("(2) Set number of months."
 
     #user_input = int(input())
     #if(user_input == 2): num_months = int(input("Enter number of months: ")) 

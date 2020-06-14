@@ -79,7 +79,7 @@ class Household(object):
         if not self.vendors_lo_stock or random.uniform(0, 1) > self.sim.hh_param.get("repl_vend_inv_prob"):
             return
         
-        # TODO: Probability should be proportional to the extend of the restriction
+        # TODO: Probability should be proportional to the extent of the restriction
         # randomly select a firm from those that weren't able to satisfy demands
         lo_stock_firm = random.choice(self.vendors_lo_stock)
 
@@ -89,18 +89,19 @@ class Household(object):
         self.vendor_list.remove(lo_stock_firm)
         self.vendor_list.append(new_firm)
 
-    # TODO: give some explanation here
+    # unemployed hhs are eager to find a job
+    # employed hhs are less eager to find a job
+    # since employed hhs have a job their wage expectations grow
     def do_jobsearch(self):
         if self.employer == None:
             self.search_any_employer()
         else:
+            self.res_wage *= self.sim.hh_param.get("rw_change_employed")
             self.search_better_employer()
 
     # unemployed hh searches for an employer paying at least the hh's reservation wage
     def search_any_employer(self):
-        if self.employer is not None: return # TODO: should only unemployed hhs search?
-
-        # hh randomly approaches a number of firms
+        # unemployed hh randomly approaches a number of firms
         for attempt in range(0, self.sim.hh_param.get("unemployed_ask_num")):
             pot_firm = random.choice(self.sim.firm_list)
             if pot_firm.hiring_status == 1 and pot_firm.wage >= self.res_wage:
@@ -127,9 +128,6 @@ class Household(object):
                 self.employer.grant_leave(self)
                 pot_firm.hire(self)
                 self.employer = pot_firm
-            
-            # TODO: Move this to somewhere else or remove
-            self.res_wage *= self.sim.hh_param.get("rw_change_employed")
         
     # determine quantity of items a hh consumes each day of the beginning month
     def plan_demand(self):
@@ -142,8 +140,8 @@ class Household(object):
         mean_price = get_mean_item_price()
 
         # no_decay_demand example: 100€ money / 1€ banana_price = buy 100 bananas this month
-        if self.money < 0: self.money = 0               # BUG
-        no_decay_demand = self.money / mean_price       # BUG: money can go negative
+        no_decay_demand = self.money / mean_price
+
         # if no_decay_demand is > 1 then, since 0 < cost_decay < 1, the power function returns a value smaller than no_decay_demand
         # if no_decay_demand is < 1 then the power function returns a value larger than no_decay_demand
         #   in this case, money < monthly_demand * mean_price, this scenario is solved by taking monthly_demand = no_decay_demand
@@ -167,7 +165,7 @@ class Household(object):
             demand_satisfied: bool = remaining_demand <= self.sim.hh_param.get("demand_sat") * self.daily_demand
             if self.money <= 0 or demand_satisfied: return
 
-    # TODO: comment
+    # hhs get get used to their wage and expect this as their new reservation wage
     def update_res_wage(self):
         if self.employer is not None and self.employer.wage > self.res_wage:
             self.res_wage = self.employer.wage

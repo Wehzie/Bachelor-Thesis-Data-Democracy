@@ -26,16 +26,14 @@ class Firm(object):
         self.hiring_status: int = 0                             # ternary, where 1: hire, 0: no changes, -1: fire
         self.hired: bool                                        # hired or not a hh this month
         self.month_hiring: int = 0                              # month the firm last started looking for an employee
-        # TODO: What's up with month to start planning in JS impl?
 
-        # TODO: make negative balance impossible, in a non-hacky way
     ######## ######## ######## METHODS ######## ######## ########
 
-    # increase wage when no employee was found for hire last month
+    # increase wage when an employee was searched for last month but none was found
     # decrease wage after n months of full employment
     # TODO: Do i need self.hired? and: self.month_hiring -1 or < month?
     def update_wage(self, month: int):
-        if self.month_hiring < month and self.hired == False:
+        if self.month_hiring == month - 1 and self.hired == False:
             self.wage *= (1 + random.uniform(0, self.sim.f_param["wage_adj_rate"]))
         elif month - self.month_hiring > self.sim.f_param["lo_wage_months"]:
             self.wage *= (1 - random.uniform(0, self.sim.f_param["wage_adj_rate"]))
@@ -54,6 +52,8 @@ class Firm(object):
             self.month_hiring = month
         elif self.num_items > self.up_num_items:
             self.hiring_status = -1
+        else:
+            self.hiring_status = 0
 
     # wage determines item price
     def update_price_bounds(self):
@@ -85,13 +85,11 @@ class Firm(object):
     def hire(self, employee: object):
         self.list_employees.append(employee)
         self.hired = True
-        self.hiring_status = 0
 
     # remove employee from list of employees
     def grant_leave(self, employee: object):
         if employee in self.list_employees: 
             self.list_employees.remove(employee)
-            self.hiring_status = 0
 
     # remove random employee from list of employees
     # inform employee of unemployment
@@ -102,10 +100,10 @@ class Firm(object):
         employee.fired()
     
     # choose whether to fire an employee based on hiring status
-    # after considering firing, reset hiring status
+    # after firing, reset hiring status
     def make_layoff_decision(self):
-        if self.hiring_status == -1: self.fire_random_employee()
-        self.hiring_status = 0
+        if self.hiring_status == -1:
+            self.fire_random_employee()
 
     # produce new items for firm's inventory
     def produce_items(self):

@@ -82,12 +82,12 @@ class Statistician(object):
     def plot_wage (self):
         x_months = [m for m in range(self.sim.num_months)]
         y1_f_wage = self.f_stat['avg']['wage']
-        y2_f_marginal_cost = self.f_stat['avg']['marginal_cost']
+        #y2_f_marginal_cost = self.f_stat['avg']['marginal_cost']
         y3_hh_res_wage = self.hh_stat['avg']['res_wage']
 
         fig, ax = plt.subplots()
         ax.plot(x_months, y1_f_wage, 'r', label='Wage firm average')
-        ax.plot(x_months, y2_f_marginal_cost, 'b', label='Marginal cost firm average')
+        #ax.plot(x_months, y2_f_marginal_cost, 'b', label='Marginal cost firm average')
         ax.plot(x_months, y3_hh_res_wage, 'g', label='Reservation wage household average')
 
         ax.set(xlabel='Months', ylabel='Money', title='Wages and marginal cost')
@@ -95,6 +95,22 @@ class Statistician(object):
         ax.legend()
 
         fig.savefig('fig_wage.png')
+        plt.show()
+
+    def plot_items2 (self):
+        x_months = [m for m in range(self.sim.num_months)]
+        y1_f_marginal_cost = self.f_stat['avg']['marginal_cost']
+        y2_f_item_price = self.f_stat['avg']['item_price']
+
+        fig, ax = plt.subplots()
+        ax.plot(x_months, y1_f_marginal_cost, 'b', label='Marginal cost firm average')
+        ax.plot(x_months, y2_f_item_price, 'b', label='Item price firm average')
+
+        ax.set(xlabel='Months', ylabel='', title='Item price and marginal cost')
+        ax.grid()
+        ax.legend()
+
+        fig.savefig('fig_items2.png')
         plt.show()
 
     # plot averages for number of items a firm has in stock, item price and demand 
@@ -179,6 +195,7 @@ class Statistician(object):
         self.plot_money()
         self.plot_wage()
         self.plot_items()
+        self.plot_items2()
         self.plot_connections()
         self.plot_demand_hhmoney()
         self.hist_fmoney()

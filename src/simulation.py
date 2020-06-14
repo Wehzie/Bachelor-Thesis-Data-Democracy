@@ -12,7 +12,6 @@ class Simulation(object):
     days_in_month = 21                  # number of working days in a month
 
     f_param = {
-        # TODO: consider num_f in line with num_hh
         'num_firms': 100,               # total number of firms
         'months_lo_wage': 24,           # gamma: in number of months. duration after which wage is increased when all job positions filled
         'wage_adj_rate': 0.019,         # delta: rate at which wages are adjusted
@@ -88,26 +87,10 @@ class Simulation(object):
     def init_statistician(self):
         self.stat = Statistician(self)
 
-    # actions each day of the month
-    # TODO: comment on hhs buying before firms produce
-    def act_day(self):
-        def act_day_hh():
-            random.shuffle(self.hh_list)
-            for hh in self.hh_list:
-                hh.buy_items()
-
-        def act_day_f():
-            for f in self.firm_list:
-                f.produce_items()
-        
-        act_day_hh()
-        act_day_f()
-
     # actions at the beginning of a month
     def act_bom(self):
         def act_bom_f():
             for f in self.firm_list:
-                # TODO: should I impl start planning month?
                 f.update_wage(self.current_month)
                 f.update_hiring_status(self.current_month)
                 f.update_price(self.current_month)
@@ -123,6 +106,21 @@ class Simulation(object):
 
         act_bom_f()
         act_bom_hh()
+
+    # actions each day of the month
+    # hhs goods before firms produce since production takes time
+    def act_day(self):
+        def act_day_hh():
+            random.shuffle(self.hh_list)
+            for hh in self.hh_list:
+                hh.buy_items()
+
+        def act_day_f():
+            for f in self.firm_list:
+                f.produce_items()
+        
+        act_day_hh()
+        act_day_f()
 
     # actions at the end of a month
     def act_eom(self):
