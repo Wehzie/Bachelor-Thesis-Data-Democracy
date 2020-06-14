@@ -8,6 +8,7 @@ class Statistician(object):
 
         # TODO: For now averages are stored, consider splitting up for further statistics, e.G. median, spreads etc.
         self.f_stat = {
+
             'avg': {
                 'money': [],
                 'num_items': [],
@@ -21,11 +22,20 @@ class Statistician(object):
         }
 
         self.hh_stat = {
+            'sum': {
+                'money': []
+            },
+            
             'avg': {
                 'money': [],
                 'employment': [],   # number employed households, normalized
                 'num_vendors': [],
                 'res_wage': [],
+            },
+
+            'metric': {
+                'hoover': [],
+                'gini': [],
             },
         }
 
@@ -34,6 +44,12 @@ class Statistician(object):
     # TODO: Max and min for how many customers do firms have
 
     ######## ######## ######## METHODS ######## ######## ########
+
+    def calc_sum(self):
+        hh_list = self.sim.hh_list
+
+        self.hh_stat['sum']['money'].append(sum([hh.money for hh in hh_list]))
+        #TODO: confirm overall money is constant
 
     # calculate averages for a set of firm and household characteristics
     def calc_avg(self):
@@ -52,15 +68,65 @@ class Statistician(object):
         hh_list = self.sim.hh_list
         num_hh = self.sim.hh_param['num_hh']
 
-        self.hh_stat['avg']['money'].append(sum([hh.money for hh in hh_list]) / num_hh)
+        self.hh_stat['avg']['money'].append(self.hh_stat['sum']['money'][-1] / num_hh)
         self.hh_stat['avg']['employment'].append(sum([1 if hh.employer else 0 for hh in hh_list]) / num_hh)
         self.hh_stat['avg']['num_vendors'].append(sum([len(hh.vendor_list) for hh in hh_list]) / num_hh)
         self.hh_stat['avg']['res_wage'].append(sum([hh.res_wage for hh in hh_list]) / num_hh)
     
+    def calc_metric(self):
+        self.hh_stat['metric']['hoover'].append(self.calc_hoover())
+        self.hh_stat['metric']['gini'].append(self.calc_gini())
+
+    # calculate the hoover index as defined on https://wikimedia.org/api/rest_v1/media/math/render/svg/3e117654142eaec6efa377da812394d213955db4
+    # from https://en.wikipedia.org/wiki/Hoover_index
+    def calc_hoover(self):
+        sum_diff_i_mean = 0
+        for hh in self.sim.hh_list:
+            sum_diff_i_mean += abs(hh.money - self.hh_stat['avg']['money'][-1])
+        return 1/2 * sum_diff_i_mean / self.hh_stat['sum']['money'][-1]
+
+
+    # based on https://github.com/oliviaguest/gini
+    def calc_gini(self):
+        array = np.array([hh.money for hh in self.sim.hh_list])
+        # All values are treated equally, arrays must be 1d:
+        array = array.flatten()
+        if np.amin(array) < 0:
+            # Values cannot be negative:
+            array -= np.amin(array)
+        # Values cannot be 0:
+        array += 0.0000001
+        # Values must be sorted:
+        array = np.sort(array)
+        # Index per array element:
+        index = np.arange(1,array.shape[0]+1)
+        # Number of array elements:
+        n = array.shape[0]
+        # Gini coefficient:
+        return ((np.sum((2 * index - n  - 1) * array)) / (n * np.sum(array)))
+
     # each month notify the statistician of what is going on in the simulation
     def up_stat(self):
+        self.calc_sum()
         self.calc_avg()
-    
+        self.calc_metric()
+
+    def plot_equality(self):
+        x_months = [m for m in range(self.sim.num_months)]
+        y1_hoover = self.hh_stat['metric']['hoover']
+        y2_gini = self.hh_stat['metric']['gini']
+
+        fig, ax = plt.subplots()
+        ax.plot(x_months, y1_hoover, 'r', label='Hoover index')
+        ax.plot(x_months, y2_gini, 'b', label='Gini index')
+
+        ax.set(xlabel='Months', ylabel='Equality', title='Metrics of economic equality')
+        ax.grid()
+        ax.legend()
+
+        fig.savefig('fig_equality.png')
+        plt.show()
+
     # plot averages for firm money and household money against time
     def plot_money (self):
         x_months = [m for m in range(self.sim.num_months)]
@@ -192,10 +258,11 @@ class Statistician(object):
         plt.show()
 
     def invoke_plots(self):
+        self.plot_equality()
         self.plot_money()
         self.plot_wage()
-        self.plot_items()
         self.plot_items2()
+        self.plot_items()
         self.plot_connections()
         self.plot_demand_hhmoney()
         self.hist_fmoney()

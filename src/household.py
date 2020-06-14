@@ -13,7 +13,7 @@ class Household(object):
         self.vendor_list: list = []                             # hh buys at up to 7 firms (type A connection)
         for vendor in range(sim.hh_param.get("num_vendors")):
             self.vendor_list.append(random.choice(self.get_non_vendor_firms()))
-        self.vendors_lo_stock: list = []                        # hh remembers firms with not enough goods in the last month
+        self.blocked_vendors: list = []                        # hh remembers firms with not enough goods in the last month
         self.res_wage: float = 0                                # reservation wage, minimum wage hh works for
         self.daily_demand: int = 0                              # number of items a hh aims to buy each day
 
@@ -68,25 +68,28 @@ class Household(object):
             weight_list.append(len(vendor.list_employees) / self.sim.hh_param.get("num_hh"))
 
         # replace old firm if the new one's price is lower
+        # if the new firm was initially blacklisted then unlist it
         new_firm = random.choices(pot_vendor_list, weight_list)[0]
         if new_firm.item_price < old_firm.item_price * (1 - self.sim.hh_param.get("lower_vendor_price")):
+            if new_firm in self.blocked_vendors: self.blocked_vendors.remove(new_firm)
             self.vendor_list.remove(old_firm)
             self.vendor_list.append(new_firm)
 
     # household tries to replace a vendor when it previously had insufficient stock
     def find_stocked_vendor(self):
         # abort method when no vendor had low stock or by chance
-        if not self.vendors_lo_stock or random.uniform(0, 1) > self.sim.hh_param.get("repl_vend_inv_prob"):
+        return
+        if not self.blocked_vendors or random.uniform(0, 1) > self.sim.hh_param.get("repl_vend_inv_prob"):
             return
         
         # TODO: Probability should be proportional to the extent of the restriction
         # randomly select a firm from those that weren't able to satisfy demands
-        lo_stock_firm = random.choice(self.vendors_lo_stock)
+        lo_stock_firm = random.choice(self.blocked_vendors)
 
         # randomly choose among vendors the hh doesn't buy from
         new_firm = random.choice(self.get_non_vendor_firms())
 
-        self.vendor_list.remove(lo_stock_firm)
+        self.vendor_list.remove(lo_stock_firm) # BUG: vendor not in list
         self.vendor_list.append(new_firm)
 
     # unemployed hhs are eager to find a job
@@ -150,7 +153,6 @@ class Household(object):
         self.daily_demand = monthly_demand / self.sim.days_in_month
 
     # hhs buy items from their preferred vendors to satisfy their daily demand
-    # TODO: implement restricting vendors if they can't satisfy the item_ask
     def buy_items(self):
         remaining_demand: int = self.daily_demand
         
@@ -160,6 +162,13 @@ class Household(object):
             items_sold: int = vendor.sell_items(item_ask)
             remaining_demand -= items_sold
             self.money -= items_sold * vendor.item_price
+
+            # when there is need to buy from another firm
+            # then the initial firm didn't satisfy demand
+            # due to high price or little inventory
+            # so the firm is blacklisted as vendor
+            if remaining_demand > 0:
+                self.blocked_vendors.append(vendor)
 
             # stop method if hh has no money, demand is satisfied or all vendors have been visited
             demand_satisfied: bool = remaining_demand <= self.sim.hh_param.get("demand_sat") * self.daily_demand
