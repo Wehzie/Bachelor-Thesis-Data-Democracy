@@ -13,9 +13,10 @@ class Household(object):
         self.vendor_list: list = []                             # hh buys at up to 7 firms (type A connection)
         for vendor in range(sim.hh_param.get("num_vendors")):
             self.vendor_list.append(random.choice(self.get_non_vendor_firms()))
-        self.blocked_vendors: list = []                        # hh remembers firms with not enough goods in the last month
+        self.blocked_vendors: list = []                         # hh remembers firms with not enough goods in the last month
         self.res_wage: float = 0                                # reservation wage, minimum wage hh works for
         self.daily_demand: int = 0                              # number of items a hh aims to buy each day
+        self.monthly_income: float = 0                          # sum of wage and profit within a given month 
 
     ######## ######## ######## METHODS ######## ######## ########
 
@@ -27,11 +28,13 @@ class Household(object):
     # increase hh balance by received wage
     def receive_wage(self, employer_money):
         self.money += employer_money
-        if employer_money > self.res_wage: self.res_wage = employer_money
+        self.monthly_income += employer_money
+        if employer_money > self.res_wage: self.res_wage = employer_money # TODO: redundant see update_res_wage()
 
     # increase hh balance by received profits
     def receive_profit(self, profit_money):
         self.money += profit_money
+        self.monthly_income += profit_money
 
     # return list of vendors the hh doesn't buy from
     def get_non_vendor_firms(self) -> [object]:
@@ -178,6 +181,19 @@ class Household(object):
     def update_res_wage(self):
         if self.employer is not None and self.employer.wage > self.res_wage:
             self.res_wage = self.employer.wage
+
+    # hhs pay a portion of their monthly income to the government
+    def pay_tax(self, tax_rate: float) -> float:
+        tax = self.monthly_income * tax_rate
+        self.money -= tax
+        return tax
+
+    def receive_ubi(self, ubi: float):
+        self.money += ubi
+
+    # reset how much wage and profit was received this month
+    def reset_income(self):
+        self.sum_income = 0
 
 ######## ######## ######## IMPORTS ######## ######## ########
 

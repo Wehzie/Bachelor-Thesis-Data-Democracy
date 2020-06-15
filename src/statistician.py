@@ -240,21 +240,21 @@ class Statistician(object):
         fig.savefig('fig_demand.png')
         plt.show()
 
-    def hist_fmoney(self):
+    def hist_money(self):
         # money distribution at the end of the simulation
-        f_money_list = []
-        for f in self.sim.firm_list:
-            f_money_list.append(f.money)
+        f_money_list = [f.money for f in self.sim.firm_list]
+        hh_money_list = [hh.money for hh in self.sim.hh_list]
 
-        fig, ax = plt.subplots()
+        fig, (ax1, ax2) = plt.subplots(1, 2, sharex=True)
 
         # We can set the number of bins with the `bins` kwarg
-        ax.hist(f_money_list, bins=10)
+        ax1.hist(f_money_list, bins=10)
+        ax2.hist(hh_money_list, bins=5)
 
-        ax.set(xlabel='Money', ylabel='Number of firms', title='Firm money')
-        ax.grid()
+        ax1.set(xlabel='Money', ylabel='Number of firms or hhs', title='Money distribution')
+        ax1.grid()
 
-        fig.savefig('fig_hist_fmoney.png')
+        fig.savefig('fig_hist_money.png')
         plt.show()
 
     def invoke_plots(self):
@@ -265,7 +265,7 @@ class Statistician(object):
         self.plot_items()
         self.plot_connections()
         self.plot_demand_hhmoney()
-        self.hist_fmoney()
+        self.hist_money()
 
 ######## ######## ######## IMPORTS ######## ######## ########
 

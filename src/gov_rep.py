@@ -14,6 +14,8 @@
 #   5. regardless of source, keep field which keeps track of incoming money. tax based only on this value
 #   Grossi: agrees with single income tax and single tax tier
 
+# Arndts: check out Milton Friedman, similar proposals
+
 # government does not keep state or make profit, money that is collected is immediately spent
 # single tax value for all instead of tiered tax
 # possession vs income taxes, see literature
@@ -54,8 +56,6 @@
 
 
 
-
-
 # representative government
 # on inception a 4 year plan is made that is not deviated from
 # this plan is an agreement on how to tax in the 4 coming years
@@ -67,11 +67,39 @@
 
 class Gov_rep(object):
     
-    def __init__(self):
-        pass
+    def __init__(self, sim: object):
+        self.sim = sim          # link government to the simulation
+        self.money = 0          # money available to government for redistribution
+        self.tax_rate = 0       # taxrate collected from each hh monthly
+        self.ubi = 0            # ubi paid to each hh monthly
 
-    def vote_ubi():
-        pass
+    # a taxrate is voted for based on a target UBI
+    # aim to achieve a target equality score 
+    def vote_tax(self):
+        term_length = 12 * 4    
+        statistics.median(self.sim.hh_list)
+        
 
-    def calc_tax():
-        pass
+    # ubi is equal for all hhs each month
+    # ubi is not constant but is calculated based on available tax money each month
+    def calc_ubi(self):
+        self.ubi = self.money / self.sim.hh_param['num_hh']
+
+    # Alternatively the taxrate could vary each month
+    def collect_tax(self):
+        for hh in self.sim.hh_list:
+            self.money += hh.pay_tax(tax_rate)
+
+    # TODO: does ubi have to be constant, can this be planned for?
+    def pay_ubi(self):
+        for hh in self.sim.hh_list:
+            hh.receive_ubi(self.ubi)
+
+    # collect tax at end of year
+    # pay out ubi next year based on ammased money of previous year
+    # ubi changes each year
+
+######## ######## ######## IMPORTS ######## ######## ########
+
+from simulation import Simulation
+import statistics

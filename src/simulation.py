@@ -8,7 +8,6 @@ class Simulation(object):
     
     ######## ######## ######## INSTANCE VARIABLES ######## ######## ########
 
-    num_months = None                   # number of months simulated
     days_in_month = 21                  # number of working days in a month
 
     f_param = {
@@ -55,13 +54,15 @@ class Simulation(object):
     firm_list = []                      # list of all firms in the model
     hh_list = []                        # list of all hh in the model
 
-    stat = None                        # tracking, plotting and analyzing data
+    stat = None                         # tracking, plotting and analyzing data
+    gov = None                          # government responsible for tax and ubi
 
     ######## ######## ######## CONSTRUCTOR ######## ######## ########
 
-    def __init__(self, num_months: int):
-        self.num_months = num_months
-        self.current_month = 0
+    def __init__(self, num_months: int, gov_type: str):
+        self.num_months = num_months        # number of months simulated
+        self.current_month = 0              # currently simulated month by number
+        self.gov_type = gov_type            # the type of government used
 
     ######## ######## ######## METHODS ######## ######## ########
 
@@ -133,6 +134,7 @@ class Simulation(object):
 
         for hh in self.hh_list:
             hh.update_res_wage()
+            hh.reset_income()
 
         for f in self.firm_list:
             f.make_layoff_decision()
@@ -170,4 +172,5 @@ class Simulation(object):
 from household import Household
 from firm import Firm
 from statistician import Statistician
+from gov_rep import Gov_rep
 import random

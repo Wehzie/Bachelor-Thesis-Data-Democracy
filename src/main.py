@@ -6,6 +6,7 @@ from simulation import Simulation
 
 def main():
     num_months = 500
+    gov_type = None
 
     #print("(1) Default parameters.")
     #print("(2) Set number of months."
@@ -13,7 +14,7 @@ def main():
     #user_input = int(input())
     #if(user_input == 2): num_months = int(input("Enter number of months: ")) 
 
-    testsim = Simulation(num_months)
+    testsim = Simulation(num_months, gov_type)
     testsim.start_sim()
 
 if __name__ == "__main__":
