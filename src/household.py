@@ -14,6 +14,7 @@ class Household(object):
         for vendor in range(sim.hh_param.get("num_vendors")):
             self.vendor_list.append(random.choice(self.get_non_vendor_firms()))
         self.blocked_vendors: list = []                         # hh remembers firms with not enough goods in the last month
+        self.blocked_v_amount: list = []
         self.res_wage: float = 0                                # reservation wage, minimum wage hh works for
         self.daily_demand: int = 0                              # number of items a hh aims to buy each day
         self.monthly_income: float = 0                          # sum of wage and profit within a given month 
@@ -29,7 +30,6 @@ class Household(object):
     def receive_wage(self, employer_money):
         self.money += employer_money
         self.monthly_income += employer_money
-        if employer_money > self.res_wage: self.res_wage = employer_money # TODO: redundant see update_res_wage()
 
     # increase hh balance by received profits
     def receive_profit(self, profit_money):
@@ -85,14 +85,20 @@ class Household(object):
         if not self.blocked_vendors or random.uniform(0, 1) > self.sim.hh_param.get("repl_vend_inv_prob"):
             return
         
-        # TODO: Probability should be proportional to the extent of the restriction
         # randomly select a firm from those that weren't able to satisfy demands
-        lo_stock_firm = random.choice(self.blocked_vendors)
+        # probability should be proportional to the extent of the restriction in the original model
+        # as a implemented simplification
+        # probability is proportional to the least number of items in stock
+        weight_list = []
+        max_items = max([v.num_items for v in self.blocked_vendors])
+        for vendor in self.blocked_vendors:
+            weight_list.append(abs(vendor.num_items - max_items))
+        lo_stock_firm = random.choices(self.blocked_vendors, weight_list)[0]
 
         # randomly choose among vendors the hh doesn't buy from
         new_firm = random.choice(self.get_non_vendor_firms())
-        
-        self.blocked_vendors.remove(lo_stock_firm)
+
+        # replace low stock vendor and reset the low stock vendors        
         self.vendor_list.remove(lo_stock_firm)
         self.vendor_list.append(new_firm)
         self.blocked_vendors = []
@@ -186,6 +192,7 @@ class Household(object):
     def update_res_wage(self):
         if self.employer is not None and self.employer.wage > self.res_wage:
             self.res_wage = self.employer.wage
+            
 
     # hhs pay a portion of their monthly income to the government
     def pay_tax(self, tax_rate: float) -> float:
