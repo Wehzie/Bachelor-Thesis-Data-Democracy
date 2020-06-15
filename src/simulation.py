@@ -87,6 +87,11 @@ class Simulation(object):
     # initialize the statistician
     def init_statistician(self):
         self.stat = Statistician(self)
+    
+    # initialize the government
+    def init_government(self):
+        if self.gov_type == None: return # TODO: gov type none just passes on all function calls
+        if self.gov_type == 'naive': self.gov = Gov_naive(self)
 
     # actions at the beginning of a month
     def act_bom(self):
@@ -172,5 +177,5 @@ class Simulation(object):
 from household import Household
 from firm import Firm
 from statistician import Statistician
-from gov_rep import Gov_rep
+from gov_naive import Gov_naive
 import random

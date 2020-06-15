@@ -32,7 +32,7 @@ class Statistician(object):
             
             'avg': {
                 'money': [],
-                'employment': [],   # number employed households, normalized
+                'employment': [],   # household employment rate
                 'res_wage': [],
             },
 
@@ -40,7 +40,15 @@ class Statistician(object):
                 'hoover': [],
                 'gini': [],
             },
-        }
+        },
+
+        self.g_stat = {
+
+            'fix': {                # direct readings
+                'tax': [],
+                'ubi': [],
+            }
+        },
 
     # TODO: Implement different kinds of dotted lines for black and white suitable display
     # TODO: think about days within a month. maybe higher resolution than month plots make sense for some cases
@@ -81,6 +89,9 @@ class Statistician(object):
     def calc_metric(self):
         self.hh_stat['metric']['hoover'].append(self.calc_hoover())
         self.hh_stat['metric']['gini'].append(self.calc_gini())
+
+    def calc_gov(self):
+        self.g_stat['fix']['tax'].append(self.sim.gov)
 
     # calculate the hoover index as defined on https://wikimedia.org/api/rest_v1/media/math/render/svg/3e117654142eaec6efa377da812394d213955db4
     # from https://en.wikipedia.org/wiki/Hoover_index
