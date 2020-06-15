@@ -202,7 +202,7 @@ class Statistician(object):
         # firms' number of employees
         # the duration for which firms have been looking to hire
         # the employment rate amongst households
-        # the number of vendors households buy from
+        # the number of vendors households buy from # TODO: remove since always replaced
     def plot_connections (self):
         x_months = [m for m in range(self.sim.num_months)]
         y1_f_num_employees = self.f_stat['avg']['num_employees']
@@ -245,14 +245,16 @@ class Statistician(object):
         f_money_list = [f.money for f in self.sim.firm_list]
         hh_money_list = [hh.money for hh in self.sim.hh_list]
 
-        fig, (ax1, ax2) = plt.subplots(1, 2, sharex=True)
+        fig, (ax1, ax2) = plt.subplots(1, 2)
+        plt.suptitle = "Money distribution"
 
-        # We can set the number of bins with the `bins` kwarg
-        ax1.hist(f_money_list, bins=10)
-        ax2.hist(hh_money_list, bins=5)
+        ax1.hist(f_money_list, bins=int(self.sim.f_param['num_firms']/10))
+        ax2.hist(hh_money_list, bins=int(self.sim.hh_param['num_hh']/10))
 
-        ax1.set(xlabel='Money', ylabel='Number of firms or hhs', title='Money distribution')
+        ax1.set(xlabel='Money', ylabel='Number of firms')
         ax1.grid()
+        ax2.set(xlabel='Money', ylabel='Number of households')
+        ax2.grid()
 
         fig.savefig('fig_hist_money.png')
         plt.show()

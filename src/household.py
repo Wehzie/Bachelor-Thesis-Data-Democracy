@@ -2,7 +2,7 @@
 
 # Lengnick, M. (2013). Agent-based macroeconomics: A baseline model. Journal of Economic Behavior and Organization, 86, 102-120. doi:10.1016/j.jebo.2012.12.021
 
-# NOTE: hh is short for household or households
+# NOTE: hh or hhs is short for household or households
 
 class Household(object):
 
@@ -74,14 +74,14 @@ class Household(object):
         # if the new firm was initially blacklisted then unlist it
         new_firm = random.choices(pot_vendor_list, weight_list)[0]
         if new_firm.item_price < old_firm.item_price * (1 - self.sim.hh_param.get("lower_vendor_price")):
+            if old_firm in self.blocked_vendors: self.blocked_vendors.remove(old_firm)
             if new_firm in self.blocked_vendors: self.blocked_vendors.remove(new_firm)
             self.vendor_list.remove(old_firm)
             self.vendor_list.append(new_firm)
 
-    # household tries to replace a vendor when it previously had insufficient stock
+    # household tries to replace a vendor when it had insufficient stock last month
     def find_stocked_vendor(self):
         # abort method when no vendor had low stock or by chance
-        return
         if not self.blocked_vendors or random.uniform(0, 1) > self.sim.hh_param.get("repl_vend_inv_prob"):
             return
         
@@ -91,9 +91,11 @@ class Household(object):
 
         # randomly choose among vendors the hh doesn't buy from
         new_firm = random.choice(self.get_non_vendor_firms())
-
-        self.vendor_list.remove(lo_stock_firm) # BUG: vendor not in list
+        
+        self.blocked_vendors.remove(lo_stock_firm)
+        self.vendor_list.remove(lo_stock_firm)
         self.vendor_list.append(new_firm)
+        self.blocked_vendors = []
 
     # unemployed hhs are eager to find a job
     # employed hhs are less eager to find a job
@@ -146,21 +148,24 @@ class Household(object):
         mean_price = get_mean_item_price()
 
         # no_decay_demand example: 100€ money / 1€ banana_price = buy 100 bananas this month
-        no_decay_demand = self.money / mean_price
+        no_decay_demand = self.money // mean_price
 
         # if no_decay_demand is > 1 then, since 0 < cost_decay < 1, the power function returns a value smaller than no_decay_demand
         # if no_decay_demand is < 1 then the power function returns a value larger than no_decay_demand
         #   in this case, money < monthly_demand * mean_price, this scenario is solved by taking monthly_demand = no_decay_demand
         #   so that money == no_decay_demand * mean_price
         monthly_demand = min(pow(no_decay_demand, self.sim.hh_param.get("cost_decay")), no_decay_demand)
-        self.daily_demand = monthly_demand / self.sim.days_in_month
+        self.daily_demand = monthly_demand // self.sim.days_in_month
 
     # hhs buy items from their preferred vendors to satisfy their daily demand
     def buy_items(self):
         remaining_demand: int = self.daily_demand
         
+        unvisited_vendors = self.vendor_list.copy()
         for vendor_count in self.vendor_list:
-            vendor = random.choice(self.vendor_list)
+            vendor = random.choice(unvisited_vendors)
+            unvisited_vendors.remove(vendor)
+
             item_ask: int = min(remaining_demand, self.money // vendor.item_price)    # when hh has more demand than money, don't overspend
             items_sold: int = vendor.sell_items(item_ask)
             remaining_demand -= items_sold
@@ -170,7 +175,7 @@ class Household(object):
             # then the initial firm didn't satisfy demand
             # due to high price or little inventory
             # so the firm is blacklisted as vendor
-            if remaining_demand > 0:
+            if remaining_demand > 0 and vendor not in self.blocked_vendors:
                 self.blocked_vendors.append(vendor)
 
             # stop method if hh has no money, demand is satisfied or all vendors have been visited
