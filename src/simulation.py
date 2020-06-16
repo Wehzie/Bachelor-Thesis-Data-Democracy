@@ -158,6 +158,12 @@ class Simulation(object):
             hh_sum += hh.money
         return hh_sum
 
+    def gov_action(self):
+        self.gov.vote_tax()
+        self.gov.collect_tax()
+        self.gov.calc_ubi()
+        self.gov.pay_ubi()
+
     def event_loop(self):
         while(self.current_month < self.num_months):
             self.print_sim_step(f"MONTH {self.current_month}")

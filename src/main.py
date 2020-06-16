@@ -6,7 +6,8 @@ from simulation import Simulation
 
 def main():
     num_months = 500
-    gov_type = None
+    gov_types = [None, 'naive']
+    gov_type = gov_types[0]
 
     #print("(1) Default parameters.")
     #print("(2) Set number of months."

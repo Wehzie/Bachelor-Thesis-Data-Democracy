@@ -40,7 +40,7 @@ class Statistician(object):
                 'hoover': [],
                 'gini': [],
             },
-        },
+        }
 
         self.g_stat = {
 
@@ -48,7 +48,7 @@ class Statistician(object):
                 'tax': [],
                 'ubi': [],
             }
-        },
+        }
 
     # TODO: Implement different kinds of dotted lines for black and white suitable display
     # TODO: think about days within a month. maybe higher resolution than month plots make sense for some cases
