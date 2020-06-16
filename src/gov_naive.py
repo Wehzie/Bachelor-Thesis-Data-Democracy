@@ -59,12 +59,15 @@ class Gov_naive(object):
     # TODO: test out some factors here (0.5 and 2)
     # taxrate is proportional to the gini index
     def vote_tax(self):
-        self.tax_rate = self.sim.stat.hh_stat['metric']['gini'][-1]
+        if len(self.sim.stat.hh_stat['metric']['gini']) == 0:
+            self.tax_rate = 0.2
+        else:
+            self.tax_rate = self.sim.stat.hh_stat['metric']['gini'][-1]
 
     # collect taxes from all households
     def collect_tax(self):
         for hh in self.sim.hh_list:
-            self.money += hh.pay_tax(tax_rate)
+            self.money += hh.pay_tax(self.tax_rate)
 
     # ubi is equal for all hhs each month
     def calc_ubi(self):

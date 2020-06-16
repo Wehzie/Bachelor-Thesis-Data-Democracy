@@ -144,11 +144,14 @@ class Simulation(object):
         for f in self.firm_list:
             f.make_layoff_decision()
 
+        self.gov_action()
+
     def start_sim(self):
         self.print_sim_step("INITIALIZE AGENTS")
         self.init_firms()
         self.init_households()
         self.init_statistician()
+        self.init_government()
         self.print_sim_step("INVOKING EVENT LOOP")
         self.event_loop()
 
@@ -158,7 +161,11 @@ class Simulation(object):
             hh_sum += hh.money
         return hh_sum
 
+    def gov_exists(self) -> bool:
+        if self.gov_type == None: return False
+
     def gov_action(self):
+        if self.gov_exists() is False: return
         self.gov.vote_tax()
         self.gov.collect_tax()
         self.gov.calc_ubi()

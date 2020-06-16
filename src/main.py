@@ -5,7 +5,7 @@
 from simulation import Simulation
 
 def main():
-    num_months = 500
+    num_months = 10
     gov_types = [None, 'naive']
     gov_type = gov_types[0]
 

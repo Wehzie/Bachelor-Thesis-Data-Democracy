@@ -91,7 +91,8 @@ class Statistician(object):
         self.hh_stat['metric']['gini'].append(self.calc_gini())
 
     def calc_gov(self):
-        self.g_stat['fix']['tax'].append(self.sim.gov)
+        self.g_stat['fix']['tax'].append(self.sim.gov.tax_rate)
+        self.g_stat['fix']['ubi'].append(self.sim.gov.ubi)
 
     # calculate the hoover index as defined on https://wikimedia.org/api/rest_v1/media/math/render/svg/3e117654142eaec6efa377da812394d213955db4
     # from https://en.wikipedia.org/wiki/Hoover_index
@@ -126,6 +127,8 @@ class Statistician(object):
         self.calc_sum()
         self.calc_avg()
         self.calc_metric()
+        if self.sim.gov_exists() is True:
+            self.calc_gov()
 
     def plot_equality(self):
         x_months = [m for m in range(self.sim.num_months)]
@@ -226,6 +229,32 @@ class Statistician(object):
         fig.savefig('fig_connections.png')
         plt.show()
 
+    def plot_gov1(self):
+        x_months = [m for m in range(self.sim.num_months)]
+        y1_tax = self.g_stat['fix']['tax']
+
+        fig, ax = plt.subplots()
+        ax.plot(x_months, y1_tax, 'r', label='Tax rate')
+
+        ax.set(xlabel='Months', ylabel='Tax rate', title='Taxation')
+        ax.grid()
+        ax.legend()
+        fig.savefig('fig_tax.png')
+        plt.show()
+
+    def plot_gov2(self):
+        x_months = [m for m in range(self.sim.num_months)]
+        y1_ubi = self.g_stat['fix']['ubi']
+
+        fig, ax = plt.subplots()
+        ax.plot(x_months, y1_ubi, 'r', label='UBI')
+
+        ax.set(xlabel='Months', ylabel='Money', title='Universal Basic Income')
+        ax.grid()
+        ax.legend()
+        fig.savefig('fig_ubi.png')
+        plt.show()
+
     def hist_money(self):
         # money distribution at the end of the simulation
         f_money_list = [f.money for f in self.sim.firm_list]
@@ -250,6 +279,9 @@ class Statistician(object):
         self.plot_demand()
         self.plot_items()
         self.plot_connections()
+        if self.sim.gov_exists() is True:
+            self.plot_gov1()
+            self.plot_gov2()
         self.hist_money()
 
 ######## ######## ######## IMPORTS ######## ######## ########
