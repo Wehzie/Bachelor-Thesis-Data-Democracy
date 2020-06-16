@@ -105,6 +105,7 @@ class Simulation(object):
         def act_bom_hh():
             random.shuffle(self.hh_list)
             for hh in self.hh_list:
+                hh.reset_income()
                 hh.find_cheaper_vendor()
                 hh.find_stocked_vendor()
                 hh.do_jobsearch()
@@ -139,7 +140,6 @@ class Simulation(object):
 
         for hh in self.hh_list:
             hh.update_res_wage()
-            hh.reset_income()
 
         for f in self.firm_list:
             f.make_layoff_decision()

@@ -192,7 +192,6 @@ class Household(object):
     def update_res_wage(self):
         if self.employer is not None and self.employer.wage > self.res_wage:
             self.res_wage = self.employer.wage
-            
 
     # hhs pay a portion of their monthly income to the government
     def pay_tax(self, tax_rate: float) -> float:
@@ -205,7 +204,7 @@ class Household(object):
 
     # reset how much wage and profit was received this month
     def reset_income(self):
-        self.sum_income = 0
+        self.monthly_income = 0
 
 ######## ######## ######## IMPORTS ######## ######## ########
 

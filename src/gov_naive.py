@@ -1,13 +1,8 @@
 
-
-
-# tax policy (monthly)
-#   1. transaction tax for each purchase
-#   2. possession tax at the end or beginning of month or each n months
-#   3. profit tax (rich households get more dividends)
-#   4. wage based tax?
-#   5. regardless of source, keep field which keeps track of incoming money. tax based only on this value
-#   Grossi: agrees with single income tax and single tax tier
+# TODO: track income during n months
+# TODO: collect tax after n months
+# TODO: pay UBI monthly after n months have passed
+# TODO: goal is to minimize Gini Coefficient
 
 # Arndts: check out Milton Friedman, similar proposals
 
@@ -20,19 +15,10 @@
 #   https://data.oecd.org/inequality/income-inequality.htm#indicator-chart
 #   https://www.bundesfinanzministerium.de/Content/EN/Standardartikel/Topics/International_affairs/Articles/2019-06-07-social-inequalitiy-and-inclusive-growth.html
 #   https://now.allthatstats.com/articles/income-quintile-share-ratio-54
-#   1. minimize Gini Coefficient
-#   2. minimize income quintile share ratio (S80/S20 ratio)
-#   3. minimize Palma Ratio
-#   4. minimize poverty, defined as having a household income less than 60% of median income.
-#   Grossi: Pick one.
 
 # explain why equality is good and with what other desireable parameters it correlates
 
-# money redistribution by basic universal income (also taxed) each month
-# parties have different ideas on how high ubi should be
-# based on this they have target taxes
-
-
+# money redistribution by basic universal income each month
 
 # third type of government where people aren't asked and taxes are take to eliminate poverty
 # no one is asked
@@ -53,16 +39,16 @@ class Gov_naive(object):
     def __init__(self, sim: object):
         self.sim = sim          # link government to the simulation
         self.money = 0          # money available to government for redistribution
-        self.tax_rate = 0       # taxrate collected from each hh monthly
+        self.tax_rate = 0       # taxes are collected each n months based on income and taxrate
         self.ubi = 0            # ubi paid to each hh monthly
 
     # TODO: test out some factors here (0.5 and 2)
     # taxrate is proportional to the gini index
     def vote_tax(self):
         if len(self.sim.stat.hh_stat['metric']['gini']) == 0:
-            self.tax_rate = 0.2
+            self.tax_rate = 0.1
         else:
-            self.tax_rate = self.sim.stat.hh_stat['metric']['gini'][-1]
+            self.tax_rate = self.sim.stat.hh_stat['metric']['gini'][-1] * 0.1
 
     # collect taxes from all households
     def collect_tax(self):
