@@ -51,6 +51,10 @@ class Simulation(object):
         'rw_change_fired': 1,               # reservation wage change at moment of being fired
     }
 
+    g_param = {
+        'naive_tax_rate': 3,           # naive government's tax rate is based on the gini index and this factor
+    }
+
     firm_list = []                      # list of all firms in the model
     hh_list = []                        # list of all hh in the model
 
@@ -92,6 +96,7 @@ class Simulation(object):
     def init_government(self):
         if self.gov_type == None: return # TODO: gov type none just passes on all function calls
         if self.gov_type == 'naive': self.gov = Gov_naive(self)
+        if self.gov_type == 'rep': self.gov = Gov_rep(self)
 
     # actions at the beginning of a month
     def act_bom(self):
@@ -191,4 +196,5 @@ from household import Household
 from firm import Firm
 from statistician import Statistician
 from gov_naive import Gov_naive
+from gov_rep import Gov_rep
 import random

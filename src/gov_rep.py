@@ -1,19 +1,9 @@
 
-# sample randomly from households
-# firms are not in government since firms are composed of households, this more closely reflects political reality
 
-# divide households into quintiles by money
-# analyze movement between quintiles over time
-
-# representative government
-# on inception a 4 year plan is made that is not deviated from
-# this plan is an agreement on how to tax in the 4 coming years
-# members of parliament MOP belong to 1 of 5 parties (set by wealth quintiles)
-# depending on the wealth of each group, a target UBI is calculated
-# a voting and negotiation process is replaced by a calculation factoring each groups target UBI
-# the weight of a group's vote is determined by the number of its members
-# Via the negotiated UBI a target tax value is calculated
-
+# households are randomly sampled from the population of hhs
+# based on income a hh belongs to a party
+# each party votes for a different tax rate
+# the poorest party votes for highest taxes
 
 class Gov_rep(object):
     
@@ -22,35 +12,34 @@ class Gov_rep(object):
         self.money = 0          # money available to government for redistribution
         self.tax_rate = 0       # taxes are collected each n months based on income and taxrate
         self.ubi = 0            # ubi paid to each hh monthly
-        self.parliament = {}
 
     def vote_tax(self):
-        # Germany has 83 million citizens
-        # While varying in practise, by law Deutscher Bundestag has 598 representatives
-        # Germany by population lies somwhere in the middle of representative democracies (Finland has 5 mil and India has 1.35 bil)
-        # 83000000/598 = 138796. 1 MP represents more than 100000 people.
-        # In Finland: 5000000/200 = 25000
-        # With just 1000 households a similar relationship cannot be achieved
-        # I choose parliament size 50 since there are 5 quintiles of people and there is a fair chance for each quintile to be represented
+        hh_money_sorted = sorted(self.sim.hh_list, key=lambda hh: hh.money) # sort households by money
+        quint = hh_money_sorted[199::200]                                   # quintile cutoff points
+        mp_list = random.sample(self.sim.hh_list, 50)                       # members of parliament
+        party_size = [0, 0, 0, 0, 0]
+        for mp in mp_list:
+            for i in range(len(quint)):
+                if mp.money <= quint[i].money:
+                    party_size[i] += 1
+                    break
 
-
-        #list of hh sorted by money
-        #divide into quinitles of 0-199, 200-399 ... -999
-        #look at money of hh 200, 400, 600, 800 those are the cutoff points
-        #in mp_list count the number of people within each bin
-        #rep_gov_comp = [num_members_q1, nm_q2, ...] 
-
-        mp_list = random.sample(self.sim.hh_list, 50)
-
-
-
-        self.parliament = {}
-
-        # Fini
+        # before a gini index has been calculated assume an arbitrary tax rate
         if len(self.sim.stat.hh_stat['metric']['gini']) == 0:
             self.tax_rate = 0.1
         else:
-            self.tax_rate = self.sim.stat.hh_stat['metric']['gini'][-1] * 0.1
+            gini = self.sim.stat.hh_stat['metric']['gini'][-1]
+            init_tax_factor = 2.5
+            tax_factor_step = 0.5
+            self.tax_rate = 0
+            # the first quintile party demands the highest tax rate
+            # with each quintile the demanded tax rate is decreased
+            # the weight of a party is determined by the number of members in its party
+            # the final tax rate is calculated by averaging the individual votes
+            for p in party_size:
+                self.tax_rate += gini * init_tax_factor * p
+                init_tax_factor -= tax_factor_step
+            self.tax_rate =  self.tax_rate / sum(party_size)
 
     # collect taxes from all households
     def collect_tax(self):
@@ -65,6 +54,7 @@ class Gov_rep(object):
     def pay_ubi(self):
         for hh in self.sim.hh_list:
             hh.receive_ubi(self.ubi)
+        self.money = 0
 
 ######## ######## ######## IMPORTS ######## ######## ########
 

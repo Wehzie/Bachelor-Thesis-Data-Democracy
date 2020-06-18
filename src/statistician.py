@@ -55,6 +55,7 @@ class Statistician(object):
     # TODO: Max and min for how many customers do firms have
     # TODO: error bars, box plots, violin plots are great
     # TODO: Prettier graphs https://stackoverflow.com/questions/14908576/how-to-remove-frame-from-matplotlib-pyplot-figure-vs-matplotlib-figure-frame
+    # Indication for movement between quantiles.
 
     ######## ######## ######## METHODS ######## ######## ########
 
@@ -125,9 +126,6 @@ class Statistician(object):
     # each month notify the statistician of what is going on in the simulation
     def up_stat(self):
         self.calc_sum()
-        if len(self.f_stat['sum']['money']) > 0:
-            print(self.f_stat['sum']['money'][-1] + self.hh_stat['sum']['money'][-1])
-            # BUG: Gove_naive keeps grows the total money in the simulation
         self.calc_avg()
         self.calc_metric()
         if self.sim.gov_exists() is True:

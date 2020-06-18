@@ -45,10 +45,10 @@ class Gov_naive(object):
     # TODO: test out some factors here (0.5 and 2)
     # taxrate is proportional to the gini index
     def vote_tax(self):
-        if len(self.sim.stat.hh_stat['metric']['gini']) == 0:
-            self.tax_rate = 0.1
+        if len(self.sim.stat.hh_stat['metric']['gini']) == 0:           # before the gini index is available a fixed tax rate is set
+            self.tax_rate = 0.1 
         else:
-            self.tax_rate = self.sim.stat.hh_stat['metric']['gini'][-1] * 0.1
+            self.tax_rate = self.sim.stat.hh_stat['metric']['gini'][-1] * self.sim.g_param['naive_tax_rate']
 
     # collect taxes from all households
     def collect_tax(self):
@@ -63,6 +63,7 @@ class Gov_naive(object):
     def pay_ubi(self):
         for hh in self.sim.hh_list:
             hh.receive_ubi(self.ubi)
+        self.money = 0
 
     # collect tax at end of year
     # pay out ubi next year based on amassed money of previous year
