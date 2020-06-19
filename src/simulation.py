@@ -172,7 +172,10 @@ class Simulation(object):
         return hh_sum
 
     def gov_exists(self) -> bool:
-        if self.gov_type == None: return False
+        if self.gov_type == None:
+            return False
+        else:
+            return True
 
     def gov_action(self):
         if self.gov_exists() is False: return

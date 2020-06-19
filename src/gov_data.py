@@ -36,6 +36,9 @@ class Gov_data(object):
             self.tax_rate += gini * median_money / hh.money
         self.tax_rate = self.tax_rate /self.sim.hh_param['num_hh']
 
+        # tax rate shouldn't exceed 100% of the income
+        if self.tax_rate > 1: self.tax_rate = 1
+
     # collect taxes from all households each month
     def collect_tax(self):
         for hh in self.sim.hh_list:

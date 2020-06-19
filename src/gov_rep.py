@@ -70,6 +70,9 @@ class Gov_rep(object):
             init_tax_factor -= tax_factor_step
         self.tax_rate = self.tax_rate / sum(party_size)
 
+        # tax rate shouldn't exceed 100% of the income
+        if self.tax_rate > 1: self.tax_rate = 1
+
     # collect taxes from all households each month
     def collect_tax(self):
         for hh in self.sim.hh_list:

@@ -28,6 +28,9 @@ class Gov_naive(object):
         # taxrate is proportional to the gini index
         self.tax_rate = self.sim.stat.hh_stat['metric']['gini'][-1] * self.sim.g_param['naive_tax_rate']
 
+        # tax rate shouldn't exceed 100% of the income
+        if self.tax_rate > 1: self.tax_rate = 1
+
     # collect taxes from all households each month
     def collect_tax(self):
         for hh in self.sim.hh_list:
