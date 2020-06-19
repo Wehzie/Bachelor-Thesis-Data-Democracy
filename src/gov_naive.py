@@ -1,11 +1,14 @@
 
-# TODO: track income during n months
-# TODO: collect tax after n months
-# TODO: pay UBI monthly after n months have passed
-# TODO: goal is to minimize Gini Coefficient
 
-# government does not keep state or make profit, money that is collected is immediately spent
-# single tax value for all instead of tiered tax
+# this government considers economic parameters for setting taxes
+# individuals and representatives are not part of the decision making process
+
+# each month all households are income taxed with a single tax rate
+# each month all households receives a universal basic income
+# all money that is collected from taxes is spent on ubi
+
+# the tax rate changes each month
+# the ubi changes each month
 
 class Gov_naive(object):
     
@@ -15,14 +18,17 @@ class Gov_naive(object):
         self.tax_rate = 0       # taxes are collected each n months based on income and taxrate
         self.ubi = 0            # ubi paid to each hh monthly
 
-    # taxrate is proportional to the gini index
+    # calculate a tax rate from the gini index
     def vote_tax(self):
-        if len(self.sim.stat.hh_stat['metric']['gini']) == 0:           # before the gini index is available a fixed tax rate is set
-            self.tax_rate = 0.1 
-        else:
-            self.tax_rate = self.sim.stat.hh_stat['metric']['gini'][-1] * self.sim.g_param['naive_tax_rate']
+        # only tax households once enough data is available
+        if len(self.sim.stat.hh_stat['metric']['gini']) == 0:           
+            self.tax_rate = 0
+            return
 
-    # collect taxes from all households
+        # taxrate is proportional to the gini index
+        self.tax_rate = self.sim.stat.hh_stat['metric']['gini'][-1] * self.sim.g_param['naive_tax_rate']
+
+    # collect taxes from all households each month
     def collect_tax(self):
         for hh in self.sim.hh_list:
             self.money += hh.pay_tax(self.tax_rate)
@@ -31,16 +37,11 @@ class Gov_naive(object):
     def calc_ubi(self):
         self.ubi = self.money / self.sim.hh_param['num_hh']
 
-    # pay equal ubi to all households
+    # pay equal ubi to all households each month
     def pay_ubi(self):
         for hh in self.sim.hh_list:
             hh.receive_ubi(self.ubi)
         self.money = 0
-
-    # collect tax at end of year
-    # pay out ubi next year based on amassed money of previous year
-    # ubi changes each year
-    # tax changes each 4 years
 
 ######## ######## ######## IMPORTS ######## ######## ########
 

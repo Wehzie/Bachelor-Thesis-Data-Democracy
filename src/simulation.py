@@ -6,9 +6,11 @@
 
 class Simulation(object):
     
-    ######## ######## ######## INSTANCE VARIABLES ######## ######## ########
+    ######## ######## ######## STATIC VARIABLES ######## ######## ########
 
     days_in_month = 21                  # number of working days in a month
+    months_in_year = 12                 # number of months in a year
+
 
     f_param = {
         'num_firms': 100,               # total number of firms
@@ -52,7 +54,9 @@ class Simulation(object):
     }
 
     g_param = {
-        'naive_tax_rate': 3,           # naive government's tax rate is based on the gini index and this factor
+        'naive_tax_rate': 3,                # naive government's tax rate is based on the gini index and this factor
+        'rep_term_length': 48,              # representative government's term length in months
+        'rep_init_tax_factor': 2.5          # representative government's lowest quintile party votes using this factor 
     }
 
     firm_list = []                      # list of all firms in the model

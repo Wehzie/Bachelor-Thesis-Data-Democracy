@@ -3,6 +3,8 @@
 # the statistician object stores data about the simulation and implements methods to visualize and further process this data
 class Statistician(object):
 
+    ######## ######## ######## CONSTRUCTOR ######## ######## ########
+
     def __init__(self, sim: object):
         self.sim = sim
 
@@ -49,15 +51,6 @@ class Statistician(object):
                 'ubi': [],
             }
         }
-
-    # TODO: Implement different kinds of dotted lines for black and white suitable display
-    # TODO: think about days within a month. maybe higher resolution than month plots make sense for some cases
-    # TODO: Max and min for how many customers do firms have
-    # TODO: error bars, box plots, violin plots are great
-    # TODO: Prettier graphs https://stackoverflow.com/questions/14908576/how-to-remove-frame-from-matplotlib-pyplot-figure-vs-matplotlib-figure-frame
-    
-    # TODO: Indication for movement between quantiles in firms and households.
-    # TODO: plot party composition histogram
 
     ######## ######## ######## METHODS ######## ######## ########
 
@@ -293,3 +286,14 @@ from simulation import Simulation
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+
+######## ######## ######## TODOS ######## ######## ########
+
+    # TODO: Implement different kinds of dotted lines for black and white suitable display
+    # TODO: think about days within a month. maybe higher resolution than month plots make sense for some cases
+    # TODO: Max and min for how many customers do firms have
+    # TODO: error bars, box plots, violin plots are great
+    # TODO: Prettier graphs https://stackoverflow.com/questions/14908576/how-to-remove-frame-from-matplotlib-pyplot-figure-vs-matplotlib-figure-frame
+    
+    # TODO: Indication for movement between quantiles in firms and households.
+    # TODO: plot party composition histogram

@@ -1,12 +1,13 @@
 
 
-# data driven government
-# taxes are adjusted monthly
-# parliament is replaced by the entire population of households
-# for each household a target tax is calculated instead of categorizing them into 5 parties
-# all households have equal weight
+# this government models a direct democracy where individuals cast direct votes for a tax rate
 
+# each month all households are income taxed with a single tax rate
+# each month all households receives a universal basic income
+# all money that is collected from taxes is spent on ubi
 
+# the tax rate changes each year
+# the ubi changes each year
 
 class Gov_data(object):
     
@@ -16,19 +17,26 @@ class Gov_data(object):
         self.tax_rate = 0       # taxes are collected each n months based on income and taxrate
         self.ubi = 0            # ubi paid to each hh monthly
 
+
+    # each household proposes a tax rate
+    # all households have equal weight
+    # by averaging indiviual votes a final tax rate is calculated
     def vote_tax(self):
-
-        # before a gini index has been calculated assume an arbitrary tax rate
-        if len(self.sim.stat.hh_stat['metric']['gini']) == 0:
-            self.tax_rate = 0.1
-        else:
-            median_money = self.sim.hh_list[self.sim.hh_param['num_hh'] // 2].money
+        # only tax households once enough data is available
+        if len(self.sim.stat.hh_stat['metric']['gini']) < 12:
             self.tax_rate = 0
-            for hh in self.sim.hh_list:
-                self.tax_rate += self.sim.stat.hh_stat['metric']['gini'][-1] * median_money / hh.money
-            self.tax_rate = self.tax_rate /self.sim.hh_param['num_hh']
+            return
 
-    # collect taxes from all households
+        year_gini_list = self.sim.stat.hh_stat['metric']['gini'][-12:]
+        gini = sum(year_gini_list) / len(year_gini_list)                    # mean gini index of the last year
+        
+        median_money = self.sim.hh_list[self.sim.hh_param['num_hh'] // 2].money
+        self.tax_rate = 0
+        for hh in self.sim.hh_list:
+            self.tax_rate += gini * median_money / hh.money
+        self.tax_rate = self.tax_rate /self.sim.hh_param['num_hh']
+
+    # collect taxes from all households each month
     def collect_tax(self):
         for hh in self.sim.hh_list:
             self.money += hh.pay_tax(self.tax_rate)
@@ -37,7 +45,7 @@ class Gov_data(object):
     def calc_ubi(self):
         self.ubi = self.money / self.sim.hh_param['num_hh']
 
-    # pay equal ubi to all households
+    # pay equal ubi to all households each month
     def pay_ubi(self):
         for hh in self.sim.hh_list:
             hh.receive_ubi(self.ubi)
