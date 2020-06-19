@@ -97,6 +97,7 @@ class Simulation(object):
         if self.gov_type == None: return # TODO: gov type none just passes on all function calls
         if self.gov_type == 'naive': self.gov = Gov_naive(self)
         if self.gov_type == 'rep': self.gov = Gov_rep(self)
+        if self.gov_type == 'data': self.gov = Gov_data(self)
 
     # actions at the beginning of a month
     def act_bom(self):
@@ -197,4 +198,5 @@ from firm import Firm
 from statistician import Statistician
 from gov_naive import Gov_naive
 from gov_rep import Gov_rep
+from gov_data import Gov_data
 import random

@@ -193,9 +193,10 @@ class Household(object):
         if self.employer is not None and self.employer.wage > self.res_wage:
             self.res_wage = self.employer.wage
 
-    # hhs pay a portion of their monthly income to the government
+    # hhs pay a portion of their monthly income to the government but not more than they have
     def pay_tax(self, tax_rate: float) -> float:
         tax = self.monthly_income * tax_rate
+        if self.money - tax < 0: tax = self.money
         self.money -= tax
         return tax
 

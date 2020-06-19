@@ -55,7 +55,9 @@ class Statistician(object):
     # TODO: Max and min for how many customers do firms have
     # TODO: error bars, box plots, violin plots are great
     # TODO: Prettier graphs https://stackoverflow.com/questions/14908576/how-to-remove-frame-from-matplotlib-pyplot-figure-vs-matplotlib-figure-frame
-    # Indication for movement between quantiles.
+    
+    # TODO: Indication for movement between quantiles in firms and households.
+    # TODO: plot party composition histogram
 
     ######## ######## ######## METHODS ######## ######## ########
 
