@@ -5,8 +5,8 @@
 from simulation import Simulation
 
 def main():
-    num_months = 100
-    gov_types = [None, 'naive', 'rep', 'data']
+    num_months = 20
+    gov_types = [None, 'data', 'rep', 'dir']
     gov_type = gov_types[3]
 
     #print("(1) Default parameters.")

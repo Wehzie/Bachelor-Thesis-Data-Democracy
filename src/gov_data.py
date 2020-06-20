@@ -1,13 +1,14 @@
 
 
-# this government models a direct democracy where individuals cast direct votes for a tax rate
+# this government considers economic parameters for setting taxes
+# individuals and representatives are not part of the decision making process
 
 # each month all households are income taxed with a single tax rate
 # each month all households receives a universal basic income
 # all money that is collected from taxes is spent on ubi
 
-# the tax rate changes each year
-# the ubi changes each year
+# the tax rate changes each month
+# the ubi changes each month
 
 class Gov_data(object):
     
@@ -17,24 +18,15 @@ class Gov_data(object):
         self.tax_rate = 0       # taxes are collected each n months based on income and taxrate
         self.ubi = 0            # ubi paid to each hh monthly
 
-
-    # each household proposes a tax rate
-    # all households have equal weight
-    # by averaging indiviual votes a final tax rate is calculated
+    # calculate a tax rate from the gini index
     def vote_tax(self):
         # only tax households once enough data is available
-        if len(self.sim.stat.hh_stat['metric']['gini']) < 12:
+        if len(self.sim.stat.hh_stat['metric']['gini']) == 0:           
             self.tax_rate = 0
             return
 
-        year_gini_list = self.sim.stat.hh_stat['metric']['gini'][-12:]
-        gini = sum(year_gini_list) / len(year_gini_list)                    # mean gini index of the last year
-        
-        median_money = self.sim.hh_list[self.sim.hh_param['num_hh'] // 2].money
-        self.tax_rate = 0
-        for hh in self.sim.hh_list:
-            self.tax_rate += gini * median_money / hh.money
-        self.tax_rate = self.tax_rate /self.sim.hh_param['num_hh']
+        # taxrate is proportional to the gini index
+        self.tax_rate = self.sim.stat.hh_stat['metric']['gini'][-1] * self.sim.g_param['data_tax_rate']
 
         # tax rate shouldn't exceed 100% of the income
         if self.tax_rate > 1: self.tax_rate = 1
@@ -57,4 +49,3 @@ class Gov_data(object):
 ######## ######## ######## IMPORTS ######## ######## ########
 
 from simulation import Simulation
-import random

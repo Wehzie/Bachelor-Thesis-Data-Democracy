@@ -54,7 +54,7 @@ class Simulation(object):
     }
 
     g_param = {
-        'naive_tax_rate': 3,                # naive government's tax rate is based on the gini index and this factor
+        'data_tax_rate': 3,                # data government's tax rate is based on the gini index and this factor
         'rep_term_length': 48,              # representative government's term length in months
         'rep_init_tax_factor': 2.5          # representative government's lowest quintile party votes using this factor 
     }
@@ -99,9 +99,9 @@ class Simulation(object):
     # initialize the government
     def init_government(self):
         if self.gov_type == None: return # TODO: gov type none just passes on all function calls
-        if self.gov_type == 'naive': self.gov = Gov_naive(self)
-        if self.gov_type == 'rep': self.gov = Gov_rep(self)
         if self.gov_type == 'data': self.gov = Gov_data(self)
+        if self.gov_type == 'rep': self.gov = Gov_rep(self)
+        if self.gov_type == 'dir': self.gov = Gov_dir(self)
 
     # actions at the beginning of a month
     def act_bom(self):
@@ -203,7 +203,7 @@ class Simulation(object):
 from household import Household
 from firm import Firm
 from statistician import Statistician
-from gov_naive import Gov_naive
-from gov_rep import Gov_rep
 from gov_data import Gov_data
+from gov_rep import Gov_rep
+from gov_dir import Gov_dir
 import random
