@@ -17,7 +17,6 @@ class Gov_dir(object):
         self.tax_rate = 0       # taxes are collected each n months based on income and taxrate
         self.ubi = 0            # ubi paid to each hh monthly
 
-
     # each household proposes a tax rate
     # all households have equal weight
     # by averaging indiviual votes a final tax rate is calculated
@@ -33,8 +32,9 @@ class Gov_dir(object):
         median_money = self.sim.hh_list[self.sim.hh_param['num_hh'] // 2].money
         self.tax_rate = 0
         for hh in self.sim.hh_list:
+            # gini index is multiplied by a measure of how far a hh is below or above the median money
             self.tax_rate += gini * median_money / hh.money
-        self.tax_rate = self.tax_rate /self.sim.hh_param['num_hh']
+        self.tax_rate = self.tax_rate / self.sim.hh_param['num_hh']
 
         # tax rate shouldn't exceed 100% of the income
         if self.tax_rate > 1: self.tax_rate = 1
