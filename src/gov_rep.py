@@ -15,26 +15,25 @@ class Gov_rep(object):
     ######## ######## ######## CONSTRUCTOR ######## ######## ########
 
     def __init__(self, sim: object):
-        self.sim = sim          # link government to the simulation
-        self.money = 0          # money available to government for redistribution
-        self.tax_rate = 0       # taxes are collected each n months based on income and taxrate
-        self.ubi = 0            # ubi paid to each hh monthly
+        self.sim = sim                          # link government to the simulation
+        self.money = 0                          # money available to government for redistribution
+        self.tax_rate = 0                       # taxes are collected each n months based on income and taxrate
+        self.ubi = 0                            # ubi paid to each hh monthly
+        self.party_size = [0, 0, 0, 0, 0]       # number of members in each quintile party
 
     ######## ######## ######## METHODS ######## ######## ########
 
     # each term a new government is elected in the form of a parliamentary composition
-    def assemble_parliament(self) -> list:
+    def assemble_parliament(self):
         hh_money_sorted = sorted(self.sim.hh_list, key=lambda hh: hh.money) # sort households by money
         quint = hh_money_sorted[199::200]                                   # quintile cutoff points
         mp_list = random.sample(self.sim.hh_list, 50)                       # members of parliament
-        party_size = [0, 0, 0, 0, 0]                                        # number of members in each quintile party
+        self.party_size = [0, 0, 0, 0, 0]                                   # reset parliament
         for mp in mp_list:
             for i in range(len(quint)):
                 if mp.money <= quint[i].money:
-                    party_size[i] += 1
+                    self.party_size[i] += 1
                     break
-
-        return party_size
 
     # households are randomly sampled from the population of hhs
     # based on income a hh belongs to a party
@@ -53,7 +52,7 @@ class Gov_rep(object):
         # first government established after one year has passed
         # only elect a new government once a term has passed
         if self.sim.current_month - self.sim.months_in_year % self.sim.g_param['rep_term_length'] == 0:
-            party_size = self.assemble_parliament()
+            self.assemble_parliament()
 
         year_gini_list = self.sim.stat.hh_stat['metric']['gini'][-12:]
         gini = sum(year_gini_list) / len(year_gini_list)                    # mean gini index of the last year
@@ -63,12 +62,12 @@ class Gov_rep(object):
         # the weight of a party is determined by the number of members in its party
         # the final tax rate is calculated by averaging the individual votes
         init_tax_factor = 2.5                                               # initial tax chosen by the lowest quintile party
-        tax_factor_step = init_tax_factor / len(party_size)                 # reduction step from initial tax per party
+        tax_factor_step = init_tax_factor / len(self.party_size)            # reduction step from initial tax per party
         self.tax_rate = 0
-        for p in party_size:
+        for p in self.party_size:
             self.tax_rate += gini * init_tax_factor * p
             init_tax_factor -= tax_factor_step
-        self.tax_rate = self.tax_rate / sum(party_size)
+        self.tax_rate = self.tax_rate / sum(self.party_size)
 
         # tax rate shouldn't exceed 100% of the income
         if self.tax_rate > 1: self.tax_rate = 1

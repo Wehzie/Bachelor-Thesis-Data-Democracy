@@ -5,9 +5,9 @@
 from simulation import Simulation
 
 def main():
-    num_months = 20
+    num_months = 40
     gov_types = [None, 'data', 'rep', 'dir']
-    gov_type = gov_types[3]
+    gov_type = gov_types[2]
 
     #print("(1) Default parameters.")
     #print("(2) Set number of months."
