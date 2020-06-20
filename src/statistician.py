@@ -7,6 +7,7 @@ class Statistician(object):
 
     def __init__(self, sim: object):
         self.sim = sim
+        self.x_months = [m for m in range(self.sim.num_months)]     # x-axis for most plots is time in months
 
         self.f_stat = {
             
@@ -98,7 +99,6 @@ class Statistician(object):
             sum_diff_i_mean += abs(hh.money - self.hh_stat['avg']['money'][-1])
         return 1/2 * sum_diff_i_mean / self.hh_stat['sum']['money'][-1]
 
-
     # based on https://github.com/oliviaguest/gini
     def calc_gini(self):
         array = np.array([hh.money for hh in self.sim.hh_list])
@@ -127,13 +127,12 @@ class Statistician(object):
             self.calc_gov()
 
     def plot_equality(self):
-        x_months = [m for m in range(self.sim.num_months)]
         y1_hoover = self.hh_stat['metric']['hoover']
         y2_gini = self.hh_stat['metric']['gini']
 
         fig, ax = plt.subplots()
-        ax.plot(x_months, y1_hoover, 'r', label='Hoover index')
-        ax.plot(x_months, y2_gini, 'b', label='Gini index')
+        ax.plot(self.x_months, y1_hoover, 'r', label='Hoover index')
+        ax.plot(self.x_months, y2_gini, 'b', label='Gini index')
 
         ax.set(xlabel='Months', ylabel='Equality', title='Metrics of economic equality')
         ax.grid()
@@ -143,13 +142,12 @@ class Statistician(object):
 
     # plot averages for firm money and household money against time
     def plot_money (self):
-        x_months = [m for m in range(self.sim.num_months)]
         y1_f_money = self.f_stat['avg']['money']
         y2_hh_money = self.hh_stat['avg']['money']
 
         fig, ax = plt.subplots()
-        ax.plot(x_months, y1_f_money, 'r', label='Money firm average')
-        ax.plot(x_months, y2_hh_money, 'b', label='Money household average')
+        ax.plot(self.x_months, y1_f_money, 'r', label='Money firm average')
+        ax.plot(self.x_months, y2_hh_money, 'b', label='Money household average')
 
         ax.set(xlabel='Months', ylabel='Money', title='Money distribution between firms and households')
         ax.grid()
@@ -159,13 +157,12 @@ class Statistician(object):
 
     # plot averages for firm wage and household reservation wage against time
     def plot_wage (self):
-        x_months = [m for m in range(self.sim.num_months)]
         y1_f_wage = self.f_stat['avg']['wage']
         y2_hh_res_wage = self.hh_stat['avg']['res_wage']
 
         fig, ax = plt.subplots()
-        ax.plot(x_months, y1_f_wage, 'r', label='Wage firm average')
-        ax.plot(x_months, y2_hh_res_wage, 'b', label='Reservation wage household average')
+        ax.plot(self.x_months, y1_f_wage, 'r', label='Wage firm average')
+        ax.plot(self.x_months, y2_hh_res_wage, 'b', label='Reservation wage household average')
 
         ax.set(xlabel='Months', ylabel='Money', title='Wage and reservation wage')
         ax.grid()
@@ -175,13 +172,12 @@ class Statistician(object):
 
     # plot averages for number of items a firm has in stock and demand 
     def plot_demand (self):
-        x_months = [m for m in range(self.sim.num_months)]
         y1_f_num_items = self.f_stat['avg']['num_items']
         y2_f_demand = self.f_stat['avg']['demand']
 
         fig, ax = plt.subplots()
-        ax.plot(x_months, y1_f_num_items, 'r', label='Number of stocked items firm average')
-        ax.plot(x_months, y2_f_demand, 'b', label='Demand firm average')
+        ax.plot(self.x_months, y1_f_num_items, 'r', label='Number of stocked items firm average')
+        ax.plot(self.x_months, y2_f_demand, 'b', label='Demand firm average')
 
         ax.set(xlabel='Months', ylabel='Items', title='Item demand and price')
         ax.grid()
@@ -191,15 +187,14 @@ class Statistician(object):
 
     # plot firm's marginal cost and item price as well as household employment rate
     def plot_items (self):
-        x_months = [m for m in range(self.sim.num_months)]
         y1_f_marginal_cost = self.f_stat['avg']['marginal_cost']
         y2_f_item_price = self.f_stat['avg']['item_price']
         y3_hh_employment = self.hh_stat['avg']['employment']
 
         fig, ax = plt.subplots()
-        ax.plot(x_months, y1_f_marginal_cost, 'b', label='Marginal cost firm average')
-        ax.plot(x_months, y2_f_item_price, 'g', label='Item price firm average')
-        ax.plot(x_months, y3_hh_employment, 'r', label='Employment rate of households')
+        ax.plot(self.x_months, y1_f_marginal_cost, 'b', label='Marginal cost firm average')
+        ax.plot(self.x_months, y2_f_item_price, 'g', label='Item price firm average')
+        ax.plot(self.x_months, y3_hh_employment, 'r', label='Employment rate of households')
 
         ax.set(xlabel='Months', ylabel='', title='Item price, marginal cost and employment rate')
         ax.grid()
@@ -211,13 +206,12 @@ class Statistician(object):
         # firms' number of employees
         # the duration for which firms have been looking to hire
     def plot_connections (self):
-        x_months = [m for m in range(self.sim.num_months)]
         y1_f_num_employees = self.f_stat['avg']['num_employees']
         y2_f_months_hiring = self.f_stat['avg']['months_hiring']
 
         fig, ax = plt.subplots()
-        ax.plot(x_months, y1_f_num_employees, 'r', label='Number of employees firm average')
-        ax.plot(x_months, y2_f_months_hiring, 'b', label='Recruiting duration firm average')
+        ax.plot(self.x_months, y1_f_num_employees, 'r', label='Number of employees firm average')
+        ax.plot(self.x_months, y2_f_months_hiring, 'b', label='Recruiting duration firm average')
 
         ax.set(xlabel='Months', ylabel='', title='Employer-employee relations')
         ax.grid()
@@ -225,12 +219,11 @@ class Statistician(object):
         fig.savefig('fig_connections.png')
         plt.show()
 
-    def plot_gov1(self):
-        x_months = [m for m in range(self.sim.num_months)]
+    def plot_tax(self):
         y1_tax = self.g_stat['fix']['tax']
 
         fig, ax = plt.subplots()
-        ax.plot(x_months, y1_tax, 'r', label='Tax rate')
+        ax.plot(self.x_months, y1_tax, 'r', label='Tax rate')
 
         ax.set(xlabel='Months', ylabel='Tax rate', title='Taxation')
         ax.grid()
@@ -238,12 +231,11 @@ class Statistician(object):
         fig.savefig('fig_tax.png')
         plt.show()
 
-    def plot_gov2(self):
-        x_months = [m for m in range(self.sim.num_months)]
+    def plot_ubi(self):
         y1_ubi = self.g_stat['fix']['ubi']
 
         fig, ax = plt.subplots()
-        ax.plot(x_months, y1_ubi, 'r', label='UBI')
+        ax.plot(self.x_months, y1_ubi, 'r', label='UBI')
 
         ax.set(xlabel='Months', ylabel='Money', title='Universal Basic Income')
         ax.grid()
@@ -276,8 +268,8 @@ class Statistician(object):
         self.plot_items()
         self.plot_connections()
         if self.sim.gov_exists() is True:
-            self.plot_gov1()
-            self.plot_gov2()
+            self.plot_tax()
+            self.plot_ubi()
         self.hist_money()
 
 ######## ######## ######## IMPORTS ######## ######## ########

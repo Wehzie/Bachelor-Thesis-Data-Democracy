@@ -11,7 +11,6 @@ class Simulation(object):
     days_in_month = 21                  # number of working days in a month
     months_in_year = 12                 # number of months in a year
 
-
     f_param = {
         'num_firms': 100,               # total number of firms
         'months_lo_wage': 24,           # gamma: in number of months. duration after which wage is increased when all job positions filled
@@ -59,18 +58,18 @@ class Simulation(object):
         'rep_init_tax_factor': 2.5          # representative government's lowest quintile party votes using this factor 
     }
 
-    firm_list = []                      # list of all firms in the model
-    hh_list = []                        # list of all hh in the model
-
-    stat = None                         # tracking, plotting and analyzing data
-    gov = None                          # government responsible for tax and ubi
-
     ######## ######## ######## CONSTRUCTOR ######## ######## ########
 
     def __init__(self, num_months: int, gov_type: str):
         self.num_months = num_months        # number of months simulated
         self.current_month = 0              # currently simulated month by number
         self.gov_type = gov_type            # the type of government used
+
+        self.firm_list = []                      # list of all firms in the model
+        self.hh_list = []                        # list of all hh in the model
+
+        self.stat = None                         # tracking, plotting and analyzing data
+        self.gov = None                          # government responsible for tax and ubi
 
     ######## ######## ######## METHODS ######## ######## ########
 
