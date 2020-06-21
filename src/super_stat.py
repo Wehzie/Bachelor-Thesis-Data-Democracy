@@ -69,10 +69,11 @@ class Super_stat(object):
             for measure_key, measure_val in stat_val.items():
                 self.hh_stat[stat_key][measure_key] = np.vstack((self.hh_stat[stat_key][measure_key], np.array(measure_val)))
 
-        for stat_key, stat_val in run.g_stat.items():
-            for measure_key, measure_val in stat_val.items():
-                self.g_stat[stat_key][measure_key] = np.vstack((self.g_stat[stat_key][measure_key], np.array(measure_val)))
-    
+        if run.sim.gov_exists():
+            for stat_key, stat_val in run.g_stat.items():
+                for measure_key, measure_val in stat_val.items():
+                    self.g_stat[stat_key][measure_key] = np.vstack((self.g_stat[stat_key][measure_key], np.array(measure_val)))
+        
     def plot_money(self):
         x = range(np.size(self.f_stat['sum']['money'], axis=1))
         y = np.mean(self.f_stat['sum']['money'], axis=0)

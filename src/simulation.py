@@ -53,23 +53,26 @@ class Simulation(object):
     }
 
     g_param = {
-        'data_tax_rate': 3,                # data government's tax rate is based on the gini index and this factor
+        'data_tax_rate': 3,                 # data government's tax rate is based on the gini index and this factor
         'rep_term_length': 48,              # representative government's term length in months
         'rep_init_tax_factor': 2.5          # representative government's lowest quintile party votes using this factor 
     }
 
     ######## ######## ######## CONSTRUCTOR ######## ######## ########
 
-    def __init__(self, num_months: int, gov_type: str):
+    def __init__(self, num_months: int, gov_type: str, plot_per_run):
         self.num_months = num_months        # number of months simulated
         self.current_month = 0              # currently simulated month by number
         self.gov_type = gov_type            # the type of government used
 
-        self.firm_list = []                      # list of all firms in the model
-        self.hh_list = []                        # list of all hh in the model
+        self.firm_list = []                 # list of all firms in the model
+        self.hh_list = []                   # list of all hh in the model
 
-        self.stat = None                         # tracking, plotting and analyzing data
-        self.gov = None                          # government responsible for tax and ubi
+        self.stat = None                    # tracking, plotting and analyzing data
+        self.gov = None                     # government responsible for tax and ubi
+
+        self.plot_per_run = plot_per_run    # whether to show and save plots for each run of the simulation
+
 
     ######## ######## ######## METHODS ######## ######## ########
 
@@ -195,7 +198,7 @@ class Simulation(object):
 
             self.current_month += 1
 
-        self.stat.invoke_plots()
+        if self.plot_per_run is True: self.stat.invoke_plots()
 
 ######## ######## ######## IMPORTS ######## ######## ########
 

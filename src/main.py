@@ -6,24 +6,19 @@ from simulation import Simulation
 from super_stat import Super_stat
 
 def main():
-    num_months = 20
+    num_months = 15
     gov_types = [None, 'data', 'rep', 'dir']
-    gov_type = gov_types[3]
+    gov_type = gov_types[0]                             # BUG: 0/None doesn't work on second run
     runs = 2
+    plot_per_run = False if runs > 1 else True        # show and save plots for a single run only when doing one run in total
 
-    #print("(1) Default parameters.")
-    #print("(2) Set number of months."
-
-    #user_input = int(input())
-    #if(user_input == 2): num_months = int(input("Enter number of months: ")) 
-    
     super_stat = Super_stat(num_months)
     for run in range(runs):
-        sim = Simulation(num_months, gov_type)  # TODO: in multiple runs no plots should pop up
+        sim = Simulation(num_months, gov_type, plot_per_run)
         sim.print_sim_step(f"RUN {run}")
         sim.start_sim()
-        super_stat.add_run(sim.stat)
-    super_stat.invoke_plots()
+        if runs > 1: super_stat.add_run(sim.stat)
+    if runs > 1: super_stat.invoke_plots()
 
 if __name__ == "__main__":
     main()
