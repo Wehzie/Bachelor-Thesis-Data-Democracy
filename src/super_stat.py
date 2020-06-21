@@ -55,6 +55,7 @@ class Super_stat(object):
             'fix': {                # direct readings
                 'tax': np.empty((0, num_months)),
                 'ubi': np.empty((0, num_months)),
+                'parties': np.empty((0, num_months)),      # representative government's party composition over time
             }
         }
 
@@ -72,6 +73,7 @@ class Super_stat(object):
         if run.sim.gov_exists():
             for stat_key, stat_val in run.g_stat.items():
                 for measure_key, measure_val in stat_val.items():
+                    if len(measure_val) == 0: continue                  # only add party data for the representative government
                     self.g_stat[stat_key][measure_key] = np.vstack((self.g_stat[stat_key][measure_key], np.array(measure_val)))
         
     def plot_money(self):

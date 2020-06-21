@@ -6,9 +6,9 @@ from simulation import Simulation
 from super_stat import Super_stat
 
 def main():
-    num_months = 15
+    num_months = 5
     gov_types = [None, 'data', 'rep', 'dir']
-    gov_type = gov_types[0]                             # BUG: 0/None doesn't work on second run
+    gov_type = gov_types[3]
     runs = 2
     plot_per_run = False if runs > 1 else True        # show and save plots for a single run only when doing one run in total
 

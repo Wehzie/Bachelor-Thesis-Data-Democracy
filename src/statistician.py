@@ -50,6 +50,7 @@ class Statistician(object):
             'fix': {                # direct readings
                 'tax': [],
                 'ubi': [],
+                'parties': [],      # representative government's party composition over time
             }
         }
 
@@ -90,6 +91,7 @@ class Statistician(object):
     def calc_gov(self):
         self.g_stat['fix']['tax'].append(self.sim.gov.tax_rate)
         self.g_stat['fix']['ubi'].append(self.sim.gov.ubi)
+        if self.sim.gov_type == 'rep': self.g_stat['fix']['parties'].append(self.sim.gov.party_size)
 
     # calculate the hoover index as defined on https://wikimedia.org/api/rest_v1/media/math/render/svg/3e117654142eaec6efa377da812394d213955db4
     # from https://en.wikipedia.org/wiki/Hoover_index
@@ -219,6 +221,7 @@ class Statistician(object):
         fig.savefig('fig_connections.png')
         plt.show()
 
+    # plot the tax rate set by government for each month
     def plot_tax(self):
         y1_tax = self.g_stat['fix']['tax']
 
@@ -231,6 +234,7 @@ class Statistician(object):
         fig.savefig('fig_tax.png')
         plt.show()
 
+    # plot the universal basic income set by government for each month
     def plot_ubi(self):
         y1_ubi = self.g_stat['fix']['ubi']
 
@@ -241,6 +245,29 @@ class Statistician(object):
         ax.grid()
         ax.legend()
         fig.savefig('fig_ubi.png')
+        plt.show()
+
+    # plot the party composition of the representative government for each month
+    def plot_parties(self):
+        y1_party, y2_party, y3_party, y4_party, y5_party = ([] for i in range(5))
+        for month in self.g_stat['fix']['parties']:
+            y1_party.append(month[0])
+            y2_party.append(month[1])
+            y3_party.append(month[2])
+            y4_party.append(month[3])
+            y5_party.append(month[4])
+
+        fig, ax = plt.subplots()
+        ax.plot(self.x_months, y1_party, 'r', label='Party quintile 1')     # party representing the poorest quintile of hhs
+        ax.plot(self.x_months, y2_party, 'g', label='Party quintile 2')
+        ax.plot(self.x_months, y3_party, 'b', label='Party quintile 3')
+        ax.plot(self.x_months, y4_party, 'k', label='Party quintile 4')
+        ax.plot(self.x_months, y5_party, 'c', label='Party quintile 5')
+
+        ax.set(xlabel='Months', ylabel='Party size', title='Party composition')
+        ax.grid()
+        ax.legend()
+        fig.savefig('fig_parties.png')
         plt.show()
 
     def hist_money(self):
@@ -270,6 +297,8 @@ class Statistician(object):
         if self.sim.gov_exists() is True:
             self.plot_tax()
             self.plot_ubi()
+            if self.sim.gov_type == 'rep':
+                self.plot_parties()
         self.hist_money()
 
 ######## ######## ######## IMPORTS ######## ######## ########
@@ -288,4 +317,3 @@ import numpy as np
     # TODO: Prettier graphs https://stackoverflow.com/questions/14908576/how-to-remove-frame-from-matplotlib-pyplot-figure-vs-matplotlib-figure-frame
     
     # TODO: Indication for movement between quantiles in firms and households.
-    # TODO: plot party composition histogram

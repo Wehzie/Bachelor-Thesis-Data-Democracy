@@ -51,7 +51,7 @@ class Gov_rep(object):
 
         # first government established after one year has passed
         # only elect a new government once a term has passed
-        if self.sim.current_month - self.sim.months_in_year % self.sim.g_param['rep_term_length'] == 0:
+        if (self.sim.current_month - self.sim.months_in_year) % self.sim.g_param['rep_term_length'] == 0:
             self.assemble_parliament()
 
         year_gini_list = self.sim.stat.hh_stat['metric']['gini'][-12:]
