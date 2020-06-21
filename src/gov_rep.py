@@ -1,18 +1,17 @@
 
 
-# this government models a representative democracy with a party system
-
-# each month all households are income taxed with a single tax rate
-# each month all households receives a universal basic income
-# all money that is collected from taxes is spent on ubi
-
-# the tax rate changes each year
-# the ubi changes each year
-# the government changes after each term
-
 class Gov_rep(object):
-    
-    ######## ######## ######## CONSTRUCTOR ######## ######## ########
+    '''
+    This government models a representative democracy with a party system.
+
+    Each month all households are income taxed with a single tax rate.
+    Each month all households receives a universal basic income.
+    All money that is collected from taxes is spent on ubi.
+
+    The tax rate changes each year.
+    The ubi changes each year.
+    The government changes after each term.
+    '''
 
     def __init__(self, sim: object):
         self.sim = sim                          # link government to the simulation

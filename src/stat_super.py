@@ -1,14 +1,15 @@
 
 
-######## ######## ######## IMPORTS ######## ######## ########
-
+from stat_plot import Stat_plot
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
-# the super statistician object stores statistician objects generated from multiple runs
-
-class Super_stat(object):
+class Stat_super(Stat_plot):
+    '''
+    The stat_super object stores stat_run objects generated from multiple runs.
+    The data in the stat_run objects is analyzed and plotted.
+    '''
 
     ######## ######## ######## CONSTRUCTOR ######## ######## ########
 

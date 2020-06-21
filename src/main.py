@@ -1,24 +1,34 @@
 
 
-# Lengnick, M. (2013). Agent-based macroeconomics: A baseline model. Journal of Economic Behavior and Organization, 86, 102-120. doi:10.1016/j.jebo.2012.12.021
+######## ######## ######## IMPORTS ######## ######## ########
 
 from simulation import Simulation
-from super_stat import Super_stat
+from stat_super import Stat_super
+
+######## ######## ######## MAIN ######## ######## ########
 
 def main():
-    num_months = 5
+    '''
+    This program models an economy, see the README for further details.
+
+    This method controls duration and repetitions of the simualtion.
+    Additionally it controls what government agent to instantiate.
+    Further paramaters of the simulation are to be modified in Simulation class.
+    '''
+
+    num_months = 20
     gov_types = [None, 'data', 'rep', 'dir']
-    gov_type = gov_types[3]
+    gov_type = gov_types[2]
     runs = 2
     plot_per_run = False if runs > 1 else True        # show and save plots for a single run only when doing one run in total
 
-    super_stat = Super_stat(num_months)
+    stat_super = Stat_super(num_months)
     for run in range(runs):
         sim = Simulation(num_months, gov_type, plot_per_run)
         sim.print_sim_step(f"RUN {run}")
         sim.start_sim()
-        if runs > 1: super_stat.add_run(sim.stat)
-    if runs > 1: super_stat.invoke_plots()
+        if runs > 1: stat_super.add_run(sim.stat)
+    if runs > 1: stat_super.invoke_plots()
 
 if __name__ == "__main__":
     main()

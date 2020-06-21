@@ -1,12 +1,12 @@
 
 
-# Lengnick, M. (2013). Agent-based macroeconomics: A baseline model. Journal of Economic Behavior and Organization, 86, 102-120. doi:10.1016/j.jebo.2012.12.021
-
-# NOTE: Imports are at end of file
-# hh is short for household or households
-
 class Firm(object):
-    
+    '''
+    A firm produces items by employing households.
+    These items are also sold to households.
+    A firm controls hiring and wages based on supply and demand of items.
+    '''
+
     def __init__(self, sim: object):
         self.sim: object = sim                                  # firm belongs to a simulation
         self.money: float = sim.f_param.get("init_money")       # current balance of firm
@@ -31,7 +31,6 @@ class Firm(object):
 
     # increase wage when an employee was searched for last month but none was found
     # decrease wage after n months of full employment
-    # TODO: Do i need self.hired? and: self.month_hiring -1 or < month?
     def update_wage(self, month: int):
         if self.month_hiring == month - 1 and self.hired == False:
             self.wage *= (1 + random.uniform(0, self.sim.f_param["wage_adj_rate"]))
@@ -163,6 +162,6 @@ class Firm(object):
     
 ######## ######## ######## IMPORTS ######## ######## ########
 
-import random
 from simulation import Simulation
 from household import Household
+import random

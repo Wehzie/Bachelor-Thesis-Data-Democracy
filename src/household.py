@@ -1,10 +1,13 @@
 
 
-# Lengnick, M. (2013). Agent-based macroeconomics: A baseline model. Journal of Economic Behavior and Organization, 86, 102-120. doi:10.1016/j.jebo.2012.12.021
-
-# NOTE: hh or hhs is short for household or households
-
 class Household(object):
+    '''
+    A housold has two kinds of relationships with firms.
+    Firstly, a household can have one firm as an employer.
+    Secondly, a household can have multiple firms as preferred vendors.
+    Based on the wage of a firm a household may search for other employers.
+    Based on the ability to satisfy item demand a household may change its preferred vendors.
+    '''
 
     def __init__(self, sim: object, employer: object):
         self.sim: object = sim                                  # hh belongs to a simulation

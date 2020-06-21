@@ -1,21 +1,24 @@
 
 
-# this government models a direct democracy where individuals cast direct votes for a tax rate
-
-# each month all households are income taxed with a single tax rate
-# each month all households receives a universal basic income
-# all money that is collected from taxes is spent on ubi
-
-# the tax rate changes each year
-# the ubi changes each year
-
 class Gov_dir(object):
-    
+    '''
+    This government models a direct democracy where individuals cast direct votes for a tax rate.
+
+    Each month all households are income taxed with a single tax rate.
+    Each month all households receives a universal basic income.
+    All money that is collected from taxes is spent on ubi.
+
+    The tax rate changes each year.
+    The ubi changes each year.
+    '''
+
     def __init__(self, sim: object):
         self.sim = sim          # link government to the simulation
         self.money = 0          # money available to government for redistribution
         self.tax_rate = 0       # taxes are collected each n months based on income and taxrate
         self.ubi = 0            # ubi paid to each hh monthly
+
+    ######## ######## ######## METHODS ######## ######## ########
 
     # each household proposes a tax rate
     # all households have equal weight

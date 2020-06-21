@@ -1,11 +1,12 @@
 
 
-# Lengnick, M. (2013). Agent-based macroeconomics: A baseline model. Journal of Economic Behavior and Organization, 86, 102-120. doi:10.1016/j.jebo.2012.12.021
-
-# NOTE: hh is short for household or households
-
 class Simulation(object):
-    
+    '''
+    The Simulation object contains instances of firms, households and the government.
+    The Simulation sets parameters that control firm and household behavior.
+    The main event loop method part of the Simulation object.
+    '''
+
     ######## ######## ######## STATIC VARIABLES ######## ######## ########
 
     days_in_month = 21                  # number of working days in a month
@@ -94,9 +95,9 @@ class Simulation(object):
             self.hh_list.append(Household(self, employer))
             employer_idx += 1
 
-    # initialize the statistician
-    def init_statistician(self):
-        self.stat = Statistician(self)
+    # initialize the stat_run object
+    def init_stat_run(self):
+        self.stat = Stat_run(self)
     
     # initialize the government
     def init_government(self):
@@ -162,7 +163,7 @@ class Simulation(object):
         self.print_sim_step("INITIALIZE AGENTS")
         self.init_firms()
         self.init_households()
-        self.init_statistician()
+        self.init_stat_run()
         self.init_government()
         self.print_sim_step("INVOKING EVENT LOOP")
         self.event_loop()
@@ -204,7 +205,7 @@ class Simulation(object):
 
 from household import Household
 from firm import Firm
-from statistician import Statistician
+from stat_run import Stat_run
 from gov_data import Gov_data
 from gov_rep import Gov_rep
 from gov_dir import Gov_dir
