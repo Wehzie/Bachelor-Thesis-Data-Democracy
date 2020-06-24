@@ -101,7 +101,7 @@ class Simulation(object):
     
     # initialize the government
     def init_government(self):
-        if self.gov_type == None: return # TODO: gov type none just passes on all function calls
+        if self.gov_type == None: return
         if self.gov_type == 'data': self.gov = Gov_data(self)
         if self.gov_type == 'rep': self.gov = Gov_rep(self)
         if self.gov_type == 'dir': self.gov = Gov_dir(self)

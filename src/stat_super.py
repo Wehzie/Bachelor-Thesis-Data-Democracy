@@ -56,7 +56,7 @@ class Stat_super(Stat_plot):
             'fix': {                # direct readings
                 'tax': np.empty((0, num_months)),
                 'ubi': np.empty((0, num_months)),
-                'parties': np.empty((0, num_months)),      # representative government's party composition over time
+                'parties': np.empty((0, num_months*5)),      # representative government's party composition (5 parties) over time
             }
         }
 

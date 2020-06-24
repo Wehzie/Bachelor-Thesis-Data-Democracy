@@ -98,7 +98,7 @@ class Stat_run(Stat_plot):
     def calc_gov(self):
         self.g_stat['fix']['tax'].append(self.sim.gov.tax_rate)
         self.g_stat['fix']['ubi'].append(self.sim.gov.ubi)
-        if self.sim.gov_type == 'rep': self.g_stat['fix']['parties'].append(self.sim.gov.party_size)
+        if self.sim.gov_type == 'rep': self.g_stat['fix']['parties'] += self.sim.gov.party_size     # NOTE: 5 times longer than other stats
 
     # calculate the hoover index as defined on https://wikimedia.org/api/rest_v1/media/math/render/svg/3e117654142eaec6efa377da812394d213955db4
     # from https://en.wikipedia.org/wiki/Hoover_index

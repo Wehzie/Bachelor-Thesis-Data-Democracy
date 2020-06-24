@@ -2,6 +2,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+from collections import deque
 
 class Stat_plot(object):
     '''
@@ -129,13 +130,14 @@ class Stat_plot(object):
 
     # plot the party composition of the representative government for each month
     def plot_parties(self):
+        parties = deque(self.g_stat['fix']['parties'])
         y1_party, y2_party, y3_party, y4_party, y5_party = ([] for i in range(5))
-        for month in self.g_stat['fix']['parties']:
-            y1_party.append(month[0])
-            y2_party.append(month[1])
-            y3_party.append(month[2])
-            y4_party.append(month[3])
-            y5_party.append(month[4])
+        for i in range(len(parties)//5):
+            y1_party.append(parties.popleft())
+            y2_party.append(parties.popleft())
+            y3_party.append(parties.popleft())
+            y4_party.append(parties.popleft())
+            y5_party.append(parties.popleft())
 
         fig, ax = plt.subplots()
         ax.plot(self.x_months, y1_party, 'r', label='Party quintile 1')     # party representing the poorest quintile of hhs

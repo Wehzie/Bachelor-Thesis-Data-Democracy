@@ -1,6 +1,6 @@
 # Bachelor-Thesis-Data-Democracy
 
-This program models a simple economoy.
+This program models a simple economy.
 Two types of relationships exist between firms and households.
 Firstly, firms produce items which are sold to households.
 Secondly, firms employ housholds to produce items.
