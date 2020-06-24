@@ -20,7 +20,7 @@ class Stat_plot(object):
         ax.set(xlabel='Months', ylabel='Equality', title='Metrics of economic equality')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_equality.png')
+        fig.savefig('fig_' + self.sim.gov_type + '_equality.png')
         plt.show()
 
     # plot averages for firm money and household money against time
@@ -35,7 +35,7 @@ class Stat_plot(object):
         ax.set(xlabel='Months', ylabel='Money', title='Money distribution between firms and households')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_money.png')
+        fig.savefig('fig_'+ self.sim.gov_type +'_money.png')
         plt.show()
 
     # plot averages for firm wage and household reservation wage against time
@@ -50,7 +50,7 @@ class Stat_plot(object):
         ax.set(xlabel='Months', ylabel='Money', title='Wage and reservation wage')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_wage.png')
+        fig.savefig('fig_'+ self.sim.gov_type +'_wage.png')
         plt.show()
 
     # plot averages for number of items a firm has in stock and demand 
@@ -65,7 +65,7 @@ class Stat_plot(object):
         ax.set(xlabel='Months', ylabel='Items', title='Item demand and price')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_items.png')
+        fig.savefig('fig_'+ self.sim.gov_type +'_items.png')
         plt.show()
 
     # plot firm's marginal cost and item price as well as household employment rate
@@ -82,7 +82,7 @@ class Stat_plot(object):
         ax.set(xlabel='Months', ylabel='', title='Item price, marginal cost and employment rate')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_items2.png')
+        fig.savefig('fig_'+ self.sim.gov_type +'_items2.png')
         plt.show()
 
     # plot averages for
@@ -99,7 +99,7 @@ class Stat_plot(object):
         ax.set(xlabel='Months', ylabel='', title='Employer-employee relations')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_connections.png')
+        fig.savefig('fig_'+ self.sim.gov_type +'_connections.png')
         plt.show()
 
     # plot the tax rate set by government for each month
@@ -112,7 +112,7 @@ class Stat_plot(object):
         ax.set(xlabel='Months', ylabel='Tax rate', title='Taxation')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_tax.png')
+        fig.savefig('fig_'+ self.sim.gov_type +'_tax.png')
         plt.show()
 
     # plot the universal basic income set by government for each month
@@ -125,7 +125,7 @@ class Stat_plot(object):
         ax.set(xlabel='Months', ylabel='Money', title='Universal Basic Income')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_ubi.png')
+        fig.savefig('fig_'+ self.sim.gov_type +'_ubi.png')
         plt.show()
 
     # plot the party composition of the representative government for each month
@@ -149,7 +149,7 @@ class Stat_plot(object):
         ax.set(xlabel='Months', ylabel='Party size', title='Party composition')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_parties.png')
+        fig.savefig('fig_'+ self.sim.gov_type +'_parties.png')
         plt.show()
 
     def hist_money(self):
@@ -166,5 +166,5 @@ class Stat_plot(object):
         ax1.grid()
         ax2.set(xlabel='Money', ylabel='Number of households')
         ax2.grid()
-        fig.savefig('fig_hist_money.png')
+        fig.savefig('fig_'+ self.sim.gov_type +'_hist_money.png')
         plt.show()

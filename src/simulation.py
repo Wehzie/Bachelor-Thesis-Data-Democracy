@@ -101,7 +101,7 @@ class Simulation(object):
     
     # initialize the government
     def init_government(self):
-        if self.gov_type == None: return
+        if self.gov_type == 'none': return
         if self.gov_type == 'data': self.gov = Gov_data(self)
         if self.gov_type == 'rep': self.gov = Gov_rep(self)
         if self.gov_type == 'dir': self.gov = Gov_dir(self)
@@ -175,7 +175,7 @@ class Simulation(object):
         return hh_sum
 
     def gov_exists(self) -> bool:
-        if self.gov_type == None:
+        if self.gov_type == 'none':
             return False
         else:
             return True
