@@ -1,5 +1,6 @@
 
 
+from simulation import Simulation
 from stat_plot import Stat_plot
 import numpy as np
 import matplotlib.pyplot as plt
@@ -13,7 +14,9 @@ class Stat_super(Stat_plot):
 
     ######## ######## ######## CONSTRUCTOR ######## ######## ########
 
-    def __init__(self, num_months: int):
+    def __init__(self, num_months: int, gov_type: str):
+
+        self.gov_type = gov_type
     
         self.f_stat = {
             
@@ -77,18 +80,23 @@ class Stat_super(Stat_plot):
                     if len(measure_val) == 0: continue                  # only add party data for the representative government
                     self.g_stat[stat_key][measure_key] = np.vstack((self.g_stat[stat_key][measure_key], np.array(measure_val)))
         
-    def plot_money(self):
-        x = range(np.size(self.f_stat['sum']['money'], axis=1))
-        y = np.mean(self.f_stat['sum']['money'], axis=0)
-        e = stats.sem(self.f_stat['sum']['money'])
+    def plot_money_old(self):
+        x = range(np.size(self.f_stat['avg']['money'], axis=1))
+        y1_f_money = np.mean(self.f_stat['avg']['money'], axis=0)
+        y2_hh_money = np.mean(self.hh_stat['avg']['money'], axis=0)
+        e1 = stats.sem(self.f_stat['avg']['money'])
+        e2 = stats.sem(self.hh_stat['avg']['money'])
 
         fig, ax = plt.subplots()
-        plt.errorbar(x, y, e)
+        plt.errorbar(x, y1_f_money, e1, color='r', label='Money firm average')
+        plt.errorbar(x, y2_hh_money, e2, color='b', label='Money household average')
 
-        ax.set(xlabel='Months', ylabel='Money', title='Money')
+        ax.set(xlabel='Months', ylabel='Money', title='Money distribution between firms and households')
         ax.grid()
         ax.legend()
+        fig.savefig('fig_'+ self.gov_type +'_money_old.png')
         plt.show()
 
     def invoke_plots(self):
-        self.plot_money()
+        #self.plot_money()
+        self.plot_money_old()

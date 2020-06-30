@@ -16,13 +16,13 @@ def main():
     Further paramaters of the simulation are to be modified in Simulation class.
     '''
 
-    num_months = 5
+    num_months = 50
     gov_types = ['none', 'data', 'rep', 'dir']
     gov_type = gov_types[3]
-    runs = 1
+    runs = 3
     plot_per_run = False if runs > 1 else True        # show and save plots for a single run only when doing one run in total
 
-    stat_super = Stat_super(num_months)
+    stat_super = Stat_super(num_months, gov_type)
     for run in range(runs):
         sim = Simulation(num_months, gov_type, plot_per_run)
         sim.print_sim_step(f"RUN {run}")
