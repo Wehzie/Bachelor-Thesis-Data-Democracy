@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from collections import deque
 
-class Stat_plot(object):
+class Statistician(object):
     '''
-    The stat_plot class is abstract and not instantiated it inherits plotting capabilities.
+    The statistician class is abstract and not instantiated it inherits plotting capabilities.
     '''
 
     ######## ######## ######## CONSTRUCTOR ######## ######## ########

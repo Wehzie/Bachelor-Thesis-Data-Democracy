@@ -1,14 +1,14 @@
 
 
 from simulation import Simulation
-from stat_plot import Stat_plot
+from statistician import Statistician
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
-class Stat_super(Stat_plot):
+class Stat_runs(Statistician):
     '''
-    The stat_super object stores stat_run objects generated from multiple runs.
+    The stat_runs object stores stat_run objects generated from multiple runs.
     The data in the stat_run objects is analyzed and plotted.
     '''
 

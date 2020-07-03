@@ -1,10 +1,10 @@
 
 
-from stat_plot import Stat_plot
+from statistician import Statistician
 from simulation import Simulation
 import numpy as np
 
-class Stat_run(Stat_plot):
+class Stat_run(Statistician):
     '''
     The stat_run object stores and processes data about a single simulation run.
     It inherits methods to visualize this data.
