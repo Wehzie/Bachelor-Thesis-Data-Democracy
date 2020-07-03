@@ -12,57 +12,6 @@ class Stat_super(Stat_plot):
     The data in the stat_run objects is analyzed and plotted.
     '''
 
-    ######## ######## ######## CONSTRUCTOR ######## ######## ########
-
-    def __init__(self, num_months: int, gov_type: str):
-
-        self.gov_type = gov_type
-    
-        self.f_stat = {
-            
-            'sum': {
-                'money': np.empty((0, num_months)),
-            },
-
-            'avg': {
-                'money': np.empty((0, num_months)),
-                'num_items': np.empty((0, num_months)),
-                'item_price': np.empty((0, num_months)),
-                'marginal_cost': np.empty((0, num_months)),
-                'demand': np.empty((0, num_months)),
-                'num_employees': np.empty((0, num_months)),
-                'wage': np.empty((0, num_months)),
-                'months_hiring': np.empty((0, num_months)),
-            },
-        }
-
-        self.hh_stat = {
-
-            'sum': {
-                'money': np.empty((0, num_months)),
-            },
-            
-            'avg': {
-                'money': np.empty((0, num_months)),
-                'employment': np.empty((0, num_months)),
-                'res_wage': np.empty((0, num_months)),
-            },
-
-            'metric': {
-                'hoover': np.empty((0, num_months)),
-                'gini': np.empty((0, num_months)),
-            },
-        }
-
-        self.g_stat = {
-
-            'fix': {                # direct readings
-                'tax': np.empty((0, num_months)),
-                'ubi': np.empty((0, num_months)),
-                'parties': np.empty((0, num_months*5)),      # representative government's party composition (5 parties) over time
-            }
-        }
-
     ######## ######## ######## METHODS ######## ######## ########
 
     def add_run(self, run: object):

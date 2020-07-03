@@ -97,8 +97,9 @@ class Simulation(object):
 
     # initialize the stat_run object
     def init_stat_run(self):
-        self.stat = Stat_run(self)
-    
+        self.stat = Stat_run(self.num_months, self.gov_type)
+        self.stat.set_sim(self)
+
     # initialize the government
     def init_government(self):
         if self.gov_type == 'none': return
