@@ -18,6 +18,10 @@ class Statistician(object):
         self.num_runs = num_runs
 
         self.f_stat = {
+
+            'dist': {
+                'money': np.empty((0, 100)),        # TODO: Read from sim
+            },
             
             'sum': {
                 'money': np.empty((0, num_months)),
@@ -36,6 +40,10 @@ class Statistician(object):
         }
 
         self.hh_stat = {
+
+            'dist': {
+                'money': np.empty((0, 1000)),       # TODO: Read from sim
+            },
 
             'sum': {
                 'money': np.empty((0, num_months)),

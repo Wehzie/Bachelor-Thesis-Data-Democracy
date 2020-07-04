@@ -14,6 +14,10 @@ class Stat_run(Statistician):
 
     ######## ######## ######## METHODS ######## ######## ########
 
+    def calc_dist(self):
+        self.f_stat['dist']['money'] = np.append(self.f_stat['dist']['money'], [f.money for f in self.sim.firm_list])
+        self.hh_stat['dist']['money'] = np.append(self.hh_stat['dist']['money'], [hh.money for hh in self.sim.hh_list])
+
     def calc_sum(self):
         hh_list = self.sim.hh_list
         firm_list = self.sim.firm_list
@@ -81,6 +85,8 @@ class Stat_run(Statistician):
 
     # each month notify stat_run of what is going on in the simulation
     def up_stat(self):
+        if self.sim.current_month == self.sim.num_months-1:     # in the last month of a run store money distribution
+            self.calc_dist()
         self.calc_sum()
         self.calc_avg()
         self.calc_metric()
@@ -235,8 +241,8 @@ class Stat_run(Statistician):
 
     def hist_money(self):
         # money distribution at the end of the simulation
-        f_money_list = [f.money for f in self.sim.firm_list]        # TODO: Move this to struct
-        hh_money_list = [hh.money for hh in self.sim.hh_list]
+        f_money_list = self.f_stat['dist']['money']
+        hh_money_list = self.hh_stat['dist']['money']
 
         fig, (ax1, ax2) = plt.subplots(1, 2)
         ax1.hist(f_money_list, bins=int(self.sim.f_param['num_firms']/10))

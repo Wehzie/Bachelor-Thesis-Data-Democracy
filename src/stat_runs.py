@@ -216,4 +216,17 @@ class Stat_runs(Statistician):
 
     # money distribution at the end of the simulation
     def hist_money(self):
-        pass
+        f_money_list = (self.f_stat['dist']['money']).flatten()
+        hh_money_list = (self.hh_stat['dist']['money']).flatten()
+
+        fig, (ax1, ax2) = plt.subplots(1, 2)
+        ax1.hist(f_money_list, bins=int(self.sim.f_param['num_firms']/10))
+        ax2.hist(hh_money_list, bins=int(self.sim.hh_param['num_hh']/10))
+
+        fig.suptitle("Money distribution within households and firms")
+        ax1.set(xlabel='Money', ylabel='Number of firms')
+        ax1.grid()
+        ax2.set(xlabel='Money', ylabel='Number of households')
+        ax2.grid()
+        fig.savefig('fig_'+ self.gov_type +'_hist_money.png')
+        plt.show()
