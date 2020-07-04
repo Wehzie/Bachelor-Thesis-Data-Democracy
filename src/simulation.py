@@ -61,7 +61,8 @@ class Simulation(object):
 
     ######## ######## ######## CONSTRUCTOR ######## ######## ########
 
-    def __init__(self, num_months: int, gov_type: str, plot_per_run):
+    def __init__(self, num_months: int, gov_type: str, plot_per_run, num_runs: int):
+        self.num_runs = num_runs            # the number of runs simulated
         self.num_months = num_months        # number of months simulated
         self.current_month = 0              # currently simulated month by number
         self.gov_type = gov_type            # the type of government used
@@ -97,7 +98,7 @@ class Simulation(object):
 
     # initialize the stat_run object
     def init_stat_run(self):
-        self.stat = Stat_run(self.num_months, self.gov_type)
+        self.stat = Stat_run(self.num_months, self.gov_type, self.num_runs)
         self.stat.set_sim(self)
 
     # initialize the government
@@ -175,14 +176,8 @@ class Simulation(object):
             hh_sum += hh.money
         return hh_sum
 
-    def gov_exists(self) -> bool:
-        if self.gov_type == 'none':
-            return False
-        else:
-            return True
-
     def gov_action(self):
-        if self.gov_exists() is False: return
+        if self.gov_type == 'none': return
         self.gov.vote_tax()
         self.gov.collect_tax()
         self.gov.calc_ubi()
