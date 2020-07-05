@@ -77,11 +77,12 @@ class Simulation(object):
         self.gov = None                     # government responsible for tax and ubi
 
         self.plot_param = plot_param        # control plotting behavior
+        self.print_hashes = '######## ######## ########'        # pretty command line printing
 
     ######## ######## ######## METHODS ######## ######## ########
 
     def print_sim_step(self, step: str):
-        print(f"######## ######## ######## {step} IN SIMULATION ######## ######## ########")
+        print(f"{self.print_hashes:<30} {step:>15}")
 
     # initialize a number of firms
     def init_firms(self):
@@ -187,7 +188,7 @@ class Simulation(object):
 
     def event_loop(self):
         while(self.current_month < self.num_months):
-            self.print_sim_step(f"MONTH {self.current_month}")
+            print(f"{self.print_hashes:<30} {'MONTH:':>15} {self.current_month:>10}")
 
             self.act_bom()
             for day in range(self.days_in_month):
@@ -197,7 +198,9 @@ class Simulation(object):
 
             self.current_month += 1
 
-        if self.plot_param['plot_per_run']: self.stat.invoke_plots()
+        if self.plot_param['plot_per_run']:
+            print(f"\n{self.print_hashes:<30} {'CREATING PLOTS':>15}")
+            self.stat.invoke_plots()
 
 ######## ######## ######## IMPORTS ######## ######## ########
 
