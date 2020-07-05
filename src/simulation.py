@@ -13,7 +13,7 @@ class Simulation(object):
     months_in_year = 12                 # number of months in a year
 
     f_param = {
-        'num_firms': 100,               # total number of firms
+        'num_firms': None,               # total number of firms
         'months_lo_wage': 24,           # gamma: in number of months. duration after which wage is increased when all job positions filled
         'wage_adj_rate': 0.019,         # delta: rate at which wages are adjusted
         'inv_up': 1,                    # phi_up: rate at which number of items in stock are considered too many
@@ -35,7 +35,7 @@ class Simulation(object):
     }
 
     hh_param = {
-        'num_hh': 1000,                     # total number of households
+        'num_hh': None,                     # total number of households
         'lower_vendor_price': 0.01,         # xi: percent by which a new vendor's prices must be cheaper, normalized to 1
         'unemployed_ask_num': 5,            # beta: number of firms an unemployed household asks for a job each month
         'repl_employer_prob': 0.1,          # pi: probability that a hh satisfied with its wage asks another firm for a job
@@ -61,11 +61,14 @@ class Simulation(object):
 
     ######## ######## ######## CONSTRUCTOR ######## ######## ########
 
-    def __init__(self, num_months: int, gov_type: str, plot_per_run, num_runs: int):
+    def __init__(self, num_months: int, num_runs: int, gov_type: str, num_f: int, num_hh: int, plot_param: dict):
         self.num_runs = num_runs            # the number of runs simulated
         self.num_months = num_months        # number of months simulated
         self.current_month = 0              # currently simulated month by number
         self.gov_type = gov_type            # the type of government used
+
+        self.f_param['num_firms'] = num_f   # number of firms simulated
+        self.hh_param['num_hh'] = num_hh    # number of households simulated
 
         self.firm_list = []                 # list of all firms in the model
         self.hh_list = []                   # list of all hh in the model
@@ -73,8 +76,7 @@ class Simulation(object):
         self.stat = None                    # tracking, plotting and analyzing data
         self.gov = None                     # government responsible for tax and ubi
 
-        self.plot_per_run = plot_per_run    # whether to show and save plots for each run of the simulation
-
+        self.plot_param = plot_param        # control plotting behavior
 
     ######## ######## ######## METHODS ######## ######## ########
 
@@ -98,7 +100,7 @@ class Simulation(object):
 
     # initialize the stat_run object
     def init_stat_run(self):
-        self.stat = Stat_run(self.num_months, self.gov_type, self.num_runs)
+        self.stat = Stat_run(self.num_months, self.num_runs, self.gov_type, self.f_param['num_firms'], self.hh_param['num_hh'], self.plot_param)
         self.stat.set_sim(self)
 
     # initialize the government
@@ -195,7 +197,7 @@ class Simulation(object):
 
             self.current_month += 1
 
-        if self.plot_per_run is True: self.stat.invoke_plots()
+        if self.plot_param['plot_per_run']: self.stat.invoke_plots()
 
 ######## ######## ######## IMPORTS ######## ######## ########
 

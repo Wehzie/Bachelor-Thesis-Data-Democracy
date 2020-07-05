@@ -46,8 +46,10 @@ class Stat_runs(Statistician):
         ax.set(xlabel='Months', ylabel='Equality', title='Metrics of economic equality')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_' + self.gov_type + '_equality.png')
-        plt.show()
+        if self.plot_param['save_pgf']: fig.savefig('fig_' + self.gov_type + '_equality.pgf')
+        if self.plot_param['save_pdf']: fig.savefig('fig_' + self.gov_type + '_equality.pdf')
+        if self.plot_param['save_png']: fig.savefig('fig_' + self.gov_type + '_equality.png', dpi=300)
+        if self.plot_param['show_plots']: plt.show()
 
     # plot averages for firm money and household money against time
     def plot_money(self):
@@ -63,8 +65,10 @@ class Stat_runs(Statistician):
         ax.set(xlabel='Months', ylabel='Money', title='Money distribution between firms and households')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_'+ self.gov_type +'_money.png')
-        plt.show()
+        if self.plot_param['save_pgf']: fig.savefig('fig_'+ self.gov_type +'_money.pgf')
+        if self.plot_param['save_pdf']: fig.savefig('fig_'+ self.gov_type +'_money.pdf')
+        if self.plot_param['save_png']: fig.savefig('fig_'+ self.gov_type +'_money.png', dpi=300)
+        if self.plot_param['show_plots']: plt.show()
 
     # plot averages for firm wage and household reservation wage against time
     def plot_wage(self):
@@ -80,8 +84,10 @@ class Stat_runs(Statistician):
         ax.set(xlabel='Months', ylabel='Money', title='Wage and reservation wage')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_'+ self.gov_type +'_wage.png')
-        plt.show()
+        if self.plot_param['save_pgf']: fig.savefig('fig_'+ self.gov_type +'_wage.pgf')
+        if self.plot_param['save_pdf']: fig.savefig('fig_'+ self.gov_type +'_wage.pdf')
+        if self.plot_param['save_png']: fig.savefig('fig_'+ self.gov_type +'_wage.png', dpi=300)
+        if self.plot_param['show_plots']: plt.show()
 
     # plot averages for number of items a firm has in stock and demand 
     def plot_demand(self):
@@ -97,28 +103,45 @@ class Stat_runs(Statistician):
         ax.set(xlabel='Months', ylabel='Items', title='Item demand and price')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_'+ self.gov_type +'_items.png')
-        plt.show()
+        if self.plot_param['save_pgf']: fig.savefig('fig_'+ self.gov_type +'_demand.pgf')
+        if self.plot_param['save_pdf']: fig.savefig('fig_'+ self.gov_type +'_demand.pdf')
+        if self.plot_param['save_png']: fig.savefig('fig_'+ self.gov_type +'_demand.png', dpi=300)
+        if self.plot_param['show_plots']: plt.show()
 
-    # plot firm's marginal cost and item price as well as household employment rate
-    def plot_items(self):
+    # plot firm's marginal cost and item price
+    def plot_item_cost(self):
         y1_f_marginal_cost = np.mean(self.f_stat['avg']['marginal_cost'], axis=0)
         y2_f_item_price = np.mean(self.f_stat['avg']['item_price'], axis=0)
-        y3_hh_employment = np.mean(self.hh_stat['avg']['employment'], axis=0)
         e1 = stats.sem(self.f_stat['avg']['marginal_cost'])
         e2 = stats.sem(self.f_stat['avg']['item_price'])
-        e3 = stats.sem(self.hh_stat['avg']['employment'])
 
         fig, ax = plt.subplots()
         plt.errorbar(self.x_months, y1_f_marginal_cost, e1, color='b', label='Marginal cost firm average')
         plt.errorbar(self.x_months, y2_f_item_price, e2, color='g', label='Item price firm average')
-        plt.errorbar(self.x_months, y3_hh_employment, e3, color='r', label='Employment rate of households')
 
-        ax.set(xlabel='Months', ylabel='', title='Item price, marginal cost and employment rate')
+        ax.set(xlabel='Months', ylabel='', title='Item price and marginal cost')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_'+ self.gov_type +'_items2.png')
-        plt.show()
+        if self.plot_param['save_pgf']: fig.savefig('fig_'+ self.gov_type +'_item_cost.pgf')
+        if self.plot_param['save_pdf']: fig.savefig('fig_'+ self.gov_type +'_item_cost.pdf')
+        if self.plot_param['save_png']: fig.savefig('fig_'+ self.gov_type +'_item_cost.png', dpi=300)
+        if self.plot_param['show_plots']: plt.show()
+    
+    # plot household employment rate
+    def plot_employment(self):
+        y1_hh_employment = np.mean(self.hh_stat['avg']['employment'], axis=0)
+        e1 = stats.sem(self.hh_stat['avg']['employment'])
+
+        fig, ax = plt.subplots()
+        plt.errorbar(self.x_months, y1_hh_employment, e1, color='b', label='Employment rate')
+
+        ax.set(xlabel='Months', ylabel='', title='Household employment rate')
+        ax.grid()
+        ax.legend()
+        if self.plot_param['save_pgf']: fig.savefig('fig_'+ self.gov_type +'_employment.pgf')
+        if self.plot_param['save_pdf']: fig.savefig('fig_'+ self.gov_type +'_employment.pdf')
+        if self.plot_param['save_png']: fig.savefig('fig_'+ self.gov_type +'_employment.png', dpi=300)
+        if self.plot_param['show_plots']: plt.show()
 
     # plot averages for
         # firms' number of employees
@@ -136,8 +159,10 @@ class Stat_runs(Statistician):
         ax.set(xlabel='Months', ylabel='', title='Employer-employee relations')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_'+ self.gov_type +'_connections.png')
-        plt.show()
+        if self.plot_param['save_pgf']: fig.savefig('fig_'+ self.gov_type +'_connections.pgf')
+        if self.plot_param['save_pdf']: fig.savefig('fig_'+ self.gov_type +'_connections.pdf')
+        if self.plot_param['save_png']: fig.savefig('fig_'+ self.gov_type +'_connections.png', dpi=300)
+        if self.plot_param['show_plots']: plt.show()
 
     # plot the tax rate set by government for each month
     def plot_tax(self):
@@ -150,8 +175,10 @@ class Stat_runs(Statistician):
         ax.set(xlabel='Months', ylabel='Tax rate', title='Taxation')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_'+ self.gov_type +'_tax.png')
-        plt.show()
+        if self.plot_param['save_pgf']: fig.savefig('fig_'+ self.gov_type +'_tax.pgf')
+        if self.plot_param['save_pdf']: fig.savefig('fig_'+ self.gov_type +'_tax.pdf')
+        if self.plot_param['save_png']: fig.savefig('fig_'+ self.gov_type +'_tax.png', dpi=300)
+        if self.plot_param['show_plots']: plt.show()
 
     # plot the universal basic income set by government for each month
     def plot_ubi(self):
@@ -164,8 +191,10 @@ class Stat_runs(Statistician):
         ax.set(xlabel='Months', ylabel='Money', title='Universal Basic Income')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_'+ self.gov_type +'_ubi.png')
-        plt.show()
+        if self.plot_param['save_pgf']: fig.savefig('fig_'+ self.gov_type +'_ubi.pgf')
+        if self.plot_param['save_pdf']: fig.savefig('fig_'+ self.gov_type +'_ubi.pdf')
+        if self.plot_param['save_png']: fig.savefig('fig_'+ self.gov_type +'_ubi.png', dpi=300)
+        if self.plot_param['show_plots']: plt.show()
 
     # plot the party composition of the representative government for each month
     def plot_parties(self):
@@ -211,8 +240,10 @@ class Stat_runs(Statistician):
         ax.set(xlabel='Months', ylabel='Party size', title='Party composition')
         ax.grid()
         ax.legend()
-        fig.savefig('fig_'+ self.gov_type +'_parties.png')
-        plt.show()
+        if self.plot_param['save_pgf']: fig.savefig('fig_'+ self.gov_type +'_parties.pgf')
+        if self.plot_param['save_pdf']: fig.savefig('fig_'+ self.gov_type +'_parties.pdf')
+        if self.plot_param['save_png']: fig.savefig('fig_'+ self.gov_type +'_parties.png', dpi=300)
+        if self.plot_param['show_plots']: plt.show()
 
     # money distribution at the end of the simulation
     def hist_money(self):
@@ -228,5 +259,7 @@ class Stat_runs(Statistician):
         ax1.grid()
         ax2.set(xlabel='Money', ylabel='Number of households')
         ax2.grid()
-        fig.savefig('fig_'+ self.gov_type +'_hist_money.png')
-        plt.show()
+        if self.plot_param['save_pgf']: fig.savefig('fig_'+ self.gov_type +'_hist_money.pgf')
+        if self.plot_param['save_pdf']: fig.savefig('fig_'+ self.gov_type +'_hist_money.pdf')
+        if self.plot_param['save_png']: fig.savefig('fig_'+ self.gov_type +'_hist_money.png', dpi=300)
+        if self.plot_param['show_plots']: plt.show()

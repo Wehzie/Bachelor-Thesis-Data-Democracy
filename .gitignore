@@ -4,5 +4,7 @@ target
 __pycache__
 test.py
 *.png
+*.pgf
+*.pdf
 Images
 writing_notes.txt

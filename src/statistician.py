@@ -10,17 +10,19 @@ class Statistician(object):
 
     ######## ######## ######## CONSTRUCTOR ######## ######## ########
 
-    def __init__(self, num_months: int, gov_type: str, num_runs: int):
+
+    def __init__(self, num_months: int, num_runs: int, gov_type: str, num_f: int, num_hh: int, plot_param: dict):
 
         self.sim = None                                    # simulation initially empty, use setter to set
         self.gov_type = gov_type
         self.x_months = [m for m in range(num_months)]     # x-axis for most plots is time in months
         self.num_runs = num_runs
+        self.plot_param = plot_param
 
         self.f_stat = {
 
             'dist': {
-                'money': np.empty((0, 100)),        # TODO: Read from sim
+                'money': np.empty((0, num_f)),
             },
             
             'sum': {
@@ -42,7 +44,7 @@ class Statistician(object):
         self.hh_stat = {
 
             'dist': {
-                'money': np.empty((0, 1000)),       # TODO: Read from sim
+                'money': np.empty((0, num_hh)),
             },
 
             'sum': {
@@ -80,7 +82,8 @@ class Statistician(object):
         self.plot_money()
         self.plot_wage()
         self.plot_demand()
-        self.plot_items()
+        self.plot_item_cost()
+        self.plot_employment()
         self.plot_connections()
         if self.gov_type != 'none':
             self.plot_tax()
@@ -106,7 +109,11 @@ class Statistician(object):
         pass
 
     # plot firm's marginal cost and item price as well as household employment rate
-    def plot_items (self):
+    def plot_item_cost (self):
+        pass
+    
+    # plot household employment rate
+    def plot_employment(self):
         pass
 
     # plot averages for
