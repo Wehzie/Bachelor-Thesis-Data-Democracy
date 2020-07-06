@@ -35,6 +35,11 @@ Python, pip, Matplotlib and Numpy are installed as follows.
         sudo apt install python3 pip3
         pip3 install -U matplotlib numpy
 
+To generate plots in pgf format that can be read by LaTeX, a form of LaTeX must be installed.
+The genration of pgf plots is enabled by default, however it can easily be disabled in `main.py`; then a LaTeX install is no longer needed.
+
+        sudo apt install texlive texlive-xetex
+
 ## Running the simulation
 
 Clone the project using Git or download manually.
