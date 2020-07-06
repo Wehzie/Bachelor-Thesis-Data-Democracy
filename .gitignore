@@ -6,5 +6,4 @@ test.py
 *.png
 *.pgf
 *.pdf
-Images
-writing_notes.txt
+*.txt

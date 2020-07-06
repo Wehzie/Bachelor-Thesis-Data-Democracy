@@ -29,6 +29,7 @@ def main():
     parser.add_argument("--gov", type=str, nargs='?', choices=['none', 'data', 'rep', 'dir'], default='none', help="select between four implementations of a government")
     parser.add_argument("--f", type=int, nargs='?', default=100, help="number of firms used in a simulation")
     parser.add_argument("--hh", type=int, nargs='?', default=1000, help="number of households used in a simualtion")
+    parser.add_argument("--show", type=bool, nargs='?', default=False, help="set whether plots are showed or just saved")
     args = parser.parse_args()
     num_months = args.months
     runs = args.runs
@@ -36,18 +37,22 @@ def main():
     num_f = args.f
     num_hh = args.hh
 
+    # print initial conditions and write them to file
     print_hashes = "######## ######## ########"
-    print(f"{print_hashes:<30} INITIAL CONDITIONS {print_hashes:>58}\n")
-    print(f"{print_hashes:<30} {'MONTHS:':>15} {num_months:>10}")
-    print(f"{print_hashes:<30} {'RUNS:':>15} {runs:>10}")
-    print(f"{print_hashes:<30} {'GOVERNMENT:':>15} {gov_type:>10}")
-    print(f"{print_hashes:<30} {'FIRMS:':>15} {num_f:>10}")
-    print(f"{print_hashes:<30} {'HOUSEHOLDS:':>15} {num_hh:>10}")
-    print("")
+    initial_coniditions = f"""
+{print_hashes:<30} INITIAL CONDITIONS {print_hashes:>58}\n
+{print_hashes:<30} {'MONTHS:':>15} {num_months:>10}
+{print_hashes:<30} {'RUNS:':>15} {runs:>10}
+{print_hashes:<30} {'GOVERNMENT:':>15} {gov_type:>10}
+{print_hashes:<30} {'FIRMS:':>15} {num_f:>10}
+{print_hashes:<30} {'HOUSEHOLDS:':>15} {num_hh:>10}"""
+    print(initial_coniditions)
+    with open("img/fig_" + gov_type + "_initial_coniditions.txt", "w") as f: 
+        f.write(initial_coniditions) 
 
     # parameters for plotting
     plot_param = {
-        'show_plots': True,                             # set whether plots are showed or just saved 
+        'show_plots': args.show,                        # set whether plots are showed or just saved 
         'plot_per_run': False if runs > 1 else True,    # show and save plots for a single run only when doing one run in total
         'save_pgf': True,                               # save plots as Progressive Graphics File for LaTeX
         'save_pdf': True,                               # save plots as Portable Document Format
