@@ -35,6 +35,24 @@ Python, pip, Matplotlib and Numpy are installed as follows.
         sudo apt install python3 pip3
         pip3 install -U matplotlib numpy
 
+## Running the simulation
+
+Clone the project using Git or download manually.
+
+        git clone https://github.com/Wehzie/Bachelor-Thesis-Data-Democracy.git
+
+Before starting the program set your working directory to the project folder.
+
+        cd path/to/Bachelor-Thesis-Data-Democracy
+
+To start the program run the following command. The program will run with default parameters.
+
+        python3 src/main.py
+
+To run the simulation with different parameters open the help menu to learn more about what parameters to set.
+
+        python3 src/main.py --help
+
 ## Acknowledgments
 
 This program is a Python reimplementation and extension based on the works of the following paper:  

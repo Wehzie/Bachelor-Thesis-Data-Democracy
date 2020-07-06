@@ -6,6 +6,7 @@ from simulation import Simulation
 from stat_runs import Stat_runs
 import sys
 import argparse
+from pathlib import Path
 
 ######## ######## ######## MAIN ######## ######## ########
 
@@ -47,6 +48,7 @@ def main():
 {print_hashes:<30} {'FIRMS:':>15} {num_f:>10}
 {print_hashes:<30} {'HOUSEHOLDS:':>15} {num_hh:>10}"""
     print(initial_coniditions)
+    Path("./img").mkdir(parents=True, exist_ok=True)     # make sure /img/ directory exists for writing plots and initial conditions
     with open("img/fig_" + gov_type + "_initial_coniditions.txt", "w") as f: 
         f.write(initial_coniditions) 
 
@@ -59,7 +61,7 @@ def main():
         'save_png': True,                               # save plots as Portable Network Graphics at 300 DPI
     }
 
-    # run the simulation for a set number of runs
+    # run the simulation for a set number of runs then exit the program
     stat_runs = Stat_runs(num_months, runs, gov_type, num_f, num_hh, plot_param)  
     for run in range(runs):
         sim = Simulation(num_months, runs, gov_type, num_f, num_hh, plot_param)
