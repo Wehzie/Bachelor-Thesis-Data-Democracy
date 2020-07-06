@@ -21,7 +21,7 @@ A version of Python 3.5 or greater is needed. On Linux run the following to chec
         python3 --version   # Ubuntu, Debian
         python --version    # Arch, Fedora
 
-The Python modules Matplotlib and Numpy are needed. Lower versions may work but I have used matplotlib 3.2.1 and numpy 1.17.3. On Linux run the following to confirm that you have the packages installed.
+The Python modules Matplotlib, Numpy and SciPy are needed. Lower versions may work but I have used matplotlib 3.2.1, numpy 1.17.3 and scipy 1.5.1. On Linux run the following to confirm that you have the packages installed.
 
         pip3 list   # Ubuntu, Debian
         pip list    # Arch, Fedora
@@ -32,8 +32,8 @@ The Python modules Matplotlib and Numpy are needed. Lower versions may work but 
 
 Python, pip, Matplotlib and Numpy are installed as follows.
 
-        sudo apt install python3 pip3
-        pip3 install -U matplotlib numpy
+        sudo apt install python3 python3-pip
+        pip3 install -U matplotlib numpy scipy
 
 To generate plots in pgf format that can be read by LaTeX, a form of LaTeX must be installed.
 The genration of pgf plots is enabled by default, however it can easily be disabled in `main.py`; then a LaTeX install is no longer needed.
@@ -57,6 +57,10 @@ To start the program run the following command. The program will run with defaul
 To run the simulation with different parameters open the help menu to learn more about what parameters to set.
 
         python3 src/main.py --help
+
+To run the simulation in the background after closing the terminal use the following command. Parameters such as --help must stand before the ampersand '&' symbol.
+
+        nohup python3 src/main.py &
 
 ## Acknowledgments
 
