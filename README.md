@@ -32,7 +32,7 @@ The Python modules Matplotlib and Numpy are needed. Lower versions may work but 
 
 Python, pip, Matplotlib and Numpy are installed as follows.
 
-        sudo apt install python3 pip3
+        sudo apt install python3 python3-pip
         pip3 install -U matplotlib numpy
 
 ## Running the simulation
