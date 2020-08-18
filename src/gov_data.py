@@ -23,6 +23,9 @@ class Gov_data(object):
 
     # calculate a tax rate from the gini index
     def vote_tax(self):
+        
+        
+
         # only tax households once enough data is available
         if len(self.sim.stat.hh_stat['metric']['gini']) == 0:           
             self.tax_rate = 0

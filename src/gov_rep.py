@@ -25,7 +25,8 @@ class Gov_rep(object):
     # each term a new government is elected in the form of a parliamentary composition
     def assemble_parliament(self):
         hh_money_sorted = sorted(self.sim.hh_list, key=lambda hh: hh.money) # sort households by money
-        quint = hh_money_sorted[199::200]                                   # quintile cutoff points
+        quint_size = self.sim.hh_param["num_hh"]//5                         # quintile size
+        quint = hh_money_sorted[quint_size - 1::quint_size]                 # quintile cutoff points
         mp_list = random.sample(self.sim.hh_list, 50)                       # members of parliament
         self.party_size = [0, 0, 0, 0, 0]                                   # reset parliament
         for mp in mp_list:

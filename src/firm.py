@@ -43,6 +43,7 @@ class Firm(object):
         self.up_num_items = self.sim.f_param["inv_lo"] * self.demand        # lower item limit
 
     # employ more people when not enough items are produced
+    # fire people when too many items are in stock
     def update_hiring_status(self, month: int):
         self.update_item_bounds()
 
@@ -57,8 +58,8 @@ class Firm(object):
     # wage determines item price
     def update_price_bounds(self):
         # marginal cost is the cost of producing one more item
-        # one worker produce one item each day
-        # so marginal cost ist the cost of paying another worker for a day
+        # one worker produces one item each day
+        # so marginal cost is the cost of paying another worker for a day
         self.marginal_cost = (self.wage / self.sim.days_in_month) / self.sim.f_param["tech_lvl"]
         self.lo_item_price = self.sim.f_param["price_lo"] * self.marginal_cost
         self.up_item_price = self.sim.f_param["price_up"] * self.marginal_cost

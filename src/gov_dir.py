@@ -22,7 +22,7 @@ class Gov_dir(object):
 
     # each household proposes a tax rate
     # all households have equal weight
-    # by averaging indiviual votes a final tax rate is calculated
+    # by averaging individual votes a final tax rate is calculated
     def vote_tax(self):
         # only tax households once enough data is available
         if len(self.sim.stat.hh_stat['metric']['gini']) < 12:

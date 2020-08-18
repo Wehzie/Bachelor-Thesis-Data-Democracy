@@ -116,8 +116,8 @@ class Stat_runs(Statistician):
         e2 = stats.sem(self.f_stat['avg']['item_price'])
 
         fig, ax = plt.subplots()
-        plt.errorbar(self.x_months, y1_f_marginal_cost, e1, color='b', label='Marginal cost firm average')
-        plt.errorbar(self.x_months, y2_f_item_price, e2, color='g', label='Item price firm average')
+        plt.errorbar(self.x_months, y1_f_marginal_cost, e1, color='r', label='Marginal cost firm average')
+        plt.errorbar(self.x_months, y2_f_item_price, e2, color='b', label='Item price firm average')
 
         ax.set(xlabel='Months', ylabel='', title='Item price and marginal cost')
         ax.grid()

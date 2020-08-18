@@ -2,7 +2,7 @@
 
 class Household(object):
     '''
-    A housold has two kinds of relationships with firms.
+    A household has two kinds of relationships with firms.
     Firstly, a household can have one firm as an employer.
     Secondly, a household can have multiple firms as preferred vendors.
     Based on the wage of a firm a household may search for other employers.
@@ -191,7 +191,7 @@ class Household(object):
             demand_satisfied: bool = remaining_demand <= self.sim.hh_param.get("demand_sat") * self.daily_demand
             if self.money <= 0 or demand_satisfied: return
 
-    # hhs get get used to their wage and expect this as their new reservation wage
+    # hhs get used to their wage and expect this as their new reservation wage
     def update_res_wage(self):
         if self.employer is not None and self.employer.wage > self.res_wage:
             self.res_wage = self.employer.wage
@@ -203,6 +203,7 @@ class Household(object):
         self.money -= tax
         return tax
 
+    # hhs receive a universal basic income each month
     def receive_ubi(self, ubi: float):
         self.money += ubi
 

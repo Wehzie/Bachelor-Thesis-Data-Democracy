@@ -162,14 +162,14 @@ class Stat_run(Statistician):
         if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_demand.png', dpi=300)
         if self.plot_param['show_plots']: plt.show()
 
-    # plot firm's marginal cost and item price TODO
+    # plot firm's marginal cost and item price
     def plot_item_cost(self):
         y1_f_marginal_cost = self.f_stat['avg']['marginal_cost']
         y2_f_item_price = self.f_stat['avg']['item_price']
 
         fig, ax = plt.subplots()
-        ax.plot(self.x_months, y1_f_marginal_cost, 'b', label='Marginal cost firm average')
-        ax.plot(self.x_months, y2_f_item_price, 'g', label='Item price firm average')
+        ax.plot(self.x_months, y1_f_marginal_cost, 'r', label='Marginal cost firm average')
+        ax.plot(self.x_months, y2_f_item_price, 'b', label='Item price firm average')
 
         ax.set(xlabel='Months', ylabel='', title='Item price and marginal cost')
         ax.grid()
@@ -179,7 +179,7 @@ class Stat_run(Statistician):
         if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_item_cost.png', dpi=300)
         if self.plot_param['show_plots']: plt.show()
 
-    # plot household employment rate TODO
+    # plot household employment rate
     def plot_employment(self):
         y1_hh_employment = self.hh_stat['avg']['employment']
 
@@ -290,10 +290,28 @@ class Stat_run(Statistician):
 
 ######## ######## ######## TODOS ######## ######## ########
 
+
+    # TODO: Text in figures should be rendered with LaTeX to fit the paper font
+    # TODO: Remove plotting in this class and integrate with stat_runs to reduce duplication.
+    # TODO: Write results of stat_runs to file. Allow invoking plots without having to rerun the simulation.
+
+    # NEW STATISTICS
+    # TODO: Compare average taxed money to average received UBI in a ratio
+    # TODO: Are days within a month relevant?
+    #       Items are produced and sold each day.
+    #       Stock depletion through the course of a month.
+    # TODO: How many customers does the firm with most/least customers have?
+    # TODO: Indication for movement between quantiles in firms and households.
+    #       Average duration within the same quintile for households.
+    #       Average number of different visited quantiles for households.  
+    # TODO: Average employment duration. Time of households with one firm.
+    # TODO: Average duration of relationship between buying household and selling firm.
+    # TODO: Average frequency of firings at firms.
+    #       Relationship between firings and wealth of firms.
+    #       Relationship between quitting for another employer and wealth of households.
+
+    # PLOTTING
     # TODO: Implement different kinds of dotted lines for black and white suitable display
-    # TODO: think about days within a month. maybe higher resolution than month plots make sense for some cases
-    # TODO: Max and min for how many customers do firms have
     # TODO: error bars, box plots, violin plots are great
     # TODO: Prettier graphs https://stackoverflow.com/questions/14908576/how-to-remove-frame-from-matplotlib-pyplot-figure-vs-matplotlib-figure-frame
-    
-    # TODO: Indication for movement between quantiles in firms and households.
+    # TODO: Party composition graph: How to deal with overlapping lines?

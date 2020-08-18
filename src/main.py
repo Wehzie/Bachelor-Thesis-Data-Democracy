@@ -6,6 +6,7 @@ from simulation import Simulation
 from stat_runs import Stat_runs
 import sys
 import argparse
+import random
 from pathlib import Path
 
 ######## ######## ######## MAIN ######## ######## ########
@@ -22,6 +23,9 @@ def main():
     
     See the README for further details.
     '''
+
+    # random seed for reproducibility
+    random.seed(15532)
 
     # command line control of initial parameters
     parser = argparse.ArgumentParser(description='Set initial running parameters for the simulated economy.')

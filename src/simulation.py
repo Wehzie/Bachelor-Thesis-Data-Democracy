@@ -12,9 +12,10 @@ class Simulation(object):
     days_in_month = 21                  # number of working days in a month
     months_in_year = 12                 # number of months in a year
 
+    # TODO: Initialize all parameters with randomness.
     f_param = {
-        'num_firms': None,               # total number of firms
-        'months_lo_wage': 24,           # gamma: in number of months. duration after which wage is increased when all job positions filled
+        'num_firms': None,              # total number of firms
+        'months_lo_wage': 24,           # gamma: duration (months) after which wage is decreased when all positions filled
         'wage_adj_rate': 0.019,         # delta: rate at which wages are adjusted
         'inv_up': 1,                    # phi_up: rate at which number of items in stock are considered too many
         'inv_lo': 0.25,                 # phi_lo: rate at which number of items in stock are considered too few    
@@ -22,10 +23,10 @@ class Simulation(object):
         'price_lo': 1.025,              # varphi_lo: rate at which prices are considered too low
         'price_adj_rate': 0.02,         # vartheta: rate at which prices are updated
         'price_adj_prob': 0.75,         # theta: probability at which prices are updated
-        'tech_lvl': 3,                  # lambda: technology parameter applied to an employee's natural work force in item production
+        'tech_lvl': 3,                  # lambda: technology parameter influences an employees item production rate
         'buffer_rate': 0.1,             # chi: rate at which a firm builds a money buffer
 
-        'lo_wage_months': 1,            # duration of full employment after which wages are decreased
+        'lo_wage_months': 1,            # duration (months) of full employment after which wages are decreased
 
         'init_money': 0,                # firm's starting balance
         'init_reserve': 0,              # firm's starting savings
@@ -54,9 +55,8 @@ class Simulation(object):
     }
 
     g_param = {
-        'data_tax_rate': 3,                 # data government's tax rate is based on the gini index and this factor
+        'tax_gamma': 4,                     # tax voting relies on this factor that expresses will for redistribution
         'rep_term_length': 48,              # representative government's term length in months
-        'rep_init_tax_factor': 2.5          # representative government's lowest quintile party votes using this factor 
     }
 
     ######## ######## ######## CONSTRUCTOR ######## ######## ########
