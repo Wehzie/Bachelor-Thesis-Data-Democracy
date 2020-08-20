@@ -111,7 +111,6 @@ class Simulation(object):
     # initialize the government
     def init_government(self):
         if self.gov_type == 'none': return
-        if self.gov_type == 'data': self.gov = Gov_data(self)
         if self.gov_type == 'rep': self.gov = Gov_rep(self)
         if self.gov_type == 'dir': self.gov = Gov_dir(self)
 
@@ -211,7 +210,6 @@ class Simulation(object):
 from household import Household
 from firm import Firm
 from stat_run import Stat_run
-from gov_data import Gov_data
 from gov_rep import Gov_rep
 from gov_dir import Gov_dir
 import random

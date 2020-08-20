@@ -31,7 +31,7 @@ def main():
     parser = argparse.ArgumentParser(description='Set initial running parameters for the simulated economy.')
     parser.add_argument("--months", type=int, nargs='?', default=100, help="set the number of months simulated per run")
     parser.add_argument("--runs", type=int, nargs='?', default=1, help="set number of runs to simulate")
-    parser.add_argument("--gov", type=str, nargs='?', choices=['none', 'data', 'rep', 'dir'], default='none', help="select between four implementations of a government")
+    parser.add_argument("--gov", type=str, nargs='?', choices=['none', 'rep', 'dir'], default='none', help="select government implementation")
     parser.add_argument("--f", type=int, nargs='?', default=100, help="number of firms used in a simulation")
     parser.add_argument("--hh", type=int, nargs='?', default=1000, help="number of households used in a simulation")
     parser.add_argument("--show", type=bool, nargs='?', default=False, help="set whether plots are showed or just saved")

@@ -52,8 +52,8 @@ class Stat_run(Statistician):
         self.hh_stat['avg']['res_wage'] = np.append(self.hh_stat['avg']['res_wage'], sum([hh.res_wage for hh in hh_list]) / num_hh)
     
     def calc_metric(self):
-        self.hh_stat['metric']['hoover'] = np.append(self.hh_stat['metric']['hoover'], self.calc_hoover())
-        self.hh_stat['metric']['gini'] = np.append(self.hh_stat['metric']['gini'], self.calc_gini())
+        self.hh_stat['metric']['gini_m'] = np.append(self.hh_stat['metric']['gini_m'], self.calc_gini('money'))
+        self.hh_stat['metric']['gini_i'] = np.append(self.hh_stat['metric']['gini_i'], self.calc_gini('income'))
 
     def calc_gov(self):
         self.g_stat['fix']['tax'] = np.append(self.g_stat['fix']['tax'], self.sim.gov.tax_rate)
@@ -61,17 +61,10 @@ class Stat_run(Statistician):
         if self.gov_type == 'rep':
             self.g_stat['fix']['parties'] = np.append(self.g_stat['fix']['parties'], self.sim.gov.party_size)
 
-    # calculate the hoover index as defined on https://wikimedia.org/api/rest_v1/media/math/render/svg/3e117654142eaec6efa377da812394d213955db4
-    # from https://en.wikipedia.org/wiki/Hoover_index
-    def calc_hoover(self):
-        sum_diff_i_mean = 0
-        for hh in self.sim.hh_list:
-            sum_diff_i_mean += abs(hh.money - self.hh_stat['avg']['money'][-1])
-        return 1/2 * sum_diff_i_mean / self.hh_stat['sum']['money'][-1]
-
     # based on https://github.com/oliviaguest/gini
-    def calc_gini(self):
-        array = np.array([hh.money for hh in self.sim.hh_list])
+    def calc_gini(self, g_type):
+        if g_type == 'income': array = np.array([hh.income for hh in self.sim.hh_list])
+        if g_type == 'money': array = np.array([hh.money for hh in self.sim.hh_list])
         # All values are treated equally, arrays must be 1d:
         array = array.flatten()
         if np.amin(array) < 0:
@@ -102,12 +95,12 @@ class Stat_run(Statistician):
     
     # plot the gini and hover indices of economic equality against time
     def plot_equality(self):
-        y1_hoover = self.hh_stat['metric']['hoover']
-        y2_gini = self.hh_stat['metric']['gini']
+        y1_gini_m = self.hh_stat['metric']['gini_m']
+        y2_gini_i = self.hh_stat['metric']['gini_i']
 
         fig, ax = plt.subplots()
-        ax.plot(self.x_months, y1_hoover, 'r', label='Hoover index')
-        ax.plot(self.x_months, y2_gini, 'b', label='Gini index')
+        ax.plot(self.x_months, y1_gini_m, 'r', label='Gini coefficient of money distribution')
+        ax.plot(self.x_months, y2_gini_i, 'b', label='Gini coefficient of income distribution')
 
         ax.set(xlabel='Months', ylabel='Equality', title='Metrics of economic equality')
         ax.grid()

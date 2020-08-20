@@ -61,8 +61,8 @@ class Statistician(object):
             },
 
             'metric': {
-                'hoover': np.empty((0, num_months)),
-                'gini': np.empty((0, num_months)),
+                'gini_i': np.empty((0, num_months)),            # gini on income
+                'gini_m': np.empty((0, num_months)),            # gini on money
             },
         }
 

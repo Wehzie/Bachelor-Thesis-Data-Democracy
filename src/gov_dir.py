@@ -28,7 +28,7 @@ class Gov_dir(object):
         taf = self.sim.g_param['tax_adj_freq']           # tax adjustment frequency
         
         # only tax households once enough data is available
-        if len(self.sim.stat.hh_stat['metric']['gini']) < taf:
+        if len(self.sim.stat.hh_stat['metric']['gini_i']) < taf:
             self.tax_rate = 0
             return
 
@@ -37,7 +37,7 @@ class Gov_dir(object):
             return
 
         # mean gini index of the past tax_adj_freq months
-        g_list = self.sim.stat.hh_stat['metric']['gini'][-taf:]
+        g_list = self.sim.stat.hh_stat['metric']['gini_i'][-taf:]
         m_gini = sum(g_list) / len(g_list)
 
         # sort households by money
