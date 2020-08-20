@@ -20,7 +20,7 @@ class Household(object):
         self.blocked_v_amount: list = []
         self.res_wage: float = 0                                # reservation wage, minimum wage hh works for
         self.daily_demand: int = 0                              # number of items a hh aims to buy each day
-        self.monthly_income: float = 0                          # sum of wage and profit within a given month 
+        self.income: float = 0                                  # sum of wage and profit within a given month 
 
     ######## ######## ######## METHODS ######## ######## ########
 
@@ -32,12 +32,12 @@ class Household(object):
     # increase hh balance by received wage
     def receive_wage(self, employer_money):
         self.money += employer_money
-        self.monthly_income += employer_money
+        self.income += employer_money
 
     # increase hh balance by received profits
     def receive_profit(self, profit_money):
         self.money += profit_money
-        self.monthly_income += profit_money
+        self.income += profit_money
 
     # return list of vendors the hh doesn't buy from
     def get_non_vendor_firms(self) -> [object]:
@@ -198,7 +198,7 @@ class Household(object):
 
     # hhs pay a portion of their monthly income to the government but not more than they have
     def pay_tax(self, tax_rate: float) -> float:
-        tax = self.monthly_income * tax_rate
+        tax = self.income * tax_rate
         if self.money - tax < 0: tax = self.money
         self.money -= tax
         return tax
@@ -209,7 +209,7 @@ class Household(object):
 
     # reset how much wage and profit was received this month
     def reset_income(self):
-        self.monthly_income = 0
+        self.income = 0
 
 ######## ######## ######## IMPORTS ######## ######## ########
 

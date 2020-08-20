@@ -5,6 +5,8 @@ from simulation import Simulation
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import deque
+from scipy.interpolate import interp1d
+
 
 class Stat_run(Statistician):
     '''
@@ -16,7 +18,9 @@ class Stat_run(Statistician):
 
     def calc_dist(self):
         self.f_stat['dist']['money'] = np.append(self.f_stat['dist']['money'], [f.money for f in self.sim.firm_list])
+        self.f_stat['dist']['wage'] = np.append(self.f_stat['dist']['wage'], [f.wage for f in self.sim.firm_list])
         self.hh_stat['dist']['money'] = np.append(self.hh_stat['dist']['money'], [hh.money for hh in self.sim.hh_list])
+        self.hh_stat['dist']['income'] = np.append(self.hh_stat['dist']['income'], [hh.income for hh in self.sim.hh_list])
 
     def calc_sum(self):
         hh_list = self.sim.hh_list
@@ -43,6 +47,7 @@ class Stat_run(Statistician):
         num_hh = self.sim.hh_param['num_hh']
 
         self.hh_stat['avg']['money'] = np.append(self.hh_stat['avg']['money'], self.hh_stat['sum']['money'][-1] / num_hh)
+        self.hh_stat['avg']['income'] = np.append(self.hh_stat['avg']['income'], sum([hh.income for hh in hh_list]) / num_hh)
         self.hh_stat['avg']['employment'] = np.append(self.hh_stat['avg']['employment'], sum([1 if hh.employer else 0 for hh in hh_list]) / num_hh)
         self.hh_stat['avg']['res_wage'] = np.append(self.hh_stat['avg']['res_wage'], sum([hh.res_wage for hh in hh_list]) / num_hh)
     
@@ -129,16 +134,18 @@ class Stat_run(Statistician):
         if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_money.png', dpi=300)
         if self.plot_param['show_plots']: plt.show()
 
-    # plot averages for firm wage and household reservation wage against time
+    # plot averages for firm wage, household income and household reservation wage against time
     def plot_wage(self):
         y1_f_wage = self.f_stat['avg']['wage']
         y2_hh_res_wage = self.hh_stat['avg']['res_wage']
+        y3_hh_income = self.hh_stat['avg']['income']
 
         fig, ax = plt.subplots()
         ax.plot(self.x_months, y1_f_wage, 'r', label='Wage firm average')
         ax.plot(self.x_months, y2_hh_res_wage, 'b', label='Reservation wage household average')
+        ax.plot(self.x_months, y3_hh_income, 'g', label='Income household average')
         
-        ax.set(xlabel='Months', ylabel='Money', title='Wage and reservation wage')
+        ax.set(xlabel='Months', ylabel='Money', title='Wage, income and reservation wage')
         ax.grid()
         ax.legend()
         if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_wage.pgf')
@@ -270,8 +277,8 @@ class Stat_run(Statistician):
         if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_parties.png', dpi=300)
         if self.plot_param['show_plots']: plt.show()
 
+    # money distribution at the end of the simulation
     def hist_money(self):
-        # money distribution at the end of the simulation
         f_money_list = self.f_stat['dist']['money']
         hh_money_list = self.hh_stat['dist']['money']
 
@@ -288,6 +295,71 @@ class Stat_run(Statistician):
         if self.plot_param['save_pdf']: fig.savefig('img/fig_'+ self.gov_type +'_hist_money.pdf')
         if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_hist_money.png', dpi=300)
         if self.plot_param['show_plots']: plt.show()
+
+    # income distribution at the end of the simulation
+    def hist_income(self):
+        f_wage_list = self.f_stat['dist']['wage']
+        hh_income_list = self.hh_stat['dist']['income']
+
+        fig, (ax1, ax2) = plt.subplots(1, 2)
+        ax1.hist(f_wage_list, bins=int(self.sim.f_param['num_firms']/10))
+        ax2.hist(hh_income_list, bins=int(self.sim.hh_param['num_hh']/10))
+
+        fig.suptitle("Income and wage distribution within households and firms")
+        ax1.set(xlabel='Wage', ylabel='Number of firms')
+        ax1.grid()
+        ax2.set(xlabel='Income', ylabel='Number of households')
+        ax2.grid()
+        if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_hist_income.pgf')
+        if self.plot_param['save_pdf']: fig.savefig('img/fig_'+ self.gov_type +'_hist_income.pdf')
+        if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_hist_income.png', dpi=300)
+        if self.plot_param['show_plots']: plt.show()
+    
+    def dist_income(self):
+        # income distribution at the end of the simulation as line graph
+        hh_dist_income = self.hh_stat['dist']['income']
+        hh_dist_income.sort()
+        print(f"income: {hh_dist_income}")
+
+        hh_income_integral = [0]
+        for hh in hh_dist_income:
+            hh_income_integral.append(hh + hh_income_integral[-1])
+
+        print(f"integral {hh_income_integral}")
+
+        hh_income_norm = [hh / hh_income_integral[-1] for hh in hh_income_integral]
+        print(f"norm {hh_income_norm}")
+
+        hh_income_x = list(range(0, len(hh_income_norm)))       # x has num_hh entries
+        hh_income_x = [point / (len(hh_income_x)-1) for point in hh_income_x]
+        print(f"x {hh_income_x}")
+        # 0.2 on x-axis shows the percentage of the sum of incomes on the y-axis
+
+        f_dist_wage = self.f_stat['dist']['wage']
+        f_dist_wage.sort()
+        print(f"firm wages: {f_dist_wage}")
+
+        f_wage_integral = [0]
+        for f in f_dist_wage:
+            f_wage_integral.append(f + f_wage_integral[-1])
+
+        f_wage_norm = [f / f_wage_integral[-1] for f in f_wage_integral]
+        f_wage_x = list(range(0, len(f_wage_norm)))       # x has num_f entries
+        f_wage_x = [point / (len(f_wage_x)-1) for point in f_wage_x]
+
+        fig, (ax1, ax2) = plt.subplots(1, 2)
+        ax1.plot(f_wage_x, f_wage_norm, 'r', label='Firms per wage')
+        ax1.set(xlabel='Firms', ylabel='Wage')
+        ax1.grid()
+        ax2.plot(hh_income_x, hh_income_norm, 'b', label='Households per income')
+        ax2.set(xlabel='Households', ylabel='Income')
+        ax2.grid()
+        fig.suptitle("Income and wage distribution within households and firms")
+
+        if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_dist_income.pgf')
+        if self.plot_param['save_pdf']: fig.savefig('img/fig_'+ self.gov_type +'_dist_income.pdf')
+        if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_dist_income.png', dpi=300)
+        if self.plot_param['show_plots']: plt.show()       
 
 ######## ######## ######## TODOS ######## ######## ########
 

@@ -23,6 +23,7 @@ class Statistician(object):
 
             'dist': {
                 'money': np.empty((0, num_f)),
+                'wage': np.empty((0, num_f)),
             },
             
             'sum': {
@@ -45,6 +46,7 @@ class Statistician(object):
 
             'dist': {
                 'money': np.empty((0, num_hh)),
+                'income': np.empty((0, num_hh)),
             },
 
             'sum': {
@@ -55,6 +57,7 @@ class Statistician(object):
                 'money': np.empty((0, num_months)),
                 'employment': np.empty((0, num_months)),        # household employment rate
                 'res_wage': np.empty((0, num_months)),
+                'income': np.empty((0, num_months)),
             },
 
             'metric': {
@@ -90,7 +93,9 @@ class Statistician(object):
             self.plot_ubi()
             if self.gov_type == 'rep':
                 self.plot_parties()
+        self.hist_income()
         self.hist_money()
+        self.dist_income()
 
     # plot the gini and hover indices of economic equality against time
     def plot_equality(self):
@@ -135,4 +140,11 @@ class Statistician(object):
 
     # money distribution at the end of the simulation
     def hist_money(self):
+        pass
+
+    # income/wage distribution at the end of the simulation
+    def hist_income(self):
+        pass
+    # income/wage distribution at the end of the simulation as line graph
+    def dist_income(self):
         pass

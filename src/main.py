@@ -15,7 +15,7 @@ def main():
     '''
     This program models an economy to test whether financial equality can be regulated by a flat rate tax and universal basic income.
 
-    This main method controls duration and repetitions of the simualtion.
+    This main method controls duration and repetitions of the simulation.
     It also sets the number of firms and households simulated.
     Additionally it controls what government agent to instantiate and how data is plotted.
     The above parameters are controlled here since they determine the computational complexity of the program.
@@ -33,7 +33,7 @@ def main():
     parser.add_argument("--runs", type=int, nargs='?', default=1, help="set number of runs to simulate")
     parser.add_argument("--gov", type=str, nargs='?', choices=['none', 'data', 'rep', 'dir'], default='none', help="select between four implementations of a government")
     parser.add_argument("--f", type=int, nargs='?', default=100, help="number of firms used in a simulation")
-    parser.add_argument("--hh", type=int, nargs='?', default=1000, help="number of households used in a simualtion")
+    parser.add_argument("--hh", type=int, nargs='?', default=1000, help="number of households used in a simulation")
     parser.add_argument("--show", type=bool, nargs='?', default=False, help="set whether plots are showed or just saved")
     args = parser.parse_args()
     num_months = args.months
@@ -44,17 +44,17 @@ def main():
 
     # print initial conditions and write them to file
     print_hashes = "######## ######## ########"
-    initial_coniditions = f"""
+    initial_conditions = f"""
 {print_hashes:<30} INITIAL CONDITIONS {print_hashes:>58}\n
 {print_hashes:<30} {'MONTHS:':>15} {num_months:>10}
 {print_hashes:<30} {'RUNS:':>15} {runs:>10}
 {print_hashes:<30} {'GOVERNMENT:':>15} {gov_type:>10}
 {print_hashes:<30} {'FIRMS:':>15} {num_f:>10}
 {print_hashes:<30} {'HOUSEHOLDS:':>15} {num_hh:>10}"""
-    print(initial_coniditions)
+    print(initial_conditions)
     Path("./img").mkdir(parents=True, exist_ok=True)     # make sure /img/ directory exists for writing plots and initial conditions
-    with open("img/fig_" + gov_type + "_initial_coniditions.txt", "w") as f: 
-        f.write(initial_coniditions) 
+    with open("img/fig_" + gov_type + "_initial_conditions.txt", "w") as f: 
+        f.write(initial_conditions)
 
     # parameters for plotting
     plot_param = {
