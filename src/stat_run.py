@@ -189,6 +189,10 @@ class Stat_run(Statistician):
 
     # plot household employment rate
     def plot_employment(self):
+        # NOTE: Difference between employment and hhs with 0 zero income can be observed here, because:
+        # At the end of a month firms fire hhs after paying them wages
+        # Measuring both metrics right after incomes are paid but before workers are fired yields the same results
+
         y1_hh_employment = self.hh_stat['avg']['employment']
 
         fig, ax = plt.subplots()
@@ -319,25 +323,18 @@ class Stat_run(Statistician):
         # income distribution at the end of the simulation as line graph
         hh_dist_income = self.hh_stat['dist']['income']
         hh_dist_income.sort()
-        print(f"income: {hh_dist_income}")
 
         hh_income_integral = [0]
         for hh in hh_dist_income:
             hh_income_integral.append(hh + hh_income_integral[-1])
-
-        print(f"integral {hh_income_integral}")
-
         hh_income_norm = [hh / hh_income_integral[-1] for hh in hh_income_integral]
-        print(f"norm {hh_income_norm}")
 
         hh_income_x = list(range(0, len(hh_income_norm)))       # x has num_hh entries
         hh_income_x = [point / (len(hh_income_x)-1) for point in hh_income_x]
-        print(f"x {hh_income_x}")
         # 0.2 on x-axis shows the percentage of the sum of incomes on the y-axis
 
         f_dist_wage = self.f_stat['dist']['wage']
         f_dist_wage.sort()
-        print(f"firm wages: {f_dist_wage}")
 
         f_wage_integral = [0]
         for f in f_dist_wage:

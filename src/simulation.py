@@ -96,8 +96,11 @@ class Simulation(object):
         for hh in range(self.hh_param.get("num_hh")):
             # first, hhs are distributed such that each firm has one employee
             # afterwards, hhs are randomly assigned to an employer
+            # employers need to be informed who their employees are
             employer = self.firm_list[employer_idx] if employer_idx < len(self.firm_list) else random.choice(self.firm_list)
-            self.hh_list.append(Household(self, employer))
+            new_household = Household(self, employer)
+            employer.list_employees.append(new_household)
+            self.hh_list.append(new_household)
             employer_idx += 1
 
     # initialize the stat_run object

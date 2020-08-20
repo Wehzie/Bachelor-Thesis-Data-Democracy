@@ -60,8 +60,8 @@ def main():
     plot_param = {
         'show_plots': args.show,                        # set whether plots are showed or just saved 
         'plot_per_run': False if runs > 1 else True,    # show and save plots for a single run only when doing one run in total
-        'save_pgf': True,                               # save plots as Progressive Graphics File for LaTeX
-        'save_pdf': True,                               # save plots as Portable Document Format
+        'save_pgf': False,                               # save plots as Progressive Graphics File for LaTeX
+        'save_pdf': False,                               # save plots as Portable Document Format
         'save_png': True,                               # save plots as Portable Network Graphics at 300 DPI
     }
 
