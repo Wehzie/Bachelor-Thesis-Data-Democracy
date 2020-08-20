@@ -5,12 +5,9 @@ class Gov_rep(object):
     This government models a representative democracy with a party system.
 
     Each month all households are income taxed with a single tax rate.
-    Each month all households receives a universal basic income.
-    All money that is collected from taxes is spent on ubi.
-
-    The tax rate changes each year.
-    The ubi changes each year.
-    The government changes after each term.
+    Each month all households receive a universal basic income.
+    Each month all money that is collected from taxes is spent on ubi.
+    Each term the government's parliamentary composition changes.
     '''
 
     def __init__(self, sim: object):
@@ -18,37 +15,38 @@ class Gov_rep(object):
         self.money = 0                          # money available to government for redistribution
         self.tax_rate = 0                       # taxes are collected each n months based on income and taxrate
         self.ubi = 0                            # ubi paid to each hh monthly
-        self.party_size = [0, 0, 0, 0, 0]       # number of members in each quintile party
+        self.parties = [0] * self.sim.g_param['rep_num_parties']    # holds parliamentary composition in percentages per party
+                                                # the left most party in the list represents the poorest households
 
     ######## ######## ######## METHODS ######## ######## ########
 
     # each term a new government is elected in the form of a parliamentary composition
     def assemble_parliament(self):
-        hh_m_sort = sorted(self.sim.hh_list, key=lambda hh: hh.money)   # sort households by money
+        hh_i_sort = sorted(self.sim.hh_list, key=lambda hh: hh.income)   # sort households by income
         num_p = self.sim.g_param['rep_num_parties']
         
         # integrate over households money
         integral = [0]
-        for hh in hh_m_sort:
-            integral.append(hh.money + integral[-1])
+        for hh in hh_i_sort:
+            integral.append(hh.income + integral[-1])
 
         norm = [i / integral[-1] for i in integral]     # normalize integral
         x = list(range(0, len(norm)))                   # list with number of points in integral
         x = [i /(len(x)-1) for i in x]                  # normalize list
 
-        # Given (x, norm) income_dist(0.2) returns the % of money owned by the poorest 20% of households
-        # Given (norm, x) income_dist(0.2) returns the % of households owned by the leftmost 20% of money
+        # Given (x, norm) income_dist(0.2) returns the % of income is received by the poorest 20% of households
+        # Given (norm, x) income_dist(0.2) returns the % of households receiving the leftmost 20% of income
         income_dist = interp1d(norm, x, kind='linear')  # interpolate income distribution for integrated incomes
         
-        self.party_size = []
+        self.parties = []
         step = 1 / num_p
         for i in range(1, num_p+1):
-            self.party_size.append(round(float(income_dist(step * i) - income_dist(step * (i-1))), 2))
+            self.parties.append(round(float(income_dist(step * i) - income_dist(step * (i-1))), 2))
 
-    # households are randomly sampled from the population of hhs
-    # based on income a hh belongs to a party
-    # each party votes for a different tax rate
-    # the poorest party votes for highest taxes
+    # households votes for a party based on income
+    # party size follows income distribution
+    # for example, when the left most 20% of income is received by the poorest 60% of households their party has 60% weight
+    # poor party votes for highest taxes, the rich party for the lowest taxes
     def vote_tax(self):
         taf = self.sim.g_param['tax_adj_freq']           # tax adjustment frequency
 
@@ -70,17 +68,13 @@ class Gov_rep(object):
         g_list = self.sim.stat.hh_stat['metric']['gini_i'][-taf:]
         m_gini = sum(g_list) / len(g_list)
 
-        # the first quintile party demands the highest tax rate
-        # with each quintile the demanded tax rate is decreased
-        # the weight of a party is determined by the number of members in its party
-        # the final tax rate is calculated by averaging the individual votes
-        init_tax_factor = 2.5                                               # initial tax chosen by the lowest quintile party
-        tax_factor_step = init_tax_factor / len(self.party_size)            # reduction step from initial tax per party
+        # calculate tax
         self.tax_rate = 0
-        for p in self.party_size:
-            self.tax_rate += m_gini * init_tax_factor * p
-            init_tax_factor -= tax_factor_step
-        # self.tax_rate = self.tax_rate / sum(self.party_size)
+        gamma = self.sim.g_param['tax_gamma']                       # maximum gamma value
+        g_step = gamma / (self.sim.g_param['rep_num_parties']-1)    # stepwise decrease of gamma per party
+        for p in self.parties:
+            self.tax_rate += (1 - (1 + m_gini)**-gamma) * p
+            gamma -= g_step
 
     # collect taxes from all households each month
     def collect_tax(self):

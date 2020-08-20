@@ -5,11 +5,8 @@ class Gov_dir(object):
     This government models a direct democracy where individuals cast direct votes for a tax rate.
 
     Each month all households are income taxed with a single tax rate.
-    Each month all households receives a universal basic income.
-    All money that is collected from taxes is spent on ubi.
-
-    The tax rate changes each year.
-    The ubi changes each year.
+    Each month all households receive a universal basic income.
+    Each month all money that is collected from taxes is spent on ubi.
     '''
 
     def __init__(self, sim: object):
@@ -75,4 +72,3 @@ class Gov_dir(object):
 
 from simulation import Simulation
 import random
-from scipy.interpolate import interp1d

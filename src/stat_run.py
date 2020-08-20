@@ -59,7 +59,7 @@ class Stat_run(Statistician):
         self.g_stat['fix']['tax'] = np.append(self.g_stat['fix']['tax'], self.sim.gov.tax_rate)
         self.g_stat['fix']['ubi'] = np.append(self.g_stat['fix']['ubi'], self.sim.gov.ubi)
         if self.gov_type == 'rep':
-            self.g_stat['fix']['parties'] = np.append(self.g_stat['fix']['parties'], self.sim.gov.party_size)
+            self.g_stat['fix']['parties'] = np.append(self.g_stat['fix']['parties'], self.sim.gov.parties)
 
     # based on https://github.com/oliviaguest/gini
     def calc_gini(self, g_type):
