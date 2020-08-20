@@ -10,7 +10,6 @@ class Simulation(object):
     ######## ######## ######## STATIC VARIABLES ######## ######## ########
 
     days_in_month = 21                  # number of working days in a month
-    months_in_year = 12                 # number of months in a year
 
     # TODO: Initialize all parameters with randomness.
     f_param = {
@@ -56,7 +55,9 @@ class Simulation(object):
 
     g_param = {
         'tax_gamma': 4,                     # tax voting relies on this factor that expresses will for redistribution
+        'tax_adj_freq': 12,                 # frequency of updating tax rate
         'rep_term_length': 48,              # representative government's term length in months
+        'rep_num_parties': 5,               # number of parties in representative government's parliament
     }
 
     ######## ######## ######## CONSTRUCTOR ######## ######## ########

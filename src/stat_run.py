@@ -4,6 +4,7 @@ from statistician import Statistician
 from simulation import Simulation
 import numpy as np
 import matplotlib.pyplot as plt
+from collections import deque
 
 class Stat_run(Statistician):
     '''

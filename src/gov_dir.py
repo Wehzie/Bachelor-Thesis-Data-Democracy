@@ -20,27 +20,41 @@ class Gov_dir(object):
 
     ######## ######## ######## METHODS ######## ######## ########
 
-    # each household proposes a tax rate
+    # each household proposes a different tax rate
+    # the proposed tax rate is dependent on the hhs position in the distribution of incomes
     # all households have equal weight
     # by averaging individual votes a final tax rate is calculated
     def vote_tax(self):
+        taf = self.sim.g_param['tax_adj_freq']           # tax adjustment frequency
+        
         # only tax households once enough data is available
-        if len(self.sim.stat.hh_stat['metric']['gini']) < 12:
+        if len(self.sim.stat.hh_stat['metric']['gini']) < taf:
             self.tax_rate = 0
             return
 
-        year_gini_list = self.sim.stat.hh_stat['metric']['gini'][-12:]
-        gini = sum(year_gini_list) / len(year_gini_list)                    # mean gini index of the last year
-        
-        median_money = self.sim.hh_list[self.sim.hh_param['num_hh'] // 2].money
-        self.tax_rate = 0
-        for hh in self.sim.hh_list:
-            # gini index is multiplied by a measure of how far a hh is below or above the median money
-            self.tax_rate += gini * median_money / hh.money
-        self.tax_rate = self.tax_rate / self.sim.hh_param['num_hh']
+        # only vote for a new tax rate when it's the first month of a year
+        if self.sim.current_month % taf != 0:
+            return
 
-        # tax rate shouldn't exceed 100% of the income
-        if self.tax_rate > 1: self.tax_rate = 1
+        # mean gini index of the past tax_adj_freq months
+        g_list = self.sim.stat.hh_stat['metric']['gini'][-taf:]
+        m_gini = sum(g_list) / len(g_list)
+
+        # sort households by money
+        hh_m_sort = sorted(self.sim.hh_list, key=lambda hh: hh.money)
+
+        # normalize how much money a hh has in relation to the sum of household money
+        # transform this to the range of 4 to 0 for poorest and richest households
+        maxi_m = hh_m_sort[-1].money                    # money of richest hh
+        mini_m = hh_m_sort[0].money                     # money of poorest hh
+        mY = self.sim.g_param['tax_gamma']              # maximum gamma value
+        gamma_list = [(hh.money - maxi_m) / (mini_m - maxi_m) * mY for hh in hh_m_sort]
+
+        self.tax_rate = 0
+        num_hh = self.sim.hh_param['num_hh']            # number of households
+        for hh in range(num_hh):
+            self.tax_rate += 1 - (1 + m_gini)**-gamma_list[hh]
+        self.tax_rate = self.tax_rate / num_hh
 
     # collect taxes from all households each month
     def collect_tax(self):
@@ -61,3 +75,4 @@ class Gov_dir(object):
 
 from simulation import Simulation
 import random
+from scipy.interpolate import interp1d
