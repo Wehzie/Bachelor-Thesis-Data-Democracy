@@ -34,7 +34,6 @@ def main():
     parser.add_argument("--gov", type=str, nargs='?', choices=['none', 'rep', 'dir'], default='none', help="select government implementation")
     parser.add_argument("--f", type=int, nargs='?', default=100, help="number of firms used in a simulation")
     parser.add_argument("--hh", type=int, nargs='?', default=1000, help="number of households used in a simulation")
-    parser.add_argument("--show", type=bool, nargs='?', default=False, help="set whether plots are showed or just saved")
     args = parser.parse_args()
     num_months = args.months
     runs = args.runs
@@ -58,7 +57,6 @@ def main():
 
     # parameters for plotting
     plot_param = {
-        'show_plots': args.show,                        # set whether plots are showed or just saved 
         'plot_per_run': False if runs > 1 else True,    # show and save plots for a single run only when doing one run in total
         'save_pgf': False,                               # save plots as Progressive Graphics File for LaTeX
         'save_pdf': False,                               # save plots as Portable Document Format
