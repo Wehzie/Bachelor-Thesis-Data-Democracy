@@ -61,6 +61,7 @@ def main():
         'save_pgf': False,                               # save plots as Progressive Graphics File for LaTeX
         'save_pdf': False,                               # save plots as Portable Document Format
         'save_png': True,                               # save plots as Portable Network Graphics at 300 DPI
+        'save_csv': False                              # save data as csv file
     }
 
     # run the simulation for a set number of runs then exit the program

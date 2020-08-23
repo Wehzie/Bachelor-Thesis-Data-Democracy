@@ -3,11 +3,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import deque
+import datetime
 from scipy.interpolate import interp1d
 from scipy import stats
 
 plt.rcParams['axes.grid'] = True
-plt.rcParams["legend.fancybox"] = True
+plt.rcParams["errorbar.capsize"] = 5
 
 class Statistician(object):
     '''
@@ -81,6 +82,8 @@ class Statistician(object):
             }
         }
 
+######## ######## ######## METHODS ######## ######## ########
+
     # set the simulation object
     def set_sim(self, sim: object):
         self.sim = sim
@@ -102,6 +105,26 @@ class Statistician(object):
         self.hist_income()
         self.hist_money()
         self.dist_income()
+        if self.plot_param['save_csv']:
+            print_hashes = "######## ######## ########"
+            print(f"\n{print_hashes:<30} {'SAVING DATA':>15}")
+            self.save()
+
+    def save(self):
+        with open('dat/data '+str(datetime.datetime.now().strftime("%H:%M:%S"))+'.csv','a') as f:
+            for stat_key, stat_val in self.f_stat.items():
+                for measure_key, measure_val in stat_val.items():
+                    np.savetxt(f, self.f_stat[stat_key][measure_key], delimiter=',', header='firm '+str(stat_key)+' '+str(measure_key))
+
+            for stat_key, stat_val in self.hh_stat.items():
+                for measure_key, measure_val in stat_val.items():
+                    np.savetxt(f, self.hh_stat[stat_key][measure_key], delimiter=',', header='hh '+str(stat_key)+' '+str(measure_key))
+                    
+            if self.gov_type != 'none':
+                for stat_key, stat_val in self.g_stat.items():
+                    for measure_key, measure_val in stat_val.items():
+                        if len(measure_val) == 0: continue                  # only add party data for the representative government
+                        np.savetxt(f, self.g_stat[stat_key][measure_key], delimiter=',', header='gov '+str(stat_key)+' '+str(measure_key))
 
 ######## ######## ######## PLOTS ######## ######## ########
     
