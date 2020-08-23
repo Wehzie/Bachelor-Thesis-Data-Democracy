@@ -8,7 +8,7 @@ from scipy.interpolate import interp1d
 from scipy import stats
 
 plt.rcParams['axes.grid'] = True
-plt.rcParams["errorbar.capsize"] = 5
+plt.rcParams["errorbar.capsize"] = 3
 
 class Statistician(object):
     '''
@@ -141,8 +141,8 @@ class Statistician(object):
             e1, e2 = 0, 0
 
         fig, ax = plt.subplots()
-        plt.errorbar(self.x_months, y1_gini_m, e1, linestyle="-.", color='r', label='Gini coefficient of money')
-        plt.errorbar(self.x_months, y2_gini_i, e2, linestyle="--", color='b', label='Gini coefficient of income')
+        plt.errorbar(self.x_months, y1_gini_m, e1, elinewidth=0.5, capthick=0.5, linestyle="-.", color='r', label='Gini coefficient of money')
+        plt.errorbar(self.x_months, y2_gini_i, e2, elinewidth=0.5, capthick=0.5, linestyle="--", color='b', label='Gini coefficient of income')
         ax.set(xlabel='Months', ylabel='Equality', title='Metrics of economic equality')
         ax.legend()
 
@@ -164,8 +164,8 @@ class Statistician(object):
             e2 = 0
 
         fig, ax = plt.subplots()
-        plt.errorbar(self.x_months, y1_f_money, e1, linestyle="-.", color='r', label='Firms\' money')
-        plt.errorbar(self.x_months, y2_hh_money, e2, linestyle="--", color='b', label='Households\' money')
+        plt.errorbar(self.x_months, y1_f_money, e1, elinewidth=0.5, capthick=0.5, linestyle="-.", color='r', label='Firms\' money')
+        plt.errorbar(self.x_months, y2_hh_money, e2, elinewidth=0.5, capthick=0.5, linestyle="--", color='b', label='Households\' money')
         ax.set(xlabel='Months', ylabel='Money', title='Money for firms and households')
         ax.legend()
 
@@ -189,9 +189,9 @@ class Statistician(object):
             e1, e2, e3 = 0, 0, 0
 
         fig, ax = plt.subplots()
-        plt.errorbar(self.x_months, y1_f_wage, e1, linestyle=":", color='r', label='Firms\' wage')
-        plt.errorbar(self.x_months, y2_hh_res_wage, e2, linestyle="--", color='b', label='Households\' reservation wage')
-        plt.errorbar(self.x_months, y3_hh_income, e3, linestyle="-.", color='g', label='Households\' income')
+        plt.errorbar(self.x_months, y1_f_wage, e1, elinewidth=0.5, capthick=0.5, linestyle=":", color='r', label='Firms\' wage')
+        plt.errorbar(self.x_months, y2_hh_res_wage, e2, elinewidth=0.5, capthick=0.5, linestyle="--", color='b', label='Households\' reservation wage')
+        plt.errorbar(self.x_months, y3_hh_income, e3, elinewidth=0.5, capthick=0.5, linestyle="-.", color='g', label='Households\' income')
         ax.set(xlabel='Months', ylabel='Money', title='Wage, income and reservation wage')
         ax.legend()
 
@@ -212,8 +212,8 @@ class Statistician(object):
             e1, e2 = 0, 0
 
         fig, ax = plt.subplots()
-        plt.errorbar(self.x_months, y1_f_num_items, e1, linestyle="-.", color='r', label='Firms\' stock size')
-        plt.errorbar(self.x_months, y2_f_demand, e2, linestyle="--", color='b', label='Firms\' demand')
+        plt.errorbar(self.x_months, y1_f_num_items, e1, elinewidth=0.5, capthick=0.5, linestyle="-.", color='r', label='Firms\' stock size')
+        plt.errorbar(self.x_months, y2_f_demand, e2, elinewidth=0.5, capthick=0.5, linestyle="--", color='b', label='Firms\' demand')
         ax.set(xlabel='Months', ylabel='Items', title='Item demand and price')
         ax.legend()
 
@@ -234,8 +234,8 @@ class Statistician(object):
             e1, e2 = 0, 0
 
         fig, ax = plt.subplots()
-        plt.errorbar(self.x_months, y1_f_marginal_cost, e1, linestyle="-.", color='r', label='Firms\' marginal cost')
-        plt.errorbar(self.x_months, y2_f_item_price, e2, linestyle="--", color='b', label='Firms\' item price')
+        plt.errorbar(self.x_months, y1_f_marginal_cost, e1, elinewidth=0.5, capthick=0.5, linestyle="-.", color='r', label='Firms\' marginal cost')
+        plt.errorbar(self.x_months, y2_f_item_price, e2, elinewidth=0.5, capthick=0.5, linestyle="--", color='b', label='Firms\' item price')
         ax.set(xlabel='Months', ylabel='', title='Item price and marginal cost')
         ax.legend()
 
@@ -253,7 +253,7 @@ class Statistician(object):
             e1, e2 = 0, 0
 
         fig, ax = plt.subplots()
-        plt.errorbar(self.x_months, y1_hh_employment, e1, linestyle="-", color='b', label='Employment rate')
+        plt.errorbar(self.x_months, y1_hh_employment, e1, elinewidth=0.5, capthick=0.5, linestyle="-", color='b', label='Employment rate')
         ax.set(xlabel='Months', ylabel='Fraction employed', title='Households\' employment rate')
 
         if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_employment.pgf')
@@ -275,8 +275,8 @@ class Statistician(object):
             e1, e2 = 0, 0
 
         fig, ax = plt.subplots()
-        plt.errorbar(self.x_months, y1_f_num_employees, e1, linestyle="-.", color='r', label='Firms\' number of employees')
-        plt.errorbar(self.x_months, y2_f_months_hiring, e2, linestyle="--", color='b', label='Firms\' recruiting duration')
+        plt.errorbar(self.x_months, y1_f_num_employees, e1, elinewidth=0.5, capthick=0.5, linestyle="-.", color='r', label='Firms\' number of employees')
+        plt.errorbar(self.x_months, y2_f_months_hiring, e2, elinewidth=0.5, capthick=0.5, linestyle="--", color='b', label='Firms\' recruiting duration')
         ax.set(xlabel='Months', ylabel='', title='Employment relations')
         ax.legend()
 
@@ -294,7 +294,7 @@ class Statistician(object):
             e1 = 0
 
         fig, ax = plt.subplots()
-        plt.errorbar(self.x_months, y1_tax, e1, linestyle="-", color='b', label='Tax rate')
+        plt.errorbar(self.x_months, y1_tax, e1, elinewidth=0.5, capthick=0.5, linestyle="-", color='b', label='Tax rate')
         ax.set(xlabel='Months', ylabel='Tax rate', title='Flat tax rate')
 
         if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_tax.pgf')
@@ -311,7 +311,7 @@ class Statistician(object):
             e1 = 0
 
         fig, ax = plt.subplots()
-        plt.errorbar(self.x_months, y1_ubi, e1, linestyle="-", color='b', label='UBI')
+        plt.errorbar(self.x_months, y1_ubi, e1, elinewidth=0.5, capthick=0.5, linestyle="-", color='b', label='UBI')
         ax.set(xlabel='Months', ylabel='Money', title='Universal Basic Income')
 
         if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_ubi.pgf')
@@ -346,11 +346,11 @@ class Statistician(object):
             e1, e2, e3, e4, e5 = 0, 0, 0, 0, 0
 
         fig, ax = plt.subplots()
-        plt.errorbar(self.x_months, y1_party, e1, linestyle=":", color='r', label='Party quintile 1')     # party representing the poorest quintile of hhs
-        plt.errorbar(self.x_months, y2_party, e2, linestyle="--", color='b', label='Party quintile 2')
-        plt.errorbar(self.x_months, y3_party, e3, linestyle="-.", color='g', label='Party quintile 3')
-        plt.errorbar(self.x_months, y4_party, e4, dashes=[1, 3, 5, 7], color='k', label='Party quintile 4')
-        plt.errorbar(self.x_months, y5_party, e5, dashes=[5, 15, 5, 20], color='c', label='Party quintile 5')
+        plt.errorbar(self.x_months, y1_party, e1, elinewidth=0.5, capthick=0.5, linestyle=":", color='r', label='Party quintile 1')     # party representing the poorest quintile of hhs
+        plt.errorbar(self.x_months, y2_party, e2, elinewidth=0.5, capthick=0.5, linestyle="--", color='b', label='Party quintile 2')
+        plt.errorbar(self.x_months, y3_party, e3, elinewidth=0.5, capthick=0.5, linestyle="-.", color='g', label='Party quintile 3')
+        plt.errorbar(self.x_months, y4_party, e4, elinewidth=0.5, capthick=0.5, dashes=[1, 3, 5, 7], color='k', label='Party quintile 4')
+        plt.errorbar(self.x_months, y5_party, e5, elinewidth=0.5, capthick=0.5, dashes=[5, 15, 5, 20], color='c', label='Party quintile 5')
         ax.set(xlabel='Months', ylabel='Party size', title='Representative parliament composition')
         ax.legend()
 
