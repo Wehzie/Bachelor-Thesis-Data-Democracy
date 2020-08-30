@@ -13,7 +13,7 @@ class Gov_rep(object):
     def __init__(self, sim: object):
         self.sim = sim                          # link government to the simulation
         self.money = 0                          # money available to government for redistribution
-        self.tax_rate = 0                       # taxes are collected each n months based on income and taxrate
+        self.tax_rate = 0                       # taxes are collected each month based on income and taxrate
         self.ubi = 0                            # ubi paid to each hh monthly
         self.parties = [0] * self.sim.g_param['rep_num_parties']    # holds parliamentary composition in percentages per party
                                                 # the left most party in the list represents the poorest households
@@ -25,7 +25,7 @@ class Gov_rep(object):
         hh_i_sort = sorted(self.sim.hh_list, key=lambda hh: hh.income)   # sort households by income
         num_p = self.sim.g_param['rep_num_parties']
         
-        # integrate over households money
+        # integrate over households income
         integral = [0]
         for hh in hh_i_sort:
             integral.append(hh.income + integral[-1])
@@ -43,7 +43,7 @@ class Gov_rep(object):
         for i in range(1, num_p+1):
             self.parties.append(round(float(income_dist(step * i) - income_dist(step * (i-1))), 2))
 
-    # households votes for a party based on income
+    # households vote for a party based on income
     # party size follows income distribution
     # for example, when the left most 20% of income is received by the poorest 60% of households their party has 60% weight
     # poor party votes for highest taxes, the rich party for the lowest taxes
@@ -70,11 +70,11 @@ class Gov_rep(object):
 
         # calculate tax
         self.tax_rate = 0
-        gamma = self.sim.g_param['tax_gamma']                       # maximum gamma value
-        g_step = gamma / (self.sim.g_param['rep_num_parties']-1)    # stepwise decrease of gamma per party
+        gamma = self.sim.g_param['tax_gamma']                           # maximum gamma value
+        gamma_step = gamma / (self.sim.g_param['rep_num_parties']-1)    # stepwise decrease of gamma per party
         for p in self.parties:
             self.tax_rate += (1 - (1 + m_gini)**-gamma) * p
-            gamma -= g_step
+            gamma -= gamma_step
 
     # collect taxes from all households each month
     def collect_tax(self):

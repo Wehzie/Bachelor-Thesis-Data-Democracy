@@ -5,7 +5,7 @@ class Household(object):
     A household has two kinds of relationships with firms.
     Firstly, a household can have one firm as an employer.
     Secondly, a household can have multiple firms as preferred vendors.
-    Based on the wage of a firm a household may search for other employers.
+    Based on the wage offered by a firm a household may search for other employers.
     Based on the ability to satisfy item demand a household may change its preferred vendors.
     '''
 
@@ -13,14 +13,13 @@ class Household(object):
         self.sim: object = sim                                  # hh belongs to a simulation
         self.money: float = sim.hh_param.get("init_money")      # current balance of hh
         self.employer: object = employer                        # hh has one employer firm (type B connection)
-        self.vendor_list: list = []                             # hh buys at up to 7 firms (type A connection)
+        self.vendor_list: list = []                             # hh buys at up to ('num_vendors') n firms (type A connection)
         for vendor in range(sim.hh_param.get("num_vendors")):
             self.vendor_list.append(random.choice(self.get_non_vendor_firms()))
-        self.blocked_vendors: list = []                         # hh remembers firms with not enough goods in the last month
-        self.blocked_v_amount: list = []
+        self.blocked_vendors: list = []                         # store firms unable to satisfy demand last month
         self.res_wage: float = 0                                # reservation wage, minimum wage hh works for
         self.daily_demand: int = 0                              # number of items a hh aims to buy each day
-        self.income: float = 0                                  # sum of wage and profit within a given month 
+        self.income: float = 0                                  # sum of wage and profit within a given month (UBI not included)
 
     ######## ######## ######## METHODS ######## ######## ########
 
@@ -108,7 +107,7 @@ class Household(object):
 
     # unemployed hhs are eager to find a job
     # employed hhs are less eager to find a job
-    # since employed hhs have a job their wage expectations grow
+    # since employed hhs have a job their wage expectations may grow
     def do_jobsearch(self):
         if self.employer == None:
             self.search_any_employer()
@@ -126,7 +125,7 @@ class Household(object):
                 pot_firm.hire(self)
                 return
         
-        # hh lowers it's reservation wage when no employer was found
+        # hh lowers its reservation wage when no employer was found
         if self.employer is None: self.res_wage *= self.sim.hh_param.get("rw_change_unemployed")
 
     # hhs paid less than reservation wage search a better employer

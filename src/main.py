@@ -51,7 +51,7 @@ def main():
 {print_hashes:<30} {'FIRMS:':>15} {num_f:>10}
 {print_hashes:<30} {'HOUSEHOLDS:':>15} {num_hh:>10}"""
     print(initial_conditions)
-    Path("./img").mkdir(parents=True, exist_ok=True)     # make sure /img/ directory exists for writing plots and initial conditions
+    Path("./img").mkdir(parents=True, exist_ok=True)     # ensure /img/ directory exists for writing plots and initial conditions
     with open("img/fig_" + gov_type + "_initial_conditions.txt", "w") as f: 
         f.write(initial_conditions)
 
@@ -61,7 +61,8 @@ def main():
         'save_pgf': False,                               # save plots as Progressive Graphics File for LaTeX
         'save_pdf': True,                               # save plots as Portable Document Format
         'save_png': False,                               # save plots as Portable Network Graphics at 300 DPI
-        'save_csv': False                              # save data as csv file
+        'save_csv': False,                              # save data as csv file
+        'title': True,                                 # save plots with a title
     }
 
     # run the simulation for a set number of runs then exit the program

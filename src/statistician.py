@@ -12,7 +12,7 @@ plt.rcParams["errorbar.capsize"] = 3
 
 class Statistician(object):
     '''
-    The statistician class is abstract and not instantiated it inherits the data storage dictionary and plotting capabilities.
+    The Statistician class is abstract and not instantiated it inherits the data storage dictionary and plotting capabilities.
     '''
 
     ######## ######## ######## CONSTRUCTOR ######## ######## ########
@@ -20,12 +20,13 @@ class Statistician(object):
 
     def __init__(self, num_months: int, num_runs: int, gov_type: str, num_f: int, num_hh: int, plot_param: dict):
 
-        self.sim = None                                    # simulation initially empty, use setter to set
-        self.gov_type = gov_type
-        self.x_months = [m for m in range(num_months)]     # x-axis for most plots is time in months
-        self.num_runs = num_runs
-        self.plot_param = plot_param
+        self.sim = None                                     # simulation initially empty, use setter to set
+        self.gov_type = gov_type                            # type of government
+        self.x_months = [m for m in range(num_months)]      # x-axis for most plots is time in months
+        self.num_runs = num_runs                            # number of runs simulated
+        self.plot_param = plot_param                        # plotting parameters
 
+        # firm statistics
         self.f_stat = {
 
             'dist': {
@@ -49,6 +50,7 @@ class Statistician(object):
             },
         }
 
+        # household statistics
         self.hh_stat = {
 
             'dist': {
@@ -73,6 +75,7 @@ class Statistician(object):
             },
         }
 
+        # government statistics
         self.g_stat = {
 
             'fix': {                # direct readings
@@ -110,6 +113,7 @@ class Statistician(object):
             print(f"\n{print_hashes:<30} {'SAVING DATA':>15}")
             self.save()
 
+    # save data to file
     def save(self):
         with open('dat/data '+str(datetime.datetime.now().strftime("%H:%M:%S"))+'.csv','a') as f:
             for stat_key, stat_val in self.f_stat.items():
@@ -127,6 +131,12 @@ class Statistician(object):
                         np.savetxt(f, self.g_stat[stat_key][measure_key], delimiter=',', header='gov '+str(stat_key)+' '+str(measure_key))
 
 ######## ######## ######## PLOTS ######## ######## ########
+
+    # evaluate the plot parameters for saving
+    def save_fig(self, fig, plot_name):
+        if self.plot_param['save_pgf']: fig.savefig('img/fig_' + self.gov_type + '_' + plot_name +'.pgf')
+        if self.plot_param['save_pdf']: fig.savefig('img/fig_' + self.gov_type + '_' + plot_name + '.pdf')
+        if self.plot_param['save_png']: fig.savefig('img/fig_' + self.gov_type + '_' + plot_name + '.png', dpi=300)
     
     # plot the gini index based on income and money distribution
     def plot_equality(self):
@@ -143,12 +153,11 @@ class Statistician(object):
         fig, ax = plt.subplots()
         plt.errorbar(self.x_months, y1_gini_m, e1, elinewidth=0.5, capthick=0.5, linestyle="-.", color='r', label='Gini coefficient of money')
         plt.errorbar(self.x_months, y2_gini_i, e2, elinewidth=0.5, capthick=0.5, linestyle="--", color='b', label='Gini coefficient of income')
-        ax.set(xlabel='Months', ylabel='Equality', title='Metrics of economic equality')
+        ax.set(xlabel='Months', ylabel='Equality')
         ax.legend()
 
-        if self.plot_param['save_pgf']: fig.savefig('img/fig_' + self.gov_type + '_equality.pgf')
-        if self.plot_param['save_pdf']: fig.savefig('img/fig_' + self.gov_type + '_equality.pdf')
-        if self.plot_param['save_png']: fig.savefig('img/fig_' + self.gov_type + '_equality.png', dpi=300)
+        if self.plot_param['title']: ax.set(title='Metrics of economic equality')
+        self.save_fig(fig, 'equality')
 
     # plot averages for firm money and household money against time
     def plot_money(self):
@@ -166,12 +175,11 @@ class Statistician(object):
         fig, ax = plt.subplots()
         plt.errorbar(self.x_months, y1_f_money, e1, elinewidth=0.5, capthick=0.5, linestyle="-.", color='r', label='Firms\' money')
         plt.errorbar(self.x_months, y2_hh_money, e2, elinewidth=0.5, capthick=0.5, linestyle="--", color='b', label='Households\' money')
-        ax.set(xlabel='Months', ylabel='Money', title='Money for firms and households')
+        ax.set(xlabel='Months', ylabel='Money')
         ax.legend()
 
-        if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_money.pgf')
-        if self.plot_param['save_pdf']: fig.savefig('img/fig_'+ self.gov_type +'_money.pdf')
-        if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_money.png', dpi=300)
+        if self.plot_param['title']: ax.set(title='Money for firms and households')
+        self.save_fig(fig, 'money')
 
     # plot averages for firm wage, household income and household reservation wage against time
     def plot_wage(self):
@@ -192,12 +200,11 @@ class Statistician(object):
         plt.errorbar(self.x_months, y1_f_wage, e1, elinewidth=0.5, capthick=0.5, linestyle=":", color='r', label='Firms\' wage')
         plt.errorbar(self.x_months, y2_hh_res_wage, e2, elinewidth=0.5, capthick=0.5, linestyle="--", color='b', label='Households\' reservation wage')
         plt.errorbar(self.x_months, y3_hh_income, e3, elinewidth=0.5, capthick=0.5, linestyle="-.", color='g', label='Households\' income')
-        ax.set(xlabel='Months', ylabel='Money', title='Wage, income and reservation wage')
+        ax.set(xlabel='Months', ylabel='Money')
         ax.legend()
 
-        if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_wage.pgf')
-        if self.plot_param['save_pdf']: fig.savefig('img/fig_'+ self.gov_type +'_wage.pdf')
-        if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_wage.png', dpi=300)    
+        if self.plot_param['title']: ax.set(title='Wage, income and reservation wage')
+        self.save_fig(fig, 'wage')   
 
     # plot averages for number of items a firm has in stock and demand 
     def plot_demand(self):
@@ -214,12 +221,11 @@ class Statistician(object):
         fig, ax = plt.subplots()
         plt.errorbar(self.x_months, y1_f_num_items, e1, elinewidth=0.5, capthick=0.5, linestyle="-.", color='r', label='Firms\' stock size')
         plt.errorbar(self.x_months, y2_f_demand, e2, elinewidth=0.5, capthick=0.5, linestyle="--", color='b', label='Firms\' demand')
-        ax.set(xlabel='Months', ylabel='Items', title='Item demand and price')
+        ax.set(xlabel='Months', ylabel='Items')
         ax.legend()
 
-        if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_demand.pgf')
-        if self.plot_param['save_pdf']: fig.savefig('img/fig_'+ self.gov_type +'_demand.pdf')
-        if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_demand.png', dpi=300)
+        if self.plot_param['title']: ax.set(title='Item demand and price')
+        self.save_fig(fig, 'demand')
 
     # plot firm's marginal cost and item price
     def plot_item_cost(self):
@@ -236,12 +242,11 @@ class Statistician(object):
         fig, ax = plt.subplots()
         plt.errorbar(self.x_months, y1_f_marginal_cost, e1, elinewidth=0.5, capthick=0.5, linestyle="-.", color='r', label='Firms\' marginal cost')
         plt.errorbar(self.x_months, y2_f_item_price, e2, elinewidth=0.5, capthick=0.5, linestyle="--", color='b', label='Firms\' item price')
-        ax.set(xlabel='Months', ylabel='', title='Item price and marginal cost')
+        ax.set(xlabel='Months', ylabel='Money')
         ax.legend()
 
-        if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_item_cost.pgf')
-        if self.plot_param['save_pdf']: fig.savefig('img/fig_'+ self.gov_type +'_item_cost.pdf')
-        if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_item_cost.png', dpi=300)
+        if self.plot_param['title']: ax.set(title='Item price and marginal cost')
+        self.save_fig(fig, 'item_cost')
 
     # plot household employment rate
     def plot_employment(self):
@@ -254,11 +259,10 @@ class Statistician(object):
 
         fig, ax = plt.subplots()
         plt.errorbar(self.x_months, y1_hh_employment, e1, elinewidth=0.5, capthick=0.5, linestyle="-", color='b', label='Employment rate')
-        ax.set(xlabel='Months', ylabel='Fraction employed', title='Households\' employment rate')
+        ax.set(xlabel='Months', ylabel='Employment rate')
 
-        if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_employment.pgf')
-        if self.plot_param['save_pdf']: fig.savefig('img/fig_'+ self.gov_type +'_employment.pdf')
-        if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_employment.png', dpi=300)
+        if self.plot_param['title']: ax.set(title='Households\' employment rate')
+        self.save_fig(fig, 'employment')
 
     # plot averages for
         # firms' number of employees
@@ -277,12 +281,11 @@ class Statistician(object):
         fig, ax = plt.subplots()
         plt.errorbar(self.x_months, y1_f_num_employees, e1, elinewidth=0.5, capthick=0.5, linestyle="-.", color='r', label='Firms\' number of employees')
         plt.errorbar(self.x_months, y2_f_months_hiring, e2, elinewidth=0.5, capthick=0.5, linestyle="--", color='b', label='Firms\' recruiting duration')
-        ax.set(xlabel='Months', ylabel='', title='Employment relations')
+        ax.set(xlabel='Months', ylabel='')
         ax.legend()
 
-        if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_connections.pgf')
-        if self.plot_param['save_pdf']: fig.savefig('img/fig_'+ self.gov_type +'_connections.pdf')
-        if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_connections.png', dpi=300)
+        if self.plot_param['title']: ax.set(title='Employment relations')
+        self.save_fig(fig, 'connections')
         
     # plot the tax rate set by government for each month
     def plot_tax(self):
@@ -295,11 +298,10 @@ class Statistician(object):
 
         fig, ax = plt.subplots()
         plt.errorbar(self.x_months, y1_tax, e1, elinewidth=0.5, capthick=0.5, linestyle="-", color='b', label='Tax rate')
-        ax.set(xlabel='Months', ylabel='Tax rate', title='Flat tax rate')
+        ax.set(xlabel='Months', ylabel='Tax rate')
 
-        if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_tax.pgf')
-        if self.plot_param['save_pdf']: fig.savefig('img/fig_'+ self.gov_type +'_tax.pdf')
-        if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_tax.png', dpi=300)
+        if self.plot_param['title']: ax.set(title='Flat tax rate')
+        self.save_fig(fig, 'tax')
         
     # plot the universal basic income set by government for each month
     def plot_ubi(self):
@@ -312,11 +314,10 @@ class Statistician(object):
 
         fig, ax = plt.subplots()
         plt.errorbar(self.x_months, y1_ubi, e1, elinewidth=0.5, capthick=0.5, linestyle="-", color='b', label='UBI')
-        ax.set(xlabel='Months', ylabel='Money', title='Universal Basic Income')
+        ax.set(xlabel='Months', ylabel='Money')
 
-        if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_ubi.pgf')
-        if self.plot_param['save_pdf']: fig.savefig('img/fig_'+ self.gov_type +'_ubi.pdf')
-        if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_ubi.png', dpi=300)
+        if self.plot_param['title']: ax.set(title='Universal Basic Income')
+        self.save_fig(fig, 'ubi')
 
     # plot the party composition of the representative government for each month
     def plot_parties(self):
@@ -351,12 +352,11 @@ class Statistician(object):
         plt.errorbar(self.x_months, y3_party, e3, elinewidth=0.5, capthick=0.5, linestyle="-.", color='g', label='Party quintile 3')
         plt.errorbar(self.x_months, y4_party, e4, elinewidth=0.5, capthick=0.5, dashes=[1, 3, 5, 7], color='k', label='Party quintile 4')
         plt.errorbar(self.x_months, y5_party, e5, elinewidth=0.5, capthick=0.5, dashes=[5, 15, 5, 20], color='c', label='Party quintile 5')
-        ax.set(xlabel='Months', ylabel='Party size', title='Representative parliament composition')
+        ax.set(xlabel='Months', ylabel='Party size')
         ax.legend()
 
-        if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_parties.pgf')
-        if self.plot_param['save_pdf']: fig.savefig('img/fig_'+ self.gov_type +'_parties.pdf')
-        if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_parties.png', dpi=300)
+        if self.plot_param['title']: ax.set(title='Representative parliament composition')
+        self.save_fig(fig, 'parties')
         
     # money distribution at the end of the simulation
     def hist_money(self):
@@ -368,7 +368,6 @@ class Statistician(object):
             hh_money_list = self.hh_stat['dist']['money']
 
         fig, (ax1, ax2) = plt.subplots(1, 2)
-        fig.suptitle("Money distribution in firms and households")
         
         ax1.hist(f_money_list, bins=int(self.sim.f_param['num_firms']/10))
         ax2.hist(hh_money_list, bins=int(self.sim.hh_param['num_hh']/10))
@@ -378,10 +377,9 @@ class Statistician(object):
 
         ax2.yaxis.set_label_position("right")
         ax2.yaxis.tick_right()
-        
-        if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_hist_money.pgf')
-        if self.plot_param['save_pdf']: fig.savefig('img/fig_'+ self.gov_type +'_hist_money.pdf')
-        if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_hist_money.png', dpi=300)
+
+        if self.plot_param['title']: fig.suptitle("Money distribution in firms and households")
+        self.save_fig(fig, 'hist_money')
 
     # income distribution at the end of the simulation
     def hist_income(self):
@@ -393,8 +391,7 @@ class Statistician(object):
             hh_income_list = self.hh_stat['dist']['income']
 
         fig, (ax1, ax2) = plt.subplots(1, 2)
-        fig.suptitle("Wage and income distribution in firms and households")
-
+    
         ax1.hist(f_wage_list, bins=int(self.sim.f_param['num_firms']/10))
         ax2.hist(hh_income_list, bins=int(self.sim.hh_param['num_hh']/10))
         
@@ -403,11 +400,11 @@ class Statistician(object):
 
         ax2.yaxis.set_label_position("right")
         ax2.yaxis.tick_right()
-        
-        if self.plot_param['save_pgf']: fig.savefig('img/fig_'+ self.gov_type +'_hist_income.pgf')
-        if self.plot_param['save_pdf']: fig.savefig('img/fig_'+ self.gov_type +'_hist_income.pdf')
-        if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_hist_income.png', dpi=300)
+
+        if self.plot_param['title']: fig.suptitle("Wage and income distribution in firms and households")
+        self.save_fig(fig, 'hist_income')
     
+    # Plot Lorenz income curve (only tested for single run)
     def dist_income(self):
         if self.sim.num_runs > 1: return
 
@@ -436,7 +433,6 @@ class Statistician(object):
         f_wage_x = [point / (len(f_wage_x)-1) for point in f_wage_x]
 
         fig, (ax1, ax2) = plt.subplots(1, 2)
-        fig.suptitle("Income and wage distribution within households and firms")
 
         ax1.plot(f_wage_x, f_wage_norm, 'r', label='Firms per wage')
         ax1.set(xlabel='Firms', ylabel='Wage')
@@ -450,29 +446,15 @@ class Statistician(object):
         if self.plot_param['save_pdf']: fig.savefig('img/fig_'+ self.gov_type +'_dist_income.pdf')
         if self.plot_param['save_png']: fig.savefig('img/fig_'+ self.gov_type +'_dist_income.png', dpi=300)
 
-######## ######## ######## TODOS ######## ######## ########
+        if self.plot_param['title']: fig.suptitle("Income and wage distribution within households and firms")
+        self.save_fig(fig, 'dist_income')
 
-    # TODO: Text in figures should be rendered with LaTeX to fit the paper font
-    # TODO: Remove plotting in this class and integrate with stat_runs to reduce duplication.
-    # TODO: Write results of stat_runs to file. Allow invoking plots without having to rerun the simulation.
+######## ######## ######## TODO ######## ######## ########
 
-    # NEW STATISTICS
-    # TODO: Compare average taxed money to average received UBI in a ratio
-    # TODO: Are days within a month relevant?
-    #       Items are produced and sold each day.
-    #       Stock depletion through the course of a month.
-    # TODO: How many customers does the firm with most/least customers have?
-    # TODO: Indication for movement between quantiles in firms and households.
-    #       Average duration within the same quintile for households.
-    #       Average number of different visited quantiles for households.  
-    # TODO: Average employment duration. Time of households with one firm.
-    # TODO: Average duration of relationship between buying household and selling firm.
-    # TODO: Average frequency of firings at firms.
-    #       Relationship between firings and wealth of firms.
-    #       Relationship between quitting for another employer and wealth of households.
-
-    # PLOTTING
-    # TODO: Implement different kinds of dotted lines for black and white suitable display
-    # TODO: error bars, box plots, violin plots are great
-    # TODO: Prettier graphs https://stackoverflow.com/questions/14908576/how-to-remove-frame-from-matplotlib-pyplot-figure-vs-matplotlib-figure-frame
-    # TODO: Party composition graph: How to deal with overlapping lines?
+    # PROPOSAL FOR ADDITIONAL STATISTICS
+    # How many customers does the firm with most/least customers have?
+    # Indication for movement between quantiles in firms and households.
+    # Average duration within the same income/money quintile for households.
+    # Average time a households stays with the same firm.
+    # Average duration a households buys from the same firm.
+    # Average frequency of firings at firms.

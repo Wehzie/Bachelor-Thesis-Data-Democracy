@@ -12,13 +12,13 @@ class Gov_dir(object):
     def __init__(self, sim: object):
         self.sim = sim          # link government to the simulation
         self.money = 0          # money available to government for redistribution
-        self.tax_rate = 0       # taxes are collected each n months based on income and taxrate
+        self.tax_rate = 0       # taxes are collected each month based on income and taxrate
         self.ubi = 0            # ubi paid to each hh monthly
 
     ######## ######## ######## METHODS ######## ######## ########
 
     # each household proposes a different tax rate
-    # the proposed tax rate is dependent on the hhs position in the distribution of incomes
+    # the proposed tax rate is dependent on the hh's position in the distribution of incomes
     # all households have equal weight
     # by averaging individual votes a final tax rate is calculated
     def vote_tax(self):
@@ -37,21 +37,21 @@ class Gov_dir(object):
         g_list = self.sim.stat.hh_stat['metric']['gini_i'][-taf:]
         m_gini = sum(g_list) / len(g_list)
 
-        # sort households by money
-        hh_m_sort = sorted(self.sim.hh_list, key=lambda hh: hh.money)
+        # sort households by income
+        hh_i_sort = sorted(self.sim.hh_list, key=lambda hh: hh.income)
 
-        # normalize how much money a hh has in relation to the sum of household money
+        # normalize how much income a hh has in relation to the sum of household incomes
         # transform this to the range of 4 to 0 for poorest and richest households
-        maxi_m = hh_m_sort[-1].money                    # money of richest hh
-        mini_m = hh_m_sort[0].money                     # money of poorest hh
+        max_i = hh_i_sort[-1].income                    # income of richest hh
+        min_i = hh_i_sort[0].income                     # income of poorest hh
         mY = self.sim.g_param['tax_gamma']              # maximum gamma value
-        gamma_list = [(hh.money - maxi_m) / (mini_m - maxi_m) * mY for hh in hh_m_sort]
+        gamma_list = [(hh.income - max_i) / (min_i - max_i) * mY for hh in hh_i_sort]   # list of hhs' gammas
 
         self.tax_rate = 0
         num_hh = self.sim.hh_param['num_hh']            # number of households
         for hh in range(num_hh):
-            self.tax_rate += 1 - (1 + m_gini)**-gamma_list[hh]
-        self.tax_rate = self.tax_rate / num_hh
+            self.tax_rate += 1 - (1 + m_gini)**-gamma_list[hh]      # sum tax proposals
+        self.tax_rate = self.tax_rate / num_hh          # avarage tax proposals
 
     # collect taxes from all households each month
     def collect_tax(self):

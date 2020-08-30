@@ -13,18 +13,18 @@ class Firm(object):
         self.reserve: float = sim.f_param.get("init_reserve")   # how much money to not pay out as profits
         self.num_items: int = sim.f_param.get("init_items")     # number of items in stock for selling
         self.lo_num_items: int = None                           # at least have this many items in stock
-        self.up_num_items: int = None                           # don't have more than this items in stock
+        self.up_num_items: int = None                           # don't have more than this many items in stock
         rnd = random.uniform(-0.5, 0.5) / 50                    # generate small float around +-0
         self.item_price: float = sim.f_param.get("init_avg_price") + rnd    # price a single item is sold for
         self.marginal_cost: float = None                        # the price of producing one item
         self.lo_item_price: float = None                        # don't let item cost fall lower than this
         self.up_item_price: float = None                        # don't let item cost rise higher than this
         self.demand: int = 0                                    # number of items sold this month so far
-        self.list_employees: list = []                          # list of currently employed hh by index as found in simulation
+        self.list_employees: list = []                          # list of currently employed hh
         rnd = random.uniform(-0.5, 0.5) / 50                    # generate small float around +-0
         self.wage: float = sim.f_param.get("init_avg_wage") + rnd   # money paid to each employed hh per month
         self.hiring_status: int = 0                             # ternary, where 1: hire, 0: no changes, -1: fire
-        self.hired: bool                                        # hired or not a hh this month
+        self.hired: bool                                        # hired or didn't hire a hh this month
         self.month_hiring: int = 0                              # month the firm last started looking for an employee
 
     ######## ######## ######## METHODS ######## ######## ########
@@ -117,7 +117,7 @@ class Firm(object):
         self.demand += item_ask
         return num_items_sold
 
-    # return total money to pay employees each month
+    # return firm's total money to pay employees each month
     def sum_wages(self) -> int:
         return self.wage * len(self.list_employees)
 
@@ -132,13 +132,13 @@ class Firm(object):
 
         self.money -= self.sum_wages()
 
-    # determine how much money is not paid out as profits
+    # determine how much money is not to be paid out as profits
     def set_reserve(self):
         frac_monthly_wages = self.sim.f_param["buffer_rate"] * self.sum_wages()
         self.reserve = max(0, min(frac_monthly_wages, self.money))
 
     # return the sum of money owned by all households in the simulation
-    def sum_hh_money(self) -> int:
+    def sum_hh_money(self) -> float:
         sum = 0
         for hh in self.sim.hh_list:
             sum += hh.money if hh.money > 0 else 0

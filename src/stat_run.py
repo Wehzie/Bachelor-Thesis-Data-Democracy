@@ -12,12 +12,14 @@ class Stat_run(Statistician):
 
     ######## ######## ######## METHODS ######## ######## ########
 
+    # distribution measures
     def calc_dist(self):
         self.f_stat['dist']['money'] = np.append(self.f_stat['dist']['money'], [f.money for f in self.sim.firm_list])
         self.f_stat['dist']['wage'] = np.append(self.f_stat['dist']['wage'], [f.wage for f in self.sim.firm_list])
         self.hh_stat['dist']['money'] = np.append(self.hh_stat['dist']['money'], [hh.money for hh in self.sim.hh_list])
         self.hh_stat['dist']['income'] = np.append(self.hh_stat['dist']['income'], [hh.income for hh in self.sim.hh_list])
 
+    # sum measures
     def calc_sum(self):
         hh_list = self.sim.hh_list
         firm_list = self.sim.firm_list
@@ -47,17 +49,21 @@ class Stat_run(Statistician):
         self.hh_stat['avg']['employment'] = np.append(self.hh_stat['avg']['employment'], sum([1 if hh.employer else 0 for hh in hh_list]) / num_hh)
         self.hh_stat['avg']['res_wage'] = np.append(self.hh_stat['avg']['res_wage'], sum([hh.res_wage for hh in hh_list]) / num_hh)
     
+    # calculate equality metrics
     def calc_metric(self):
         self.hh_stat['metric']['gini_m'] = np.append(self.hh_stat['metric']['gini_m'], self.calc_gini('money'))
         self.hh_stat['metric']['gini_i'] = np.append(self.hh_stat['metric']['gini_i'], self.calc_gini('income'))
 
+    # calculate government metrics
     def calc_gov(self):
         self.g_stat['fix']['tax'] = np.append(self.g_stat['fix']['tax'], self.sim.gov.tax_rate)
         self.g_stat['fix']['ubi'] = np.append(self.g_stat['fix']['ubi'], self.sim.gov.ubi)
         if self.gov_type == 'rep':
             self.g_stat['fix']['parties'] = np.append(self.g_stat['fix']['parties'], self.sim.gov.parties)
 
+    # calculate Gini index/coefficient
     # based on https://github.com/oliviaguest/gini
+    # Guest, O., & Love, B. C. (2017). What the Success of Brain Imaging Implies about the Neural Code. eLife. doi: 10.7554/eLife.21397.
     def calc_gini(self, g_type):
         if g_type == 'income': array = np.array([hh.income for hh in self.sim.hh_list])
         if g_type == 'money': array = np.array([hh.money for hh in self.sim.hh_list])
@@ -77,9 +83,9 @@ class Stat_run(Statistician):
         # Gini coefficient:
         return ((np.sum((2 * index - n  - 1) * array)) / (n * np.sum(array)))
 
-    # each month notify stat_run of what is going on in the simulation
+    # each month notify stat_run of occurrences in the simulation
     def up_stat(self):
-        if self.sim.current_month == self.sim.num_months-1:     # in the last month of a run store money distribution
+        if self.sim.current_month == self.sim.num_months-1:     # in the last month of a run store income and money distribution for histograms
             self.calc_dist()
         self.calc_sum()
         self.calc_avg()

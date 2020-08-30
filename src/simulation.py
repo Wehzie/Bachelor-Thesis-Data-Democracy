@@ -3,8 +3,8 @@
 class Simulation(object):
     '''
     The Simulation object contains instances of firms, households and the government.
-    The Simulation sets parameters that control firm and household behavior.
-    The main event loop method part of the Simulation object.
+    The Simulation sets parameters that control firm, household and government behavior.
+    The main event loop found in this Simulation class.
     '''
 
     ######## ######## ######## STATIC VARIABLES ######## ######## ########
@@ -82,6 +82,7 @@ class Simulation(object):
 
     ######## ######## ######## METHODS ######## ######## ########
 
+    # print the current step in the simulation
     def print_sim_step(self, step: str):
         print(f"{self.print_hashes:<30} {step:>15}")
 
@@ -103,7 +104,7 @@ class Simulation(object):
             self.hh_list.append(new_household)
             employer_idx += 1
 
-    # initialize the stat_run object
+    # initialize the stat_run object to track data produced by the simulation
     def init_stat_run(self):
         self.stat = Stat_run(self.num_months, self.num_runs, self.gov_type, self.f_param['num_firms'], self.hh_param['num_hh'], self.plot_param)
         self.stat.set_sim(self)
@@ -136,7 +137,7 @@ class Simulation(object):
         act_bom_hh()
 
     # actions each day of the month
-    # hhs goods before firms produce since production takes time
+    # hhs buy goods before firms produce new ones since production is assumed to take a day
     def act_day(self):
         def act_day_hh():
             random.shuffle(self.hh_list)
@@ -167,6 +168,7 @@ class Simulation(object):
 
         self.gov_action()
 
+    # start the simulation
     def start_sim(self):
         self.print_sim_step("INITIALIZE AGENTS")
         self.init_firms()
@@ -176,12 +178,7 @@ class Simulation(object):
         self.print_sim_step("INVOKING EVENT LOOP")
         self.event_loop()
 
-    def sum_hh_money(self) -> float:
-        hh_sum = 0
-        for hh in self.hh_list:
-            hh_sum += hh.money
-        return hh_sum
-
+    # execute actions performed by a government
     def gov_action(self):
         if self.gov_type == 'none': return
         self.gov.vote_tax()
@@ -189,6 +186,7 @@ class Simulation(object):
         self.gov.calc_ubi()
         self.gov.pay_ubi()
 
+    # run the main event loop
     def event_loop(self):
         while(self.current_month < self.num_months):
             print(f"{self.print_hashes:<30} {'MONTH:':>15} {self.current_month:>10}")
