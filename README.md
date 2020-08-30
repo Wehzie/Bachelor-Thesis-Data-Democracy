@@ -89,3 +89,6 @@ Martijn Luinstra helped me answer questions regarding the JavaScript implementat
 Julian Arndts pointed me to the works of Milton Friedman on the flat tax and UBI proposal; he was also available to discuss the works of Anthony Atkinson on taxation.
 
 In a more indirect way the student association Cover in Groningen helped me develop the idea for this work. Inspired by the course Data Analytics and Communication I got to write a dystopian article about how data could change democracy for the DisCover magazine. This process lead me to approach Professor Grossi with this thesis idea. Last I would like to thank the rest of my family, friends and especially my grandpa. A la orden catipán.
+
+## Author
+This program was developed by Rafael Tappe Maestro at University of Groningen.
