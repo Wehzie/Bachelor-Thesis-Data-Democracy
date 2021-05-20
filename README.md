@@ -12,6 +12,8 @@ Additionally, the program implements twp types of governments responsible for re
 First, this simulation is used to compare both governments.
 Second, the effectiveness of redistribution is evaluated by comparing the governments to a setting without redistribution.
 
+The thesis is available under <http://fse.studenttheses.ub.rug.nl/id/eprint/23398>.
+
 ## Getting Started
 
 To run the program on you local machine see the following instructions.
