@@ -13,6 +13,7 @@ First, this simulation is used to compare both governments.
 Second, the effectiveness of redistribution is evaluated by comparing the governments to a setting without redistribution.
 
 The thesis is available under <http://fse.studenttheses.ub.rug.nl/id/eprint/23398>.
+To run the simulation in a web browser a WebAssembly port is available under <https://wehzie.github.io/Bachelor-Thesis-Data-Democracy/>.
 
 ## Getting Started
 
