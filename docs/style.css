@@ -85,4 +85,8 @@ textarea {
     background-color: rgb(45, 0, 144);
     color: rgb(255, 255, 255);
     width: 80%;
+    
+    opacity: 100%;
+    -webkit-text-fill-color: rgb(255, 255, 255);
+    -webkit-appearance: none;
 }
