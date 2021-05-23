@@ -5,6 +5,7 @@ __pycache__
 test.py
 test.js.py
 *.png
+!favicon.png
 *.pgf
 *.pdf
 *.txt
