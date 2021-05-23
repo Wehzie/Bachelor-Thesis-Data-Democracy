@@ -1,3 +1,6 @@
+async function household() {
+return (
+`
 
 
 class Household(object):
@@ -212,6 +215,9 @@ class Household(object):
 
 ######## ######## ######## IMPORTS ######## ######## ########
 
-import random
-from simulation import Simulation
-from firm import Firm
+
+
+
+
+`)
+}

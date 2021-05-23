@@ -1,8 +1,11 @@
+async function stat_run() {
+return (
+`
 
 
-from statistician import Statistician
-from simulation import Simulation
-import numpy as np
+
+
+
 
 class Stat_run(Statistician):
     '''
@@ -92,3 +95,6 @@ class Stat_run(Statistician):
         self.calc_metric()
         if self.gov_type != 'none':
             self.calc_gov()
+
+`)
+}

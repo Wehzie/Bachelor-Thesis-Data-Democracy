@@ -1,3 +1,6 @@
+async function gov_rep() {
+return (
+`
 
 
 class Gov_rep(object):
@@ -93,6 +96,9 @@ class Gov_rep(object):
 
 ######## ######## ######## IMPORTS ######## ######## ########
 
-from simulation import Simulation
-import random
-from scipy.interpolate import interp1d
+
+
+
+
+`)
+}

@@ -1,3 +1,6 @@
+async function firm() {
+return (
+`
 
 
 class Firm(object):
@@ -163,6 +166,9 @@ class Firm(object):
     
 ######## ######## ######## IMPORTS ######## ######## ########
 
-from simulation import Simulation
-from household import Household
-import random
+
+
+
+
+`)
+}

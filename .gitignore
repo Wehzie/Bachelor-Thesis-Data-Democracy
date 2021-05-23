@@ -3,6 +3,7 @@
 target
 __pycache__
 test.py
+test.js.py
 *.png
 *.pgf
 *.pdf
