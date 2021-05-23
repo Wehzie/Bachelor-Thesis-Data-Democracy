@@ -1,8 +1,11 @@
+async function stat_runs() {
+return (
+`
 
 
-from simulation import Simulation
-from statistician import Statistician
-import numpy as np
+
+
+
 
 class Stat_runs(Statistician):
     '''
@@ -27,3 +30,6 @@ class Stat_runs(Statistician):
                 for measure_key, measure_val in stat_val.items():
                     if len(measure_val) == 0: continue                  # only add party data for the representative government
                     self.g_stat[stat_key][measure_key] = np.vstack((self.g_stat[stat_key][measure_key], np.array(measure_val)))
+
+`)
+}

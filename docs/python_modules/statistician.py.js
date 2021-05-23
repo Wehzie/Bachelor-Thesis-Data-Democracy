@@ -1,11 +1,14 @@
+async function statistician() {
+return (
+`
 
 
-import numpy as np
-import matplotlib.pyplot as plt
-from collections import deque
-import datetime
-from scipy.interpolate import interp1d
-from scipy import stats
+
+
+
+
+
+
 
 plt.rcParams['axes.grid'] = True
 plt.rcParams["errorbar.capsize"] = 3
@@ -110,7 +113,7 @@ class Statistician(object):
         self.dist_income()
         if self.plot_param['save_csv']:
             print_hashes = "######## ######## ########"
-            print(f"\n{print_hashes:<30} {'SAVING DATA':>15}")
+            js.document.getElementById('text_output').value += '\\n' + str(f"\\n{print_hashes:<30} {'SAVING DATA':>15}")
             self.save()
 
     # save data to file
@@ -458,3 +461,6 @@ class Statistician(object):
     # Average time a households stays with the same firm.
     # Average duration a households buys from the same firm.
     # Average frequency of firings at firms.
+
+`)
+}

@@ -1,3 +1,6 @@
+async function gov_dir() {
+return (
+`
 
 
 class Gov_dir(object):
@@ -70,5 +73,8 @@ class Gov_dir(object):
 
 ######## ######## ######## IMPORTS ######## ######## ########
 
-from simulation import Simulation
-import random
+
+
+
+`)
+}

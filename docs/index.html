@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Voting, flat tax and basic income: Effects on equality">
+    <meta name="keywords" content="bachelor, thesis, rug, ubi, universal basic income, voting, gini index">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting, flat tax and basic income: Effects on equality</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.17.0/full/pyodide.js"></script>
+    <script src="pythonLoader.js"></script>
+    <script src="python_modules/firm.py.js"></script>
+    <script src="python_modules/gov_dir.py.js"></script>
+    <script src="python_modules/gov_rep.py.js"></script>
+    <script src="python_modules/household.py.js"></script>
+    <script src="python_modules/main.py.js"></script>
+    <script src="python_modules/py_import.js"></script>
+    <script src="python_modules/simulation.py.js"></script>
+    <script src="python_modules/stat_run.py.js"></script>
+    <script src="python_modules/stat_runs.py.js"></script>
+    <script src="python_modules/statistician.py.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>
+            <span class=brokenLine>Voting, flat tax and basic income:<br>Effects on equality</span>
+            <span class=oneLine>Voting, flat tax and basic income:<br>Effects on equality</span>
+        </h1>
+    </header>
+    <nav>
+        <hr>
+        <p>
+            <a href="https://github.com/Wehzie/Bachelor-Thesis-Data-Democracy">GitHub</a>
+            <a href="http://fse.studenttheses.ub.rug.nl/id/eprint/23398">Thesis</a>
+            <a href="https://sim4edu.com/sims/20/description">Sim4edu</a>
+        </p>
+        <hr>
+    </nav>
+    <article>
+        <section>
+
+
+            <datalist id="gov-list">
+                <option value="none">
+                <option value="rep">
+                <option value="dir">
+            </datalist>
+
+            <label for="months">set the number of months simulated per run</label>
+            <input id="months" type="number" min="1" step="1" value="5" required>
+            <br>
+            <label for="runs">set number of runs to simulate</label>
+            <input id="runs" type="number" min="1" step="1" value="1" required>
+            <br>
+            <label for="gov">select government implementation</label>
+            <input id="gov" type="text" list="gov-list" value="none" required>
+            <br>
+            <label for="f">number of firms used in a simulation</label>
+            <input id="f" type="number" min="1" step="1" value="25" required>
+            <br>
+            <label for="hh">number of households used in a simulation</label>
+            <input id="hh" type="number" min="1" step="1" value="250" required>
+        </section>
+
+        <section>
+            <br>
+            <button onclick="evaluatePython()">Run Python</button>
+            <br>
+            <textarea id='text_output' rows='15' disabled></textarea>
+        </section>
+
+        <section>
+            <p>Todo: Show Matplotlib figures</p>
+        </section>
+    </article>
+    <footer>
+        <hr>
+        <p>
+            <a href="https://github.com/Wehzie/Bachelor-Thesis-Data-Democracy">GitHub</a>
+            <a href="http://fse.studenttheses.ub.rug.nl/id/eprint/23398">Thesis</a>
+            <a href="https://sim4edu.com/sims/20/description">Sim4edu</a>
+        </p>
+        <hr>
+    </footer>
+</body>
+
+</html>

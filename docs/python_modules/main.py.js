@@ -1,13 +1,16 @@
+async function main() {
+return (
+`
 
 
 ######## ######## ######## IMPORTS ######## ######## ########
 
-from simulation import Simulation
-from stat_runs import Stat_runs
-import sys
-import argparse
-import random
-from pathlib import Path
+
+
+
+
+
+
 
 ######## ######## ######## MAIN ######## ######## ########
 
@@ -23,6 +26,7 @@ def main():
     
     See the README for further details.
     '''
+    js.document.getElementById('text_output').value += '\\n' + str(sys.argv)
 
     # random seed for reproducibility
     random.seed(15532)
@@ -44,13 +48,13 @@ def main():
     # print initial conditions and write them to file
     print_hashes = "######## ######## ########"
     initial_conditions = f"""
-{print_hashes:<30} INITIAL CONDITIONS {print_hashes:>58}\n
+{print_hashes:<30} INITIAL CONDITIONS {print_hashes:>58}\\n
 {print_hashes:<30} {'MONTHS:':>15} {num_months:>10}
 {print_hashes:<30} {'RUNS:':>15} {runs:>10}
 {print_hashes:<30} {'GOVERNMENT:':>15} {gov_type:>10}
 {print_hashes:<30} {'FIRMS:':>15} {num_f:>10}
 {print_hashes:<30} {'HOUSEHOLDS:':>15} {num_hh:>10}"""
-    print(initial_conditions)
+    js.document.getElementById('text_output').value += '\\n' + str(initial_conditions)
     Path("./img").mkdir(parents=True, exist_ok=True)     # ensure /img/ directory exists for writing plots and initial conditions
     with open("img/fig_" + gov_type + "_initial_conditions.txt", "w") as f: 
         f.write(initial_conditions)
@@ -59,7 +63,7 @@ def main():
     plot_param = {
         'plot_per_run': False if runs > 1 else True,    # show and save plots for a single run only when doing one run in total
         'save_pgf': False,                               # save plots as Progressive Graphics File for LaTeX
-        'save_pdf': True,                               # save plots as Portable Document Format
+        'save_pdf': False,                               # save plots as Portable Document Format
         'save_png': False,                               # save plots as Portable Network Graphics at 300 DPI
         'save_csv': False,                              # save data as csv file
         'title': True,                                 # save plots with a title
@@ -69,15 +73,18 @@ def main():
     stat_runs = Stat_runs(num_months, runs, gov_type, num_f, num_hh, plot_param)  
     for run in range(runs):
         sim = Simulation(num_months, runs, gov_type, num_f, num_hh, plot_param)
-        print(f"\n{print_hashes:<30} {'RUN:':>15} {run:>10} {print_hashes:>50}\n")
+        js.document.getElementById('text_output').value += '\\n' + str(f"\\n{print_hashes:<30} {'RUN:':>15} {run:>10} {print_hashes:>50}\\n")
         sim.start_sim()
         if runs > 1:
             stat_runs.set_sim(sim)
             stat_runs.add_run(sim.stat)
     if runs > 1:
-        print(f"\n{print_hashes:<30} {'CREATING PLOTS':>15}")
+        js.document.getElementById('text_output').value += '\\n' + str(f"\\n{print_hashes:<30} {'CREATING PLOTS':>15}")
         stat_runs.invoke_plots()
-    print(f"\n{print_hashes:<30} {'EXITING PROGRAM':>15} {print_hashes:>61}")
+    js.document.getElementById('text_output').value += '\\n' + str(f"\\n{print_hashes:<30} {'EXITING PROGRAM':>15} {print_hashes:>61}")
 
 if __name__ == "__main__":
     main()
+
+`)
+}
